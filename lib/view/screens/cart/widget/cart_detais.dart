@@ -39,6 +39,19 @@ class CartDetails extends StatefulWidget {
 
 class _CartDetailsState extends State<CartDetails> {
   final TextEditingController _nameController = TextEditingController();
+  bool isNumeric(String s) {
+    return double.tryParse(s) != null;
+  }
+
+  String replaceNumbersInRange(String input, int start, int end) {
+    for (int i = start; i <= end && i < input.length; i++) {
+      if (isNumeric(input[i])) {
+        input = input.replaceRange(i, i + 1, "");
+      }
+    }
+
+    return input;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,24 +72,6 @@ class _CartDetailsState extends State<CartDetails> {
       child: GetBuilder<SplashController>(builder: (splashController) {
         return GetBuilder<OrderController>(builder: (orderController) {
           return GetBuilder<CartController>(builder: (cartController) {
-            bool isNumeric(String s) {
-              // Use a regular expression to check if the string represents a number
-              return double.tryParse(s) != null;
-            }
-
-            String replaceNumbersInRange(String input, int start, int end) {
-              // Loop through the characters within the specified range
-              for (int i = start; i <= end && i < input.length; i++) {
-                // Check if the character represents a number
-                if (isNumeric(input[i])) {
-                  // Replace the number at the current index with your desired replacement
-                  input = input.replaceRange(i, i + 1, "");
-                }
-              }
-
-              return input;
-            }
-
             DateTime dateTime = DateTime.now();
             List<List<AddOn>> addOnsList = [];
             List<bool> availableList = [];
@@ -136,7 +131,7 @@ class _CartDetailsState extends State<CartDetails> {
               widget.itemsCount = cartList.length;
             }
 
-            return cartList.isEmpty
+            return cartController.cartList.isEmpty
                 ? NoDataScreen(
                     text: 'please_add_food_to_order'.tr,
                     backbutton: !widget.showButton,
@@ -156,6 +151,7 @@ class _CartDetailsState extends State<CartDetails> {
                       //                   null
                       //               ? Center(
                       //                   child: Text(
+                      // overflow: TextOverflow.ellipsis,
                       //                     'add_table_number'.tr,
                       //                     style: robotoRegular.copyWith(
                       //                       fontSize: Dimensions.fontSizeLarge,
@@ -216,6 +212,7 @@ class _CartDetailsState extends State<CartDetails> {
                       SizedBox(height: ResponsiveHelper.isSmallTab() ? 20 : 40),
                       !widget.showButton
                           ? Text(
+                              overflow: TextOverflow.ellipsis,
                               '${cartController.customerName ?? ''}',
                               style: robotoRegular.copyWith(
                                 fontWeight: FontWeight.bold,
@@ -231,7 +228,9 @@ class _CartDetailsState extends State<CartDetails> {
                                 SizedBox(
                                   height: Dimensions.paddingSizeDefault,
                                 ),
-                                const Text('Enter name of customer'),
+                                const Text(
+                                    overflow: TextOverflow.ellipsis,
+                                    'Enter name of customer'),
                                 SizedBox(
                                   height: Dimensions.paddingSizeDefault,
                                 ),
@@ -280,10 +279,10 @@ class _CartDetailsState extends State<CartDetails> {
                       ),
                       Expanded(
                         child: ListView.builder(
-                            itemCount: cartList.length,
+                            itemCount: cartController.cartList.length,
                             itemBuilder: (context, index) {
-                              widget.itemsCount = cartList.length;
-                              CartModel cartItem = cartList[index];
+                              widget.itemsCount = cartController.cartList.length;
+                              CartModel cartItem = cartController.cartList[index];
                               List<Variation>? variationList;
                               List<Widget> variationWidgetList = [];
                               bool takeAway = false;
@@ -368,6 +367,8 @@ class _CartDetailsState extends State<CartDetails> {
                                                             .start,
                                                     children: [
                                                       Text(
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                         replaceNumbersInRange(
                                                                 variationList[
                                                                             index]
@@ -389,8 +390,8 @@ class _CartDetailsState extends State<CartDetails> {
                                                                   .color!,
                                                         ),
                                                         maxLines: 5,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
+                                                        // overflow: TextOverflow
+                                                        //     .ellipsis,
                                                       ),
                                                       SizedBox(
                                                         height: Dimensions
@@ -405,6 +406,8 @@ class _CartDetailsState extends State<CartDetails> {
                                                     horizontal: Dimensions
                                                         .paddingSizeExtraSmall),
                                                 child: Text(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   '${variationList[index].variationValues?[i].level?.substring(0, 4).replaceAll(RegExp(r'[^0-9]'), '')}',
                                                   textAlign: TextAlign.center,
                                                   style: robotoRegular.copyWith(
@@ -423,6 +426,8 @@ class _CartDetailsState extends State<CartDetails> {
                                                         horizontal: Dimensions
                                                             .paddingSizeExtraSmall),
                                                     child: Text(
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       // "lmm",
                                                       "${PriceConverter.convertPrice(variationList[index].variationValues?[i].optionPrice ?? 0)}"
                                                           .trim(),
@@ -475,6 +480,8 @@ class _CartDetailsState extends State<CartDetails> {
                                         children: [
                                           takeAway
                                               ? Text(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   "** Take Away **",
                                                   style: robotoRegular.copyWith(
                                                     fontSize: Dimensions
@@ -485,6 +492,8 @@ class _CartDetailsState extends State<CartDetails> {
                                                   ),
                                                 )
                                               : Text(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   "Eat In",
                                                   style: robotoRegular.copyWith(
                                                     fontSize: Dimensions
@@ -513,6 +522,8 @@ class _CartDetailsState extends State<CartDetails> {
                                                             .start,
                                                     children: [
                                                       Text(
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
                                                         '${cartItem.product!.name ?? ''} ${variationText.isNotEmpty ? '($variationText)' : ''}',
                                                         style: robotoRegular
                                                             .copyWith(
@@ -525,8 +536,8 @@ class _CartDetailsState extends State<CartDetails> {
                                                                   .color!,
                                                         ),
                                                         maxLines: 17,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
+                                                        // overflow: TextOverflow
+                                                        //     .ellipsis,
                                                       ),
                                                     ],
                                                   )),
@@ -536,6 +547,8 @@ class _CartDetailsState extends State<CartDetails> {
                                                     horizontal: Dimensions
                                                         .paddingSizeExtraSmall),
                                                 child: Text(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   '${cartItem.quantity}',
                                                   textAlign: TextAlign.center,
                                                   style: robotoRegular.copyWith(
@@ -554,6 +567,8 @@ class _CartDetailsState extends State<CartDetails> {
                                                         horizontal: Dimensions
                                                             .paddingSizeExtraSmall),
                                                     child: Text(
+                                                      overflow:
+                                                          TextOverflow.ellipsis,
                                                       PriceConverter
                                                           .convertPrice(
                                                         cartItem.price! *
@@ -603,6 +618,7 @@ class _CartDetailsState extends State<CartDetails> {
                                     ),
 
                                     // Text(
+                                    //  overflow: TextOverflow.ellipsis,
                                     //   PriceConverter.convertPrice(
                                     //       cartItem.product?.price ?? 0),
                                     //   style: robotoRegular.copyWith(
@@ -613,7 +629,9 @@ class _CartDetailsState extends State<CartDetails> {
                                     //   height: Dimensions.paddingSizeExtraSmall,
                                     // ),
                                     if (addonsName.isNotEmpty)
-                                      Text('${'addons'.tr}: $addonsName',
+                                      Text(
+                                          overflow: TextOverflow.ellipsis,
+                                          '${'addons'.tr}: $addonsName',
                                           style: robotoRegular.copyWith(
                                             fontSize: Dimensions.fontSizeSmall,
                                             color: Theme.of(context).hintColor,
@@ -716,9 +734,8 @@ class _CartDetailsState extends State<CartDetails> {
                                       // if (cartController.customerName == null) {
                                       //   showCustomSnackBar(
                                       //       'please enter customer name');
-                                      // } else 
-                                      if (cartController
-                                          .cartList.isEmpty) {
+                                      // } else
+                                      if (cartController.cartList.isEmpty) {
                                         showCustomSnackBar(
                                             'please_add_food_to_order'.tr);
                                       } else {
@@ -788,7 +805,7 @@ class _CartDetailsState extends State<CartDetails> {
                                             }
                                           }
 
-                                          carts.add(Cart( 
+                                          carts.add(Cart(
                                             cart.product!.id!.toString(),
                                             cart.discountedPrice.toString(),
                                             '',
@@ -944,12 +961,14 @@ class _CartDetailsState extends State<CartDetails> {
         ),
         Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
           Text(
+            overflow: TextOverflow.ellipsis,
             "Items Count",
             style: robotoBold.copyWith(
               fontSize: Dimensions.fontSizeLarge,
             ),
           ),
           Text(
+            overflow: TextOverflow.ellipsis,
             '${widget.itemsCount}',
             style: robotoBold.copyWith(
               fontSize: Dimensions.fontSizeLarge,
@@ -1005,6 +1024,7 @@ class PriceWithType extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
+            overflow: TextOverflow.ellipsis,
             type,
             style: isTotal
                 ? robotoBold.copyWith(
@@ -1012,7 +1032,9 @@ class PriceWithType extends StatelessWidget {
                   )
                 : robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
           ),
-          Text(amount,
+          Text(
+              overflow: TextOverflow.ellipsis,
+              amount,
               style: isTotal
                   ? robotoBold.copyWith(
                       fontSize: Dimensions.fontSizeLarge,

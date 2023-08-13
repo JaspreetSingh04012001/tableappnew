@@ -113,6 +113,7 @@ class FilterButtonWidget extends StatelessWidget {
                                   )
                                 : const SizedBox(),
                             Text(
+                              overflow: TextOverflow.ellipsis,
                               items[index].tr,
                               style: items[index] == type
                                   ? robotoMedium.copyWith(

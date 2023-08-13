@@ -20,6 +20,7 @@ class TableSetting extends StatelessWidget {
       ),
       child: Column(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: [
         Text(
+            overflow: TextOverflow.ellipsis,
           'set_fix_table_number'.tr, style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
         ),
         SizedBox(height: Dimensions.paddingSizeDefault,),
@@ -39,7 +40,8 @@ class TableSetting extends StatelessWidget {
                     vertical: VisualDensity.minimumDensity,
                   ),
 
-                  title: Text('yes'.tr),
+                  title: Text(
+            overflow: TextOverflow.ellipsis,'yes'.tr),
                   value: true, groupValue: true,
                   onChanged: (Object? value) {
 
@@ -57,7 +59,8 @@ class TableSetting extends StatelessWidget {
                     vertical: VisualDensity.minimumDensity,
                   ),
 
-                  title: Text('no'.tr),
+                  title: Text(
+            overflow: TextOverflow.ellipsis,'no'.tr),
                   value: '', groupValue: false,
                   onChanged: (Object? value) {
 
@@ -89,7 +92,8 @@ class TableSetting extends StatelessWidget {
         //       vertical: VisualDensity.minimumDensity,
         //     ),
         //
-        //     title: Text(''),
+        //     title: Text(
+        //    overflow: TextOverflow.ellipsis,''),
         //     value: index, groupValue: false,
         //     onChanged: (Object? value) {
         //

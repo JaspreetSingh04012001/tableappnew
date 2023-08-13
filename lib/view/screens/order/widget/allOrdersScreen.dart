@@ -21,6 +21,7 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
         centerTitle: true,
         backgroundColor: Theme.of(context).primaryColor,
         title: const Text(
+          overflow: TextOverflow.ellipsis,
           "All orders",
           style: TextStyle(color: Colors.white),
         ),
@@ -91,8 +92,12 @@ class _AllOrdersScreenState extends State<AllOrdersScreen> {
                                   color: Theme.of(context).primaryColor,
                                   child: Column(
                                     children: [
-                                      Text(orderIdList[index]),
-                                      Text(total.toString()),
+                                      Text(
+                                          overflow: TextOverflow.ellipsis,
+                                          orderIdList[index]),
+                                      Text(
+                                          overflow: TextOverflow.ellipsis,
+                                          total.toString()),
                                     ],
                                   ),
                                 ),

@@ -20,22 +20,43 @@ class TabOrderDetailsWidget extends StatelessWidget {
                 padding: EdgeInsets.all(Dimensions.paddingSizeDefault),
                 decoration: BoxDecoration(
                   color: Theme.of(context).cardColor,
-                  boxShadow:Get.isDarkMode ? null: [BoxShadow(color: Colors.grey[300]!, blurRadius: 1, spreadRadius: 1, offset: const Offset(0,4))],
+                  boxShadow: Get.isDarkMode
+                      ? null
+                      : [
+                          BoxShadow(
+                              color: Colors.grey[300]!,
+                              blurRadius: 1,
+                              spreadRadius: 1,
+                              offset: const Offset(0, 4))
+                        ],
                 ),
-                child: Column(children: [
-
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: Dimensions.paddingSizeSmall),
-                    child: Row(crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("${'note'.tr}: ", style: robotoBold),
-                        const Expanded(child: Text('Here is your not will be appear from customer Here is your not will be appear from customer', maxLines: 5,overflow: TextOverflow.clip,)),
-                      ],
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          vertical: Dimensions.paddingSizeSmall),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                              overflow: TextOverflow.ellipsis,
+                              "${'note'.tr}: ",
+                              style: robotoBold),
+                          const Expanded(
+                              child: Text(
+                          //  overflow: TextOverflow.ellipsis,
+                            'Here is your not will be appear from customer Here is your not will be appear from customer',
+                            maxLines: 5,
+                            overflow: TextOverflow.clip,
+                          )),
+                        ],
+                      ),
                     ),
-                  ),
-                  const CustomDivider(),
-                  SizedBox(height: Dimensions.paddingSizeDefault),
-                ],),),
+                    const CustomDivider(),
+                    SizedBox(height: Dimensions.paddingSizeDefault),
+                  ],
+                ),
+              ),
               ClipPath(
                 clipper: MultipleRoundedCurveClipper(),
                 child: Container(
@@ -45,12 +66,9 @@ class TabOrderDetailsWidget extends StatelessWidget {
                   height: 12,
                 ),
               ),
-
-
             ],
           ),
         ),
-
       ],
     );
   }

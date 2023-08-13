@@ -92,7 +92,9 @@ class _ProductWidgetState extends State<ProductWidget> {
                           left: Dimensions.paddingSizeSmall,
                           right: Dimensions.paddingSizeSmall,
                         ),
-                        child: Text(widget.product.name ?? '',
+                        child: Text(
+                            overflow: TextOverflow.ellipsis,
+                            widget.product.name ?? '',
                             style: robotoRegular.copyWith(
                               fontWeight: FontWeight.bold,
                               fontSize: (width > 590 && width < 650)
@@ -107,7 +109,8 @@ class _ProductWidgetState extends State<ProductWidget> {
                             ),
                             maxLines: 2,
                             textAlign: TextAlign.center,
-                            overflow: TextOverflow.ellipsis),
+                          //  overflow: TextOverflow.ellipsis
+                           ),
                       ),
                     ),
                   ),
@@ -146,6 +149,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                                         bottom: Dimensions.paddingSizeDefault),
                                     child: Center(
                                       child: Text(
+                                        overflow: TextOverflow.ellipsis,
                                         '${'qty'.tr} : ${cartController.getCartQty(widget.product)}',
                                         style: robotoBold.copyWith(
                                           fontSize: Dimensions.fontSizeLarge,
@@ -187,6 +191,7 @@ class _ProductWidgetState extends State<ProductWidget> {
                   ),
                   child: Center(
                       child: Text(
+                    overflow: TextOverflow.ellipsis,
                     'not_available'.tr.replaceAll(' ', '\n'),
                     style: robotoBold.copyWith(
                       fontSize: Dimensions.fontSizeDefault,

@@ -44,12 +44,13 @@ class _SplashScreenState extends State<SplashScreen>
           backgroundColor: isNotConnected ? Colors.red : Colors.green,
           duration: Duration(seconds: isNotConnected ? 6000 : 3),
           content: Text(
+            overflow: TextOverflow.ellipsis,
             isNotConnected ? 'no_connection' : 'connected',
             textAlign: TextAlign.center,
           ),
         ));
         if (!isNotConnected) {
-        //  _route();
+          //  _route();
         }
       }
       firstTime = false;
@@ -93,7 +94,8 @@ class _SplashScreenState extends State<SplashScreen>
                   .isNotEmpty)) {
             Get.offAll(() => const PromotionalPageScreen());
           } else {
-            Get.offNamed(RouteHelper.home);
+            Get.offAll(() => const PromotionalPageScreen());
+            //Get.offNamed(RouteHelper.home);
           }
         }
       });

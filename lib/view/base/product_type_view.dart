@@ -25,6 +25,7 @@ class ProductTypeView extends StatelessWidget {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 2),
               child: Text(
+                overflow: TextOverflow.ellipsis,
                 productType!.tr,
                 style: robotoRegular.copyWith(color: Colors.white),
               ),

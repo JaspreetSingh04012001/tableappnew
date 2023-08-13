@@ -148,7 +148,6 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                 bool isAvailable = DateConverter.isAvailable(
                     widget.product.availableTimeStarts,
                     widget.product.availableTimeEnds);
-              
 
                 // _cartIndex = cartController.getCartIndex(widget.product);
                 // enum Gender { male, female, other }
@@ -241,6 +240,8 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                               .start,
                                                       children: [
                                                         Text(
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
                                                           widget.product.name ??
                                                               '',
                                                           style: robotoBold
@@ -249,8 +250,6 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                 .fontSizeLarge,
                                                           ),
                                                           maxLines: 2,
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
                                                         ),
                                                         SizedBox(
                                                           height: Dimensions
@@ -264,6 +263,9 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                               Row(
                                                                 children: [
                                                                   Text(
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
                                                                     PriceConverter
                                                                         .convertPrice(
                                                                       price,
@@ -281,6 +283,8 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                           .paddingSizeExtraSmall),
                                                                   price > priceWithDiscount
                                                                       ? Text(
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
                                                                           PriceConverter.convertPrice(
                                                                               price),
                                                                           style: robotoMedium.copyWith(
@@ -335,6 +339,8 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                             .center,
                                                                     children: [
                                                                       Text(
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
                                                                         variationList[index].name ??
                                                                             '',
                                                                         style: robotoMedium.copyWith(
@@ -342,6 +348,8 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                 Dimensions.fontSizeLarge),
                                                                       ),
                                                                       Text(
+                                                                        overflow:
+                                                                            TextOverflow.ellipsis,
                                                                         ' (${variationList[index].isRequired! ? 'required'.tr : 'optional'.tr})',
                                                                         style: robotoMedium.copyWith(
                                                                             color:
@@ -363,6 +371,9 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                         index]
                                                                     .isMultiSelect!)
                                                                 ? Text(
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
                                                                     '${'you_need_to_select_minimum'.tr} ${'${variationList[index].min}'
                                                                         ' ${'to_maximum'.tr} ${variationList[index].max} ${'options'.tr}'}',
                                                                     style: robotoMedium.copyWith(
@@ -446,21 +457,24 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                       visualDensity: const VisualDensity(horizontal: -3, vertical: -3),
                                                                                     ),
                                                                               Text(
+                                                                                overflow: TextOverflow.ellipsis,
                                                                                 variationList[index].variationValues![i].level != null ? variationList[index].variationValues![i].level!.trim() : '',
                                                                                 maxLines: 1,
-                                                                                overflow: TextOverflow.ellipsis,
+                                                                                //  overflow: TextOverflow.ellipsis,
                                                                                 style: productController.selectedVariations[index][i] ? robotoMedium : robotoRegular,
                                                                               ),
                                                                             ]),
                                                                         const Spacer(),
                                                                         Text(
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
                                                                           variationList[index].variationValues![i].optionPrice! > 0
                                                                               ? '+${PriceConverter.convertPrice(variationList[index].variationValues![i].optionPrice ?? 0)}'
                                                                               : 'free'.tr,
                                                                           maxLines:
                                                                               1,
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
+                                                                          // overflow:
+                                                                          //     TextOverflow.ellipsis,
                                                                           style: productController.selectedVariations[index][i]
                                                                               ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraSmall)
                                                                               : robotoRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor),
@@ -510,6 +524,9 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                       Row(
                                                         children: [
                                                           Text(
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                             'addons'.tr,
                                                             style: robotoMedium
                                                                 .copyWith(
@@ -527,6 +544,9 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                 .paddingSizeExtraSmall,
                                                           ),
                                                           Text(
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
                                                             '(${'optional'.tr})',
                                                             style: robotoRegular
                                                                 .copyWith(
@@ -614,9 +634,10 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                 MainAxisAlignment.center,
                                                                             children: [
                                                                               Text(
+                                                                                overflow: TextOverflow.ellipsis,
                                                                                 widget.product.addOns![index].name ?? '',
                                                                                 maxLines: 2,
-                                                                                overflow: TextOverflow.ellipsis,
+                                                                                // overflow: TextOverflow.ellipsis,
                                                                                 textAlign: TextAlign.center,
                                                                                 style: robotoMedium.copyWith(
                                                                                   color: productController.addOnActiveList[index] ? Colors.white : Theme.of(context).textTheme.bodyLarge!.color,
@@ -625,9 +646,10 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                               ),
                                                                               const SizedBox(height: 5),
                                                                               Text(
+                                                                                overflow: TextOverflow.ellipsis,
                                                                                 widget.product.addOns![index].price! > 0 ? PriceConverter.convertPrice(widget.product.addOns![index].price!) : 'free'.tr,
                                                                                 maxLines: 1,
-                                                                                overflow: TextOverflow.ellipsis,
+                                                                                //  overflow: TextOverflow.ellipsis,
                                                                                 style: robotoRegular.copyWith(
                                                                                   color: productController.addOnActiveList[index] ? Colors.white : Theme.of(context).textTheme.bodyLarge!.color,
                                                                                   fontSize: Dimensions.fontSizeExtraSmall,
@@ -658,6 +680,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                   ),
                                                                                 ),
                                                                                 Text(
+                                                                                  overflow: TextOverflow.ellipsis,
                                                                                   productController.addOnQtyList[index].toString(),
                                                                                   style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall),
                                                                                 ),
@@ -687,7 +710,6 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                         ),
                       ),
                     ),
-               
                     Container(
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.only(
@@ -721,7 +743,9 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                       mainAxisAlignment:
                                           MainAxisAlignment.center,
                                       children: [
-                                        Text('total'.tr,
+                                        Text(
+                                            overflow: TextOverflow.ellipsis,
+                                            'total'.tr,
                                             style: robotoRegular.copyWith(
                                                 fontSize:
                                                     Dimensions.fontSizeLarge)),
@@ -730,6 +754,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                         SizedBox(
                                             width: Dimensions.paddingSizeSmall),
                                         Text(
+                                            overflow: TextOverflow.ellipsis,
                                             PriceConverter.convertPrice(
                                                 priceWithAddonsVariation),
                                             style: robotoBold.copyWith(
@@ -741,6 +766,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                         (priceWithAddonsVariationWithoutDiscount >
                                                 priceWithAddonsVariation)
                                             ? Text(
+                                                overflow: TextOverflow.ellipsis,
                                                 '(${PriceConverter.convertPrice(priceWithAddonsVariationWithoutDiscount)})',
                                                 style: robotoMedium.copyWith(
                                                     color: Theme.of(context)
@@ -762,7 +788,9 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          Text('total'.tr,
+                                          Text(
+                                              overflow: TextOverflow.ellipsis,
+                                              'total'.tr,
                                               style: robotoRegular.copyWith(
                                                   fontSize: Dimensions
                                                       .fontSizeLarge)),
@@ -770,6 +798,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                               width: Dimensions
                                                   .paddingSizeExtraSmall),
                                           Text(
+                                              overflow: TextOverflow.ellipsis,
                                               PriceConverter.convertPrice(
                                                   priceWithAddonsVariation),
                                               style: robotoBold.copyWith(
@@ -781,6 +810,8 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                           (priceWithAddonsVariationWithoutDiscount >
                                                   priceWithAddonsVariation)
                                               ? Text(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
                                                   '(${PriceConverter.convertPrice(priceWithAddonsVariationWithoutDiscount)})',
                                                   style: robotoMedium.copyWith(
                                                       color: Theme.of(context)
@@ -846,7 +877,6 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                             }
                                           }
                                         }
-                                     
 
                                         cart.CartModel cartModel = CartModel(
                                           price: priceWithVariation,
@@ -873,8 +903,6 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                               .selectedVariations,
                                         );
 
-                                        Get.back();
-
                                         cartController.addToCart(
                                             cartModel,
                                             widget.cart != null
@@ -885,6 +913,8 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                             isError: false, isToast: true);
 
                                         productController.update();
+                                        cartController.update();
+                                        Get.back();
                                       }
                                     : null,
                               ),
@@ -924,6 +954,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
+              overflow: TextOverflow.ellipsis,
               'description'.tr,
               style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
             ),
@@ -936,6 +967,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
         Align(
           alignment: Alignment.topLeft,
           child: ExpandableText(
+            // overflow: TextOverflow.ellipsis,
             widget.product.description ?? '',
             expandText: 'show_more'.tr,
             collapseText: 'show_less'.tr,
@@ -993,6 +1025,7 @@ class VegTagView extends StatelessWidget {
                           ),
                           SizedBox(width: Dimensions.paddingSizeSmall),
                           Text(
+                            overflow: TextOverflow.ellipsis,
                             product.productType!.tr,
                             style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeSmall),
@@ -1031,6 +1064,7 @@ class ButtonWidget extends StatelessWidget {
             }),
         SizedBox(width: Dimensions.paddingSizeExtraSmall),
         Text(
+          overflow: TextOverflow.ellipsis,
           productController.quantity.toString(),
           style: robotoBold.copyWith(color: Theme.of(context).primaryColor),
         ),

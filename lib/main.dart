@@ -33,37 +33,41 @@ Future<void> main() async {
   }
   setPathUrlStrategy();
   WidgetsFlutterBinding.ensureInitialized();
-  if (!kIsWeb) {
-    await Firebase.initializeApp();
-  } else {
-    await Firebase.initializeApp(
-        options: const FirebaseOptions(
-            apiKey: 'apiKey',
-            appId: 'appId',
-            messagingSenderId: 'messagingSenderId',
-            projectId: 'projectId'));
-  }
-  Map<String, Map<String, String>> languages = await di.init();
+  // if (!kIsWeb) {
+  //   await Firebase.initializeApp();
+  // } else {
+  //   await Firebase.initializeApp(
+  //       options: const FirebaseOptions(
+  //           apiKey: 'apiKey',
+  //           appId: 'appId',
+  //           messagingSenderId: 'messagingSenderId',
+  //           projectId: 'projectId'));
+  // }
+   Map<String, Map<String, String>> languages = await di.init();
 
-  int? orderID;
-  try {
-    if (GetPlatform.isMobile) {
-      final NotificationAppLaunchDetails? notificationAppLaunchDetails =
-          await flutterLocalNotificationsPlugin
-              .getNotificationAppLaunchDetails();
-      if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
-        orderID = notificationAppLaunchDetails?.notificationResponse?.payload !=
-                null
-            ? int.parse(
-                '${notificationAppLaunchDetails?.notificationResponse?.payload}')
-            : null;
-      }
-      await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
-      FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
-    }
-  } catch (e) {}
+  // int? orderID;
+  // try {
+  //   if (GetPlatform.isMobile) {
+  //     final NotificationAppLaunchDetails? notificationAppLaunchDetails =
+  //         await flutterLocalNotificationsPlugin
+  //             .getNotificationAppLaunchDetails();
+  //     if (notificationAppLaunchDetails?.didNotificationLaunchApp ?? false) {
+  //       orderID = notificationAppLaunchDetails?.notificationResponse?.payload !=
+  //               null
+  //           ? int.parse(
+  //               '${notificationAppLaunchDetails?.notificationResponse?.payload}')
+  //           : null;
+  //     }
+  //     await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
+  //     FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
+  //   }
+  // } catch (e) {}
 
-  runApp(MyApp(languages: languages, orderID: orderID));
+  runApp(MyApp(languages: languages,
+   orderID: null
+   //orderID
+
+  ));
 }
 
 class MyApp extends StatelessWidget {

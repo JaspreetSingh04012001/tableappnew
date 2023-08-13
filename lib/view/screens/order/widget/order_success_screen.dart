@@ -143,15 +143,17 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                         children: [
                           orderController.currentOrderDetails != null
                               ? Text(
+                                  overflow: TextOverflow.ellipsis,
                                   minutes < 5
                                       ? 'be_prepared_your_food'.tr
                                       : 'your_food_delivery'.tr,
                                   style: robotoRegular.copyWith(
                                       color: Theme.of(context).hintColor),
                                   maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
+                                //  overflow: TextOverflow.ellipsis,
                                 )
                               : Text(
+                                  overflow: TextOverflow.ellipsis,
                                   'your_order_has_been_received'.tr,
                                   style: robotoRegular.copyWith(
                                       fontSize: Dimensions.fontSizeExtraLarge),
@@ -162,6 +164,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                             Images.successAnimation,
                           ),
                           Text(
+                            overflow: TextOverflow.ellipsis,
                             'estimated_serving_time'.tr,
                             style: robotoRegular.copyWith(
                               fontSize: Dimensions.fontSizeSmall,
@@ -176,6 +179,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text(
+                                overflow: TextOverflow.ellipsis,
                                 '${minutes < 5 ? 0 : minutes - 5} - ${minutes < 5 ? 5 : minutes}',
                                 style: robotoBold.copyWith(
                                   color: Theme.of(context).primaryColor,
@@ -186,6 +190,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                                 width: Dimensions.paddingSizeSmall,
                               ),
                               Text(
+                                overflow: TextOverflow.ellipsis,
                                 'min_s'.tr,
                                 style: robotoBold.copyWith(
                                   fontSize: 35,

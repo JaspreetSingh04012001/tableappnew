@@ -28,6 +28,7 @@ class NoDataScreen extends StatelessWidget {
             ),
             SizedBox(height: MediaQuery.of(context).size.height * 0.03),
             Text(
+              overflow: TextOverflow.ellipsis,
               text,
               style: robotoMedium.copyWith(
                   fontSize: Dimensions.fontSizeLarge,

@@ -1,4 +1,3 @@
-
 import 'package:efood_table_booking/controller/promotional_controller.dart';
 import 'package:efood_table_booking/helper/responsive_helper.dart';
 import 'package:efood_table_booking/util/styles.dart';
@@ -10,7 +9,11 @@ import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 class CustomYoutubePLayer extends StatefulWidget {
   final double height;
   final double width;
-  const CustomYoutubePLayer({Key? key, required this.height, required this.width, }) : super(key: key);
+  const CustomYoutubePLayer({
+    Key? key,
+    required this.height,
+    required this.width,
+  }) : super(key: key);
 
   @override
   State<CustomYoutubePLayer> createState() => _CustomYoutubePLayerState();
@@ -26,9 +29,6 @@ class _CustomYoutubePLayerState extends State<CustomYoutubePLayer> {
   double volume = 100;
   bool muted = false;
   bool _isPlayerReady = false;
-
-
-
 
   @override
   void initState() {
@@ -75,51 +75,46 @@ class _CustomYoutubePLayerState extends State<CustomYoutubePLayer> {
     super.dispose();
   }
 
-
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<PromotionalController>(
-      builder: (promotionalController) {
-        return SizedBox(
-          height: widget.height, width: widget.width,
-          child: YoutubePlayerBuilder(
-            onExitFullScreen: () {
-              SystemChrome.setPreferredOrientations(DeviceOrientation.values);
-            },
-            player: YoutubePlayer(
-              width: widget.width,
-              controller: _controller,
-              showVideoProgressIndicator: true,
-              aspectRatio: ResponsiveHelper.isSmallTab() ? 2.5 : 16/9,
-              progressIndicatorColor: Theme.of(context).primaryColor,
-              topActions: <Widget>[
-                const SizedBox(width: 8.0),
-                Expanded(
-                  child: Text(
-                    _controller.metadata.title,
-                    style: robotoRegular.copyWith(color: Colors.white),
-                    overflow: TextOverflow.ellipsis,
-                    maxLines: 1,
-                  ),
+    return GetBuilder<PromotionalController>(builder: (promotionalController) {
+      return SizedBox(
+        height: widget.height,
+        width: widget.width,
+        child: YoutubePlayerBuilder(
+          onExitFullScreen: () {
+            SystemChrome.setPreferredOrientations(DeviceOrientation.values);
+          },
+          player: YoutubePlayer(
+            width: widget.width,
+            controller: _controller,
+            showVideoProgressIndicator: true,
+            aspectRatio: ResponsiveHelper.isSmallTab() ? 2.5 : 16 / 9,
+            progressIndicatorColor: Theme.of(context).primaryColor,
+            topActions: <Widget>[
+              const SizedBox(width: 8.0),
+              Expanded(
+                child: Text(
+                  overflow: TextOverflow.ellipsis,
+                  _controller.metadata.title,
+                  style: robotoRegular.copyWith(color: Colors.white),
+                //  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
                 ),
-
-              ],
-              onReady: () {
-                _isPlayerReady = true;
-              },
-              onEnded: (data) {
-                _controller
-                    .load(promotionalController.videoIds[(
-                    promotionalController.videoIds.indexOf(data.videoId) + 1
-                ) % promotionalController.videoIds.length]);
-              },
-            ),
-            builder: (context, player) => const SizedBox(
-            ),
+              ),
+            ],
+            onReady: () {
+              _isPlayerReady = true;
+            },
+            onEnded: (data) {
+              _controller.load(promotionalController.videoIds[
+                  (promotionalController.videoIds.indexOf(data.videoId) + 1) %
+                      promotionalController.videoIds.length]);
+            },
           ),
-        );
-      }
-    );
+          builder: (context, player) => const SizedBox(),
+        ),
+      );
+    });
   }
-
 }

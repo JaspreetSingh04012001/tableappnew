@@ -15,64 +15,86 @@ class CategoryView extends StatelessWidget {
   const CategoryView({super.key, required this.onSelected});
   @override
   Widget build(BuildContext context) {
+    return GetBuilder<ProductController>(
+      builder: (category) {
+        return category.categoryList == null
+            ? const CategoryShimmer()
+            : category.categoryList!.isNotEmpty
+                ? ListView.builder(
+                    itemCount: category.categoryList?.length,
+                    padding: EdgeInsets.only(left: Dimensions.paddingSizeSmall),
+                    physics: const BouncingScrollPhysics(),
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      String name = '';
+                      category.categoryList![index].name.length > 15
+                          ? name =
+                              '${category.categoryList![index].name.substring(0, 15)} ...'
+                          : name = category.categoryList![index].name;
 
-    return GetBuilder<ProductController>(builder: (category) {
-        return category.categoryList == null ? const CategoryShimmer() :  category.categoryList!.isNotEmpty ? ListView.builder(
-          itemCount: category.categoryList?.length,
-          padding: EdgeInsets.only(left: Dimensions.paddingSizeSmall),
-          physics: const BouncingScrollPhysics(),
-          scrollDirection: Axis.horizontal,
-          itemBuilder: (context, index) {
+                      return Container(
+                        decoration: category.selectedCategory ==
+                                category.categoryList![index].id.toString()
+                            ? BoxDecoration(
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(10)),
+                                color: Theme.of(context)
+                                    .primaryColor
+                                    .withOpacity(0.2),
+                              )
+                            : const BoxDecoration(),
 
-            String name = '';
-            category.categoryList![index].name.length > 15
-                ? name = '${category.categoryList![index].name.substring(0, 15)} ...' : name = category.categoryList![index].name;
-
-            return Container(
-              decoration: category.selectedCategory == category.categoryList![index].id.toString() ? BoxDecoration(
-               borderRadius: const BorderRadius.all(Radius.circular(10)),
-                color: Theme.of(context).primaryColor.withOpacity(0.2) ,
-
-              ) : const BoxDecoration(),
-
-              // padding: EdgeInsets.all(
-              //   category.selectedCategory == category.categoryList![index].id.toString() ? Dimensions.PADDING_SIZE_EXTRA_SMALL : 0,
-              // ),
-              child: Container(
-                margin: EdgeInsets.only(
-                  right: Dimensions.paddingSizeSmall,
-                  top: Dimensions.paddingSizeSmall,
-                  bottom: Dimensions.paddingSizeSmall,
-                  //left: category.selectedCategory == category.categoryList![index].id.toString() ? Dimensions.PADDING_SIZE_SMALL : 0,
-                  left: Dimensions.paddingSizeSmall,
-                ),
-                child: InkWell(
-                  onTap:()=> onSelected(category.categoryList![index].id.toString()),
-                  child: Column(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: [
-
-                    ClipOval(
-                      child: CustomImage(
-                        height:ResponsiveHelper.isSmallTab() ? 45 : ResponsiveHelper.isTab(context) ? 60 : 50,
-                        width: ResponsiveHelper.isSmallTab() ? 45 : ResponsiveHelper.isTab(context) ? 60 : 50,
-                        image: '${Get.find<SplashController>().configModel?.baseUrls?.categoryImageUrl}/${category.categoryList![index].image}', placeholder: Images.placeholderImage,
-                      )
-                    ),
-
-                    Flexible(
-                      child: Text(
-                        name,
-                        style: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall),
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-
-                  ]),
-                ),
-              ),
-            );
-          },
-        ) : const SizedBox();
+                        // padding: EdgeInsets.all(
+                        //   category.selectedCategory == category.categoryList![index].id.toString() ? Dimensions.PADDING_SIZE_EXTRA_SMALL : 0,
+                        // ),
+                        child: Container(
+                          margin: EdgeInsets.only(
+                            right: Dimensions.paddingSizeSmall,
+                            top: Dimensions.paddingSizeSmall,
+                            bottom: Dimensions.paddingSizeSmall,
+                            //left: category.selectedCategory == category.categoryList![index].id.toString() ? Dimensions.PADDING_SIZE_SMALL : 0,
+                            left: Dimensions.paddingSizeSmall,
+                          ),
+                          child: InkWell(
+                            onTap: () => onSelected(
+                                category.categoryList![index].id.toString()),
+                            child: Column(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  ClipOval(
+                                      child: CustomImage(
+                                    height: ResponsiveHelper.isSmallTab()
+                                        ? 45
+                                        : ResponsiveHelper.isTab(context)
+                                            ? 60
+                                            : 50,
+                                    width: ResponsiveHelper.isSmallTab()
+                                        ? 45
+                                        : ResponsiveHelper.isTab(context)
+                                            ? 60
+                                            : 50,
+                                    image:
+                                        '${Get.find<SplashController>().configModel?.baseUrls?.categoryImageUrl}/${category.categoryList![index].image}',
+                                    placeholder: Images.placeholderImage,
+                                  )),
+                                  Flexible(
+                                    child: Text(
+                                      overflow: TextOverflow.ellipsis,
+                                      name,
+                                      style: robotoRegular.copyWith(
+                                          fontSize: Dimensions.fontSizeSmall),
+                                      maxLines: 2,
+                                  //    overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ]),
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                : const SizedBox();
       },
     );
   }
@@ -100,7 +122,8 @@ class CategoryShimmer extends StatelessWidget {
               highlightColor: Colors.grey[100]!,
               child: Column(children: [
                 Container(
-                  height: 50, width: 50,
+                  height: 50,
+                  width: 50,
                   decoration: BoxDecoration(
                     color: Colors.grey[300],
                     shape: BoxShape.circle,
@@ -132,7 +155,8 @@ class CategoryAllShimmer extends StatelessWidget {
           highlightColor: Colors.grey[100]!,
           child: Column(children: [
             Container(
-              height: 65, width: 65,
+              height: 65,
+              width: 65,
               decoration: BoxDecoration(
                 color: Colors.grey[300],
                 shape: BoxShape.circle,
@@ -146,4 +170,3 @@ class CategoryAllShimmer extends StatelessWidget {
     );
   }
 }
-

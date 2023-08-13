@@ -69,7 +69,7 @@ class _TableInputViewState extends State<TableInputView> {
                 SizedBox(
                   height: Dimensions.paddingSizeDefault,
                 ),
-                Text('table_number'.tr),
+                Text(overflow: TextOverflow.ellipsis, 'table_number'.tr),
                 SizedBox(
                   height: Dimensions.paddingSizeDefault,
                 ),
@@ -95,6 +95,7 @@ class _TableInputViewState extends State<TableInputView> {
                     child: DropdownButton<int>(
                       menuMaxHeight: Get.height * 0.5,
                       hint: Text(
+                        overflow: TextOverflow.ellipsis,
                         'set_your_table_number'.tr,
                         style: robotoRegular.copyWith(
                             fontSize: Dimensions.fontSizeSmall),
@@ -108,6 +109,7 @@ class _TableInputViewState extends State<TableInputView> {
                         return DropdownMenuItem<int>(
                           value: value.id,
                           child: Text(
+                            overflow: TextOverflow.ellipsis,
                             '${value.id == -1 ? 'no_table_available'.tr : value.number}',
                             style: robotoRegular.copyWith(
                                 fontSize: Dimensions.fontSizeSmall),
@@ -129,12 +131,14 @@ class _TableInputViewState extends State<TableInputView> {
                 ),
                 Row(
                   children: [
-                    Text('number_of_people'.tr),
+                    Text(
+                        overflow: TextOverflow.ellipsis, 'number_of_people'.tr),
                     SizedBox(
                       width: Dimensions.paddingSizeExtraSmall,
                     ),
                     if (splashController.selectedTableId != null)
                       Text(
+                        overflow: TextOverflow.ellipsis,
                         '( ${'max_capacity'.tr} : ${splashController.getTable(splashController.selectedTableId)?.capacity})',
                         style: robotoRegular.copyWith(
                             color: Theme.of(context).hintColor),
@@ -169,7 +173,8 @@ class _TableInputViewState extends State<TableInputView> {
                 SizedBox(
                   height: Dimensions.paddingSizeDefault,
                 ),
-                const Text('Enter name of customer'),
+                const Text(
+                    overflow: TextOverflow.ellipsis, 'Enter name of customer'),
                 SizedBox(
                   height: Dimensions.paddingSizeDefault,
                 ),
@@ -194,7 +199,9 @@ class _TableInputViewState extends State<TableInputView> {
                   height: Dimensions.paddingSizeDefault,
                 ),
                 if (_errorText.isNotEmpty)
-                  Text(_errorText.first,
+                  Text(
+                      overflow: TextOverflow.ellipsis,
+                      _errorText.first,
                       style: robotoRegular.copyWith(
                         fontSize: Dimensions.fontSizeSmall,
                         color: Theme.of(context).colorScheme.error,
