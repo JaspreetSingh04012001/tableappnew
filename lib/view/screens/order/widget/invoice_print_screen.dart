@@ -815,19 +815,26 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
             ),
             const SizedBox(height: 10),
             Expanded(
-              child: ListView.builder(
-                itemCount: items.isNotEmpty ? items.length : 0,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    onTap: () {
-                      String mac = items[index].macAdress;
-                      connect(mac);
-                    },
-                    title: Text('Name: ${items[index].name}'),
-                    subtitle: Text("macAddress: ${items[index].macAdress}"),
-                  );
-                },
-              ),
+              child: items.isNotEmpty
+                  ? ListView.builder(
+                      itemCount: items.isNotEmpty ? items.length : 0,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          onTap: () {
+                            String mac = items[index].macAdress;
+                            connect(mac);
+                          },
+                          title: Text('Name: ${items[index].name}'),
+                          subtitle:
+                              Text("macAddress: ${items[index].macAdress}"),
+                        );
+                      },
+                    )
+                  : Container(
+                      alignment: Alignment.center,
+                      child: CircularProgressIndicator(
+                        color: Theme.of(context).primaryColor,
+                      )),
             ),
             if (connected)
               ElevatedButton(

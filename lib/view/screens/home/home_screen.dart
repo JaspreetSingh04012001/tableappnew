@@ -145,7 +145,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 showOrderButton: true,
               )
             : homeMobileView(),
-
         floatingActionButton: ResponsiveHelper.isTab(context)
             ? null
             : Padding(
@@ -177,7 +176,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         }),
                     CustomRoundedButton(
                       image: Images.order,
-                     // onTap: () => Get.to(() => const AllOrdersScreen()),
+                      // onTap: () => Get.to(() => const AllOrdersScreen()),
                       onTap: () => Get.to(() => const OrderSuccessScreen()),
                     ),
                   ],
@@ -353,10 +352,10 @@ class _HomeScreenState extends State<HomeScreen> {
               mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Expanded(
-                  child: SearchBarView(
-                      controller: searchController, type: selectedProductType),
-                ),
+                // Expanded(
+                //   child: SearchBarView(
+                //       controller: searchController, type: selectedProductType),
+                // ),
                 Padding(
                   padding: EdgeInsets.symmetric(
                       horizontal: Dimensions.paddingSizeDefault),
@@ -384,24 +383,24 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
 
-            SizedBox(
-                height: ResponsiveHelper.isSmallTab() ? 80 : 100,
-                child: CategoryView(onSelected: (id) {
-                  if (productController.selectedCategory == id) {
-                    productController.setSelectedCategory(null);
-                  } else {
-                    productController.setSelectedCategory(id);
-                  }
-                  productController.getProductList(
-                    true,
-                    true,
-                    categoryId: productController.selectedCategory,
-                    productType: selectedProductType,
-                    searchPattern: searchController.text.trim().isEmpty
-                        ? null
-                        : searchController.text,
-                  );
-                })),
+            // SizedBox(
+            //     height: ResponsiveHelper.isSmallTab() ? 80 : 100,
+            //     child: CategoryView(onSelected: (id) {
+            //       if (productController.selectedCategory == id) {
+            //         productController.setSelectedCategory(null);
+            //       } else {
+            //         productController.setSelectedCategory(id);
+            //       }
+            //       productController.getProductList(
+            //         true,
+            //         true,
+            //         categoryId: productController.selectedCategory,
+            //         productType: selectedProductType,
+            //         searchPattern: searchController.text.trim().isEmpty
+            //             ? null
+            //             : searchController.text,
+            //       );
+            //     })),
 
             Expanded(
               child: PageViewProduct(

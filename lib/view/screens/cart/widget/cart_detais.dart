@@ -209,7 +209,7 @@ class _CartDetailsState extends State<CartDetails> {
                       //     )
                       //   ],
                       // ),
-                      SizedBox(height: ResponsiveHelper.isSmallTab() ? 20 : 40),
+                      //  SizedBox(height: ResponsiveHelper.isSmallTab() ? 10 : 20),
                       !widget.showButton
                           ? Text(
                               overflow: TextOverflow.ellipsis,
@@ -225,47 +225,89 @@ class _CartDetailsState extends State<CartDetails> {
                             )
                           : Column(
                               children: [
+                                CustomTextField(
+                                  borderColor: Theme.of(context)
+                                      .hintColor
+                                      .withOpacity(0.4),
+                                  controller: _nameController,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      customerName = value;
+                                      cartController.setCustomerName =
+                                          customerName;
+                                    });
+                                  },
+                                  onSubmit: (value) {
+                                    setState(() {
+                                      customerName = value;
+                                      cartController.setCustomerName =
+                                          customerName;
+                                    });
+                                  },
+                                  // inputType: TextInputType.number,
+                                  //inputFormatter:[FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
+                                  hintText: 'Customer Name',
+                                  hintStyle: robotoRegular.copyWith(
+                                      fontSize: Dimensions.fontSizeSmall),
+                                  //  focusNode: _nameFocusNode,
+                                ),
                                 SizedBox(
                                   height: Dimensions.paddingSizeDefault,
                                 ),
-                                const Text(
-                                    overflow: TextOverflow.ellipsis,
-                                    'Enter name of customer'),
-                                SizedBox(
-                                  height: Dimensions.paddingSizeDefault,
-                                ),
-                                SizedBox(
-                                  height: ResponsiveHelper.isSmallTab()
-                                      ? 40
-                                      : ResponsiveHelper.isTab(context)
-                                          ? 50
-                                          : 40,
-                                  child: CustomTextField(
-                                    borderColor: Theme.of(context)
-                                        .hintColor
-                                        .withOpacity(0.4),
-                                    controller: _nameController,
-                                    onChanged: (value) {
-                                      setState(() {
-                                        customerName = value;
-                                        cartController.setCustomerName =
-                                            customerName;
-                                      });
-                                    },
-                                    onSubmit: (value) {
-                                      setState(() {
-                                        customerName = value;
-                                        cartController.setCustomerName =
-                                            customerName;
-                                      });
-                                    },
-                                    // inputType: TextInputType.number,
-                                    //inputFormatter:[FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
-                                    hintText: 'Enter name of customer',
-                                    hintStyle: robotoRegular.copyWith(
-                                        fontSize: Dimensions.fontSizeSmall),
-                                    //  focusNode: _nameFocusNode,
+                              ],
+                            ),
+                      !widget.showButton
+                          ? Text(
+                              overflow: TextOverflow.ellipsis,
+                              '${cartController.customerName ?? ''}',
+                              style: robotoRegular.copyWith(
+                                fontWeight: FontWeight.bold,
+                                fontSize: Dimensions.fontSizeLarge,
+                                color: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .color,
+                              ),
+                            )
+                          : Column(
+                              children: [
+                                CustomTextField(
+                                  maxLines: 1,
+
+                                  //  heightSufIcon: 4,
+                                  // suffixIcon: 'assets/image/gmail.png',
+                                  suffixIcon: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 16),
+                                    child: Image.asset('assets/image/gmail.png',
+                                        fit: BoxFit.contain,
+                                        height: 10,
+                                        width: 20),
                                   ),
+                                  borderColor: Theme.of(context)
+                                      .hintColor
+                                      .withOpacity(0.4),
+                                  controller: _nameController,
+                                  onChanged: (value) {
+                                    setState(() {
+                                      customerName = value;
+                                      cartController.setCustomerName =
+                                          customerName;
+                                    });
+                                  },
+                                  onSubmit: (value) {
+                                    setState(() {
+                                      customerName = value;
+                                      cartController.setCustomerName =
+                                          customerName;
+                                    });
+                                  },
+                                  // inputType: TextInputType.number,
+                                  //inputFormatter:[FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
+                                  hintText: 'Customer Email',
+                                  hintStyle: robotoRegular.copyWith(
+                                      fontSize: Dimensions.fontSizeSmall),
+                                  //  focusNode: _nameFocusNode,
                                 ),
                                 SizedBox(
                                   height: Dimensions.paddingSizeDefault,
@@ -281,8 +323,10 @@ class _CartDetailsState extends State<CartDetails> {
                         child: ListView.builder(
                             itemCount: cartController.cartList.length,
                             itemBuilder: (context, index) {
-                              widget.itemsCount = cartController.cartList.length;
-                              CartModel cartItem = cartController.cartList[index];
+                              widget.itemsCount =
+                                  cartController.cartList.length;
+                              CartModel cartItem =
+                                  cartController.cartList[index];
                               List<Variation>? variationList;
                               List<Widget> variationWidgetList = [];
                               bool takeAway = false;
@@ -408,7 +452,7 @@ class _CartDetailsState extends State<CartDetails> {
                                                 child: Text(
                                                   overflow:
                                                       TextOverflow.ellipsis,
-                                                  '${variationList[index].variationValues?[i].level?.substring(0, 4).replaceAll(RegExp(r'[^0-9]'), '')}',
+                                                  '${variationList[index].variationValues?[i].level?.replaceAll(RegExp(r'[^0-9]'), '')}',
                                                   textAlign: TextAlign.center,
                                                   style: robotoRegular.copyWith(
                                                       fontSize: Dimensions

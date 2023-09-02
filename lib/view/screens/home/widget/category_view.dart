@@ -1,10 +1,6 @@
 import 'package:efood_table_booking/controller/product_controller.dart';
-import 'package:efood_table_booking/controller/splash_controller.dart';
-import 'package:efood_table_booking/helper/responsive_helper.dart';
 import 'package:efood_table_booking/util/dimensions.dart';
-import 'package:efood_table_booking/util/images.dart';
 import 'package:efood_table_booking/util/styles.dart';
-import 'package:efood_table_booking/view/base/custom_image.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
@@ -51,7 +47,7 @@ class CategoryView extends StatelessWidget {
                           margin: EdgeInsets.only(
                             right: Dimensions.paddingSizeSmall,
                             top: Dimensions.paddingSizeSmall,
-                            bottom: Dimensions.paddingSizeSmall,
+                            //   bottom: Dimensions.paddingSizeSmall,
                             //left: category.selectedCategory == category.categoryList![index].id.toString() ? Dimensions.PADDING_SIZE_SMALL : 0,
                             left: Dimensions.paddingSizeSmall,
                           ),
@@ -62,22 +58,22 @@ class CategoryView extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  ClipOval(
-                                      child: CustomImage(
-                                    height: ResponsiveHelper.isSmallTab()
-                                        ? 45
-                                        : ResponsiveHelper.isTab(context)
-                                            ? 60
-                                            : 50,
-                                    width: ResponsiveHelper.isSmallTab()
-                                        ? 45
-                                        : ResponsiveHelper.isTab(context)
-                                            ? 60
-                                            : 50,
-                                    image:
-                                        '${Get.find<SplashController>().configModel?.baseUrls?.categoryImageUrl}/${category.categoryList![index].image}',
-                                    placeholder: Images.placeholderImage,
-                                  )),
+                                  // ClipOval(
+                                  //     child: CustomImage(
+                                  //   height: ResponsiveHelper.isSmallTab()
+                                  //       ? 45
+                                  //       : ResponsiveHelper.isTab(context)
+                                  //           ? 60
+                                  //           : 50,
+                                  //   width: ResponsiveHelper.isSmallTab()
+                                  //       ? 45
+                                  //       : ResponsiveHelper.isTab(context)
+                                  //           ? 60
+                                  //           : 50,
+                                  //   image:
+                                  //       '${Get.find<SplashController>().configModel?.baseUrls?.categoryImageUrl}/${category.categoryList![index].image}',
+                                  //   placeholder: Images.placeholderImage,
+                                  // )),
                                   Flexible(
                                     child: Text(
                                       overflow: TextOverflow.ellipsis,
@@ -85,7 +81,7 @@ class CategoryView extends StatelessWidget {
                                       style: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeSmall),
                                       maxLines: 2,
-                                  //    overflow: TextOverflow.ellipsis,
+                                      //    overflow: TextOverflow.ellipsis,
                                     ),
                                   ),
                                 ]),

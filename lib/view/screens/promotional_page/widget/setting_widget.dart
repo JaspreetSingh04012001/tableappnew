@@ -446,7 +446,7 @@ class _SettingWidgetState extends State<SettingWidget> {
                         if (_formKey.currentState!.validate()) {
                           http.Response response = await http.post(
                             Uri.parse(AppConstants.baseUrl +
-                                AppConstants.branchLogInUri),
+                                AppConstants.waitorLogInUri),
                             body: {
                               "email": email.text,
                               //"cs@d2home.com.au",
@@ -464,9 +464,12 @@ class _SettingWidgetState extends State<SettingWidget> {
                               isPasswordValid = true;
                             });
                             _formKey.currentState!.validate();
+
                             splashController.configModel?.branch
                                 ?.forEach((Branch value) async {
-                              if (data["data"]["name"] == value.name) {
+                              if (int.parse(
+                                      data["data"]["branch_id"].toString()) ==
+                                  value.id) {
                                 sharedPreferences.setString(
                                     "branchName", value.name.toString());
                                 splashController.updateBranchId(value.id);

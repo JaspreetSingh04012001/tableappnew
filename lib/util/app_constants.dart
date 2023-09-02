@@ -8,6 +8,7 @@ class AppConstants {
   // demo
   static const String baseUrl = 'https://admin.posd2home.au';
   static const String branchLogInUri = '/api/v1/auth/branch-login';
+  static const String waitorLogInUri = '/api/v1/auth/waiter-login';
   static const String configUri = '/api/v1/config/table';
   static const String categoryUri = '/api/v1/categories';
   static const String productUri = '/api/v1/products/latest';
