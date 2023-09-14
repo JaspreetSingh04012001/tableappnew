@@ -227,31 +227,83 @@ class _CartDetailsState extends State<CartDetails> {
                             )
                           : Column(
                               children: [
-                                CustomTextField(
-                                  borderColor: Theme.of(context)
-                                      .hintColor
-                                      .withOpacity(0.4),
-                                  controller: _nameController,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      customerName = value;
-                                      cartController.setCustomerName =
-                                          customerName;
-                                    });
-                                  },
-                                  onSubmit: (value) {
-                                    setState(() {
-                                      customerName = value;
-                                      cartController.setCustomerName =
-                                          customerName;
-                                    });
-                                  },
-                                  // inputType: TextInputType.number,
-                                  //inputFormatter:[FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
-                                  hintText: 'Customer Name',
-                                  hintStyle: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeSmall),
-                                  //  focusNode: _nameFocusNode,
+                                Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: CustomTextField(
+                                        borderColor: Theme.of(context)
+                                            .hintColor
+                                            .withOpacity(0.4),
+                                        controller: _nameController,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            customerName = value;
+                                            cartController.setCustomerName =
+                                                customerName;
+                                          });
+                                        },
+                                        onSubmit: (value) {
+                                          setState(() {
+                                            customerName = value;
+                                            cartController.setCustomerName =
+                                                customerName;
+                                          });
+                                        },
+                                        // inputType: TextInputType.number,
+                                        //inputFormatter:[FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
+                                        hintText: 'Customer Name',
+                                        hintStyle: robotoRegular.copyWith(
+                                            fontSize: Dimensions.fontSizeSmall),
+                                        //  focusNode: _nameFocusNode,
+                                      ),
+                                    ),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Expanded(
+                                      flex: 1,
+                                      child: CustomTextField(
+                                        maxLines: 1,
+
+                                        //  heightSufIcon: 4,
+                                        // suffixIcon: 'assets/image/gmail.png',
+                                        suffixIcon: Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                              vertical: 16),
+                                          child: Image.asset(
+                                              'assets/image/gmail.png',
+                                              fit: BoxFit.contain,
+                                              height: 10,
+                                              width: 20),
+                                        ),
+                                        borderColor: Theme.of(context)
+                                            .hintColor
+                                            .withOpacity(0.4),
+                                        controller: _emailController,
+                                        onChanged: (value) {
+                                          setState(() {
+                                            customerEmail = value;
+                                            cartController.setCustomerEmail =
+                                                customerEmail;
+                                          });
+                                        },
+                                        onSubmit: (value) {
+                                          setState(() {
+                                            customerEmail = value;
+                                            cartController.setCustomerEmail =
+                                                customerEmail;
+                                          });
+                                        },
+                                        // inputType: TextInputType.number,
+                                        //inputFormatter:[FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
+                                        hintText: 'Customer Email/Table No.',
+                                        hintStyle: robotoRegular.copyWith(
+                                            fontSize: Dimensions.fontSizeSmall),
+                                        //  focusNode: _nameFocusNode,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                                 SizedBox(
                                   height: Dimensions.paddingSizeDefault,
@@ -261,7 +313,7 @@ class _CartDetailsState extends State<CartDetails> {
                       !widget.showButton
                           ? Text(
                               overflow: TextOverflow.ellipsis,
-                              '${cartController.customerName ?? ''}',
+                              '${cartController.customerEmail ?? ''}',
                               style: robotoRegular.copyWith(
                                 fontWeight: FontWeight.bold,
                                 fontSize: Dimensions.fontSizeLarge,
@@ -271,51 +323,7 @@ class _CartDetailsState extends State<CartDetails> {
                                     .color,
                               ),
                             )
-                          : Column(
-                              children: [
-                                CustomTextField(
-                                  maxLines: 1,
-
-                                  //  heightSufIcon: 4,
-                                  // suffixIcon: 'assets/image/gmail.png',
-                                  suffixIcon: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 16),
-                                    child: Image.asset('assets/image/gmail.png',
-                                        fit: BoxFit.contain,
-                                        height: 10,
-                                        width: 20),
-                                  ),
-                                  borderColor: Theme.of(context)
-                                      .hintColor
-                                      .withOpacity(0.4),
-                                  controller: _emailController,
-                                  onChanged: (value) {
-                                    setState(() {
-                                      customerEmail = value;
-                                      cartController.setCustomerEmail =
-                                          customerEmail;
-                                    });
-                                  },
-                                  onSubmit: (value) {
-                                    setState(() {
-                                     customerEmail = value;
-                                      cartController.setCustomerEmail =
-                                          customerEmail;
-                                    });
-                                  },
-                                  // inputType: TextInputType.number,
-                                  //inputFormatter:[FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
-                                  hintText: 'Customer Email',
-                                  hintStyle: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeSmall),
-                                  //  focusNode: _nameFocusNode,
-                                ),
-                                SizedBox(
-                                  height: Dimensions.paddingSizeDefault,
-                                ),
-                              ],
-                            ),
+                          : Container(),
                       Padding(
                         padding: const EdgeInsets.symmetric(vertical: 10),
                         child: CustomDivider(

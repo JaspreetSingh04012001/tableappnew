@@ -26,6 +26,7 @@ class _SearchFieldState extends State<SearchField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      
       controller: widget.controller,
       textInputAction: TextInputAction.search,
       decoration: InputDecoration(
@@ -37,6 +38,7 @@ class _SearchFieldState extends State<SearchField> {
         filled: true,
         fillColor: Theme.of(context).primaryColor.withOpacity(0.02),
         isDense: true,
+        
         suffixIcon: IconButton(
           onPressed:()=> widget.iconPressed(),
           icon: Icon(widget.suffixIcon, color: Theme.of(context).hintColor,),
