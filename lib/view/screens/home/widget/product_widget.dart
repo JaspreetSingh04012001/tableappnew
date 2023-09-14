@@ -6,12 +6,13 @@ import 'package:efood_table_booking/helper/price_converter.dart';
 import 'package:efood_table_booking/helper/route_helper.dart';
 import 'package:efood_table_booking/util/dimensions.dart';
 import 'package:efood_table_booking/util/styles.dart';
-import 'package:efood_table_booking/view/base/custom_image.dart';
 import 'package:efood_table_booking/view/screens/home/widget/cart_bottom_sheet.dart';
 import 'package:efood_table_booking/view/screens/home/widget/price_stack_tag.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+
+import '../../../base/custom_image.dart';
 
 class ProductWidget extends StatefulWidget {
   final Product product;
@@ -64,35 +65,85 @@ class _ProductWidgetState extends State<ProductWidget> {
               )),
           child: Stack(
             children: [
-              Container(
-                decoration: BoxDecoration(
-                  color: cartIndex != -1
-                      ? Theme.of(context).primaryColor
-                      : Theme.of(context).cardColor,
-                  borderRadius: BorderRadius.circular(5),
-                  boxShadow: [
-                    BoxShadow(
-                      color: cartIndex != -1
-                          ? Theme.of(context).primaryColor.withOpacity(0.1)
-                          : Get.isDarkMode
-                              ? Theme.of(context).cardColor.withOpacity(0.1)
-                              : Colors.black.withOpacity(0.1),
-                      offset: const Offset(0, 3.75),
-                      blurRadius: 9.29,
-                    )
-                  ],
-                ),
-                child: Column(children: [
-                  const SizedBox(height: 3),
-                  Expanded(
-                    flex: 1,
-                    child: Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(
-                          left: Dimensions.paddingSizeSmall,
-                          right: Dimensions.paddingSizeSmall,
+              if (productController.listView)
+                Container(
+                  decoration: BoxDecoration(
+                    color: cartIndex != -1
+                        ? Theme.of(context).primaryColor
+                        : Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: cartIndex != -1
+                            ? Theme.of(context).primaryColor.withOpacity(0.1)
+                            : Get.isDarkMode
+                                ? Theme.of(context).cardColor.withOpacity(0.1)
+                                : Colors.black.withOpacity(0.1),
+                        offset: const Offset(0, 3.75),
+                        blurRadius: 9.29,
+                      )
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      if (cartIndex != -1 || productController.image)
+                        Expanded(
+                          flex: 1,
+                          child: Padding(
+                            padding: const EdgeInsets.all(2.0),
+                            child: Stack(
+                              children: [
+                                if (productController.image)
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(5)),
+                                    child: CustomImage(
+                                      height: double.infinity,
+                                      width: double.infinity,
+                                      image:
+                                          //  "https://source.unsplash.com/random/?Cryptocurrency",
+                                          '${Get.find<SplashController>().configModel?.baseUrls?.productImageUrl}/${widget.product.image}',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                if (cartIndex != -1)
+                                  Positioned(
+                                    child: Container(
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      decoration: BoxDecoration(
+                                        color: Colors.black.withOpacity(0.3),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.circular(5)),
+                                      ),
+                                      // padding: EdgeInsets.only(
+                                      //     bottom: Dimensions.paddingSizeDefault),
+                                      child: Center(
+                                        child: Text(
+                                          overflow: TextOverflow.ellipsis,
+                                          '${'qty'.tr} : ${cartController.getCartQty(widget.product)}\n${PriceConverter.convertPrice(double.parse('$productPrice'))}',
+                                          style: robotoBold.copyWith(
+                                            fontSize:
+                                                Dimensions.fontSizeDefault,
+                                            color: Colors.white,
+                                          ),
+                                          textAlign: TextAlign.center,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                // PriceStackTag(
+                                //   value: PriceConverter.convertPrice(
+                                //       double.parse('$productPrice')),
+                                // )
+                              ],
+                            ),
+                          ),
                         ),
-                        child: Text(
+                      Expanded(
+                        flex: 2,
+                        child: Center(
+                          child: Text(
                             overflow: TextOverflow.ellipsis,
                             widget.product.name ?? '',
                             style: robotoRegular.copyWith(
@@ -107,71 +158,130 @@ class _ProductWidgetState extends State<ProductWidget> {
                                       .titleLarge!
                                       .color,
                             ),
-                            maxLines: 2,
+                            maxLines: productController.image ? 2 : 6,
                             textAlign: TextAlign.center,
-                          //  overflow: TextOverflow.ellipsis
-                           ),
+                            //  overflow: TextOverflow.ellipsis
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              if (productController.gridView)
+                Container(
+                  //   height: 90,
+                  decoration: BoxDecoration(
+                    color: cartIndex != -1
+                        ? Theme.of(context).primaryColor
+                        : Theme.of(context).cardColor,
+                    borderRadius: BorderRadius.circular(5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: cartIndex != -1
+                            ? Theme.of(context).primaryColor.withOpacity(0.1)
+                            : Get.isDarkMode
+                                ? Theme.of(context).cardColor.withOpacity(0.1)
+                                : Colors.black.withOpacity(0.1),
+                        offset: const Offset(0, 3.75),
+                        blurRadius: 9.29,
+                      )
+                    ],
+                  ),
+                  child: Column(children: [
+                    const SizedBox(height: 3),
+                    Expanded(
+                      flex: 1,
+                      child: Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(
+                            left: Dimensions.paddingSizeSmall,
+                            right: Dimensions.paddingSizeSmall,
+                          ),
+                          child: Text(
+                            overflow: TextOverflow.ellipsis,
+                            widget.product.name ?? '',
+                            style: robotoRegular.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: (width > 590 && width < 650)
+                                  ? Dimensions.paddingSizeSmall + 1
+                                  : Dimensions.paddingSizeDefault + 1,
+                              color: cartIndex != -1
+                                  ? Colors.white
+                                  : Theme.of(context)
+                                      .textTheme
+                                      .titleLarge!
+                                      .color,
+                            ),
+                            maxLines: productController.image ? 2 : 6,
+                            textAlign: TextAlign.center,
+                            //  overflow: TextOverflow.ellipsis
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                  //  const SizedBox(height: 3),
-                  Expanded(
-                    flex: 3,
-                    child: Padding(
-                      padding: EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
-                      child: Stack(
-                        children: [
-                          Stack(
+                    //  const SizedBox(height: 3),
+                    if (cartIndex != -1 || productController.image)
+                      Expanded(
+                        flex: 3,
+                        child: Padding(
+                          padding:
+                              EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
+                          child: Stack(
                             children: [
-                              ClipRRect(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(5)),
-                                child: CustomImage(
-                                  height: double.infinity,
-                                  width: double.infinity,
-                                  image:
-                                      //  "https://source.unsplash.com/random/?Cryptocurrency",
-                                      '${Get.find<SplashController>().configModel?.baseUrls?.productImageUrl}/${widget.product.image}',
-                                  fit: BoxFit.cover,
-                                ),
-                              ),
-                              if (cartIndex != -1)
-                                Positioned(
-                                  child: Container(
-                                    width: double.infinity,
-                                    height: double.infinity,
-                                    decoration: BoxDecoration(
-                                      color: Colors.black.withOpacity(0.3),
+                              Stack(
+                                children: [
+                                  if (productController.image)
+                                    ClipRRect(
                                       borderRadius: const BorderRadius.all(
                                           Radius.circular(5)),
-                                    ),
-                                    padding: EdgeInsets.only(
-                                        bottom: Dimensions.paddingSizeDefault),
-                                    child: Center(
-                                      child: Text(
-                                        overflow: TextOverflow.ellipsis,
-                                        '${'qty'.tr} : ${cartController.getCartQty(widget.product)}',
-                                        style: robotoBold.copyWith(
-                                          fontSize: Dimensions.fontSizeLarge,
-                                          color: Colors.white,
-                                        ),
-                                        textAlign: TextAlign.center,
+                                      child: CustomImage(
+                                        height: double.infinity,
+                                        width: double.infinity,
+                                        image:
+                                            //  "https://source.unsplash.com/random/?Cryptocurrency",
+                                            '${Get.find<SplashController>().configModel?.baseUrls?.productImageUrl}/${widget.product.image}',
+                                        fit: BoxFit.cover,
                                       ),
                                     ),
-                                  ),
-                                ),
-                              PriceStackTag(
-                                value: PriceConverter.convertPrice(
-                                    double.parse('$productPrice')),
-                              )
+                                  if (cartIndex != -1)
+                                    Positioned(
+                                      child: Container(
+                                        width: double.infinity,
+                                        height: double.infinity,
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.3),
+                                          borderRadius: const BorderRadius.all(
+                                              Radius.circular(5)),
+                                        ),
+                                        padding: EdgeInsets.only(
+                                            bottom:
+                                                Dimensions.paddingSizeDefault),
+                                        child: Center(
+                                          child: Text(
+                                            overflow: TextOverflow.ellipsis,
+                                            '${'qty'.tr} : ${cartController.getCartQty(widget.product)}',
+                                            style: robotoBold.copyWith(
+                                              fontSize:
+                                                  Dimensions.fontSizeLarge,
+                                              color: Colors.white,
+                                            ),
+                                            textAlign: TextAlign.center,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  PriceStackTag(
+                                    value: PriceConverter.convertPrice(
+                                        double.parse('$productPrice')),
+                                  )
+                                ],
+                              ),
                             ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
-                ]),
-              ),
+                  ]),
+                ),
               if (!isAvailable)
                 Container(
                   decoration: BoxDecoration(

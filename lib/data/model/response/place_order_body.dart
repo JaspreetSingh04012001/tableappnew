@@ -1,5 +1,3 @@
-
-
 class PlaceOrderBody {
   List<Cart>? _cart;
   double? _orderAmount;
@@ -12,48 +10,46 @@ class PlaceOrderBody {
   String? _branchId;
   int? _tableNumber;
   int? _peopleNumber;
-  String? _customerName ;
+  String? _customerName;
+  String? _customerEmail;
   String? _paymentStatus;
   String? _branchTableToken;
 
   PlaceOrderBody(
-      this._cart,
-      this._orderAmount,
-      this._paymentMethod,
-      this._orderNote,
-      this._deliveryTime,
-      this._deliveryDate,
-      this._tableNumber,
-      this._peopleNumber,
-      this._customerName,
-      this._branchId,
-      this._paymentStatus,
-      this._branchTableToken,
-      );
+    this._cart,
+    this._orderAmount,
+    this._paymentMethod,
+    this._orderNote,
+    this._deliveryTime,
+    this._deliveryDate,
+    this._tableNumber,
+    this._peopleNumber,
+    this._customerName,
+    this._customerEmail,
+    this._branchId,
+    this._paymentStatus,
+    this._branchTableToken,
+  );
 
-
-
-  PlaceOrderBody copyWith({String? paymentStatus, String? paymentMethod, String? token, double? previousDue}) {
-    if(paymentStatus != null) {
+  PlaceOrderBody copyWith(
+      {String? paymentStatus,
+      String? paymentMethod,
+      String? token,
+      double? previousDue}) {
+    if (paymentStatus != null) {
       _paymentStatus = paymentStatus;
     }
-    if(paymentMethod != null) {
+    if (paymentMethod != null) {
       _paymentMethod = paymentMethod;
     }
-    if(token != null) {
+    if (token != null) {
       _branchTableToken = token;
     }
-    if(previousDue != null) {
+    if (previousDue != null) {
       _orderAmount = _orderAmount! - previousDue;
     }
     return this;
   }
-
-
-
-
-
-
 
   PlaceOrderBody.fromJson(Map<String, dynamic> json) {
     if (json['cart'] != null) {
@@ -73,7 +69,7 @@ class PlaceOrderBody {
     _paymentStatus = json['payment_status'];
     _branchTableToken = json['branch_table_token'];
     _customerName = json['customer_name'];
-
+    _customerEmail = json['customer_email'];
   }
 
   Map<String, dynamic> toJson() {
@@ -93,6 +89,7 @@ class PlaceOrderBody {
     data['payment_status'] = _paymentStatus;
     data['branch_table_token'] = _branchTableToken;
     data['customer_name'] = _customerName;
+    data['customer_email'] = _customerEmail;
 
     return data;
   }
@@ -106,7 +103,7 @@ class PlaceOrderBody {
   String? get deliveryDate => _deliveryDate;
   int? get tableNumber => _tableNumber;
   int? get peopleNumber => _peopleNumber;
-  String? get customerName => _customerName ;
+  String? get customerName => _customerName;
   String? get paymentStatus => _paymentStatus;
   String? get branchTableToken => _branchTableToken;
 }
@@ -195,8 +192,9 @@ class OrderVariation {
 
   OrderVariation.fromJson(Map<String, dynamic> json) {
     name = json['name'];
-    values =
-    json['values'] != null ? OrderVariationValue.fromJson(json['values']) : null;
+    values = json['values'] != null
+        ? OrderVariationValue.fromJson(json['values'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {

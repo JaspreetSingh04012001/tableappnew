@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 class ProductRepo {
   final ApiClient apiClient;
-  ProductRepo({required this.apiClient});
+ ProductRepo({required this.apiClient});
 
   Future<Response> getProductList(int offset, String? productType,
       String? searchPattern, String? categoryId) async {

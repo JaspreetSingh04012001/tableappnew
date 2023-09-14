@@ -1,15 +1,19 @@
+import 'package:efood_table_booking/controller/printer_controller.dart';
 import 'package:efood_table_booking/controller/splash_controller.dart';
 import 'package:efood_table_booking/helper/responsive_helper.dart';
 import 'package:efood_table_booking/util/dimensions.dart';
 import 'package:efood_table_booking/util/images.dart';
+import 'package:efood_table_booking/view/base/askViewDialog.dart';
 import 'package:efood_table_booking/view/base/custom_image.dart';
 import 'package:efood_table_booking/view/screens/cart/cart_screen.dart';
+import 'package:efood_table_booking/view/screens/home/Sales/sales.dart';
 import 'package:efood_table_booking/view/screens/order/widget/invoice_print_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../controller/product_controller.dart';
 import '../../controller/theme_controller.dart';
+import '../../util/styles.dart';
 import '../screens/home/widget/category_view.dart';
 import '../screens/home/widget/search_bar_view.dart';
 import '../screens/order/widget/order_success_screen.dart';
@@ -221,50 +225,82 @@ class _TabAppBarState extends State<TabAppBar> {
                             width: Dimensions.paddingSizeLarge,
                           ),
                         if (widget.ishome)
-                          CustomRoundedButton(
-                              image: Images.order,
-                              widget: Icon(
-                                Icons.print_rounded,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                              onTap: () {
-                                Get.to(const InvoicePrintScreen());
-                              }),
+                          GetBuilder<PrinterController>(
+                              builder: (printerController) {
+                            return CustomRoundedButton(
+                                image: Images.order,
+                                widget: Icon(
+                                  Icons.print_rounded,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                onTap: () {
+                                  Get.to(const InvoicePrintScreen());
+                                });
+                          }),
                         SizedBox(
                           width: Dimensions.paddingSizeLarge,
                         ),
+                        if (widget.ishome)
+                          CustomRoundedButton(
+                            image: "assets/image/eye.png",
+
+                            //  onTap: () => Get.to(() => const AllOrdersScreen()),
+                            onTap: () {
+                              showAnimatedDialog(
+                                  barrierDismissible: true,
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text(
+                                        overflow: TextOverflow.ellipsis,
+                                        'Select View for Items',
+                                        style: robotoMedium.copyWith(
+                                            fontSize: Dimensions.fontSizeLarge),
+                                      ),
+                                      content: const AskViewDialog(),
+                                      actionsPadding: EdgeInsets.zero,
+                                      actions: const [],
+                                    );
+                                  });
+                            },
+                          ),
+                        if (widget.ishome)
+                          SizedBox(
+                            width: Dimensions.paddingSizeLarge,
+                          ),
+                        if (widget.ishome)
+                          CustomRoundedButton(
+                            image: Images.order,
+                            //  onTap: () => Get.to(() => const AllOrdersScreen()),
+                            onTap: () => Get.to(() => const Sales()),
+                          ),
                       ],
                     ),
-                  // SizedBox(width: Dimensions.paddingSizeLarge),
+                  SizedBox(width: Dimensions.paddingSizeLarge),
 
                   // Flexible(child: Container(height: ResponsiveHelper.isSmallTab() ? 50 : 70, color: Theme.of(context).primaryColor, ))
                 ],
               ),
             ),
-            if (true
-                //widget.ishome
-                )
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: SizedBox(
-                    height: 30,
-                    child: CategoryView(onSelected: (id) {
-                      if (productController.selectedCategory == id) {
-                        productController.setSelectedCategory(null);
-                      } else {
-                        productController.setSelectedCategory(id);
-                      }
-                      productController.getProductList(
-                        true,
-                        true,
-                        categoryId: productController.selectedCategory,
-                        productType: selectedProductType,
-                        searchPattern: searchController.text.trim().isEmpty
-                            ? null
-                            : searchController.text,
-                      );
-                    })),
-              ),
+            if (widget.ishome)
+              SizedBox(
+                  height: productController.CatImage ? 65 : 20,
+                  child: CategoryView(onSelected: (id) {
+                    if (productController.selectedCategory == id) {
+                      productController.setSelectedCategory(null);
+                    } else {
+                      productController.setSelectedCategory(id);
+                    }
+                    productController.getProductList(
+                      true,
+                      true,
+                      categoryId: productController.selectedCategory,
+                      productType: selectedProductType,
+                      searchPattern: searchController.text.trim().isEmpty
+                          ? null
+                          : searchController.text,
+                    );
+                  })),
           ],
         ),
       );

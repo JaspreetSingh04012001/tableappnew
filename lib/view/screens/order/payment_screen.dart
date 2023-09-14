@@ -93,6 +93,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ),
         body: ResponsiveHelper.isTab(context)
             ? BodyTemplate(
+                //isOrderDetails: true,
                 body:
                     Flexible(child: _body(orderController, context, callBack)))
             : _body(orderController, context, callBack),

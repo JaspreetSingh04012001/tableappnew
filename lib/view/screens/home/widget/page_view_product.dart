@@ -32,10 +32,19 @@ class PageViewProduct extends StatelessWidget {
                         : Dimensions.paddingSizeDefault,
                   ),
                   gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    childAspectRatio: !ResponsiveHelper.isSmallTab() ? 1 : 0.9,
-                    //itemLen == 6 ? 1 :  0.9,
-                    crossAxisCount: !ResponsiveHelper.isSmallTab() ? 4 : 3,
-                    //itemLen == 8 ? 4 :  3,
+                    childAspectRatio: productController.gridView
+                        ? !ResponsiveHelper.isSmallTab()
+                            ? 1
+                            : 0.9
+                        : 4,
+                    //  childAspectRatio: !ResponsiveHelper.isSmallTab() ? 1 : 0.9,
+                    crossAxisCount: productController.listView
+                        ? 2
+                        : !ResponsiveHelper.isSmallTab()
+                            ? 4
+                            : 3,
+                    //  crossAxisCount: !ResponsiveHelper.isSmallTab() ? 4 : 3,
+
                     crossAxisSpacing: Dimensions.paddingSizeDefault,
                     mainAxisSpacing: Dimensions.paddingSizeSmall,
                   ),

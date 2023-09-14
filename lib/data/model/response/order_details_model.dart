@@ -52,6 +52,7 @@ class Order {
   int? tableId;
   int? numberOfPeople;
   String? customer_name;
+  String? customer_email;
   int? tableOrderId;
 
   Order(
@@ -77,6 +78,7 @@ class Order {
       this.tableId,
       this.numberOfPeople,
       this.customer_name,
+      this.customer_email,
       this.tableOrderId});
 
   Order.fromJson(Map<String, dynamic> json) {
@@ -102,6 +104,7 @@ class Order {
     tableId = int.tryParse('${json['table_id']}');
     numberOfPeople = int.tryParse('${json['number_of_people']}');
     customer_name = json['customer_name'];
+    customer_email = json['customer_email'];
     tableOrderId = int.tryParse('${json['table_order_id']}');
   }
 
@@ -129,6 +132,7 @@ class Order {
     data['table_id'] = tableId;
     data['number_of_people'] = numberOfPeople;
     data['customer_name'] = customer_name;
+    data['customer_email'] = customer_email;
     data['table_order_id'] = tableOrderId;
     return data;
   }

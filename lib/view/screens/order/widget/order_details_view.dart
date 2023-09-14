@@ -17,11 +17,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../../../../controller/splash_controller.dart';
 import '../../../../data/model/response/config_model.dart';
 import '../../../../helper/price_converter.dart';
+import '../../../../helper/responsive_helper.dart';
+import '../../../../helper/route_helper.dart';
+import '../../../base/confirmation_dialog.dart';
 import '../../../base/custom_button.dart';
 
 class OrderDetailsView extends StatelessWidget {
+  bool isSales = false;
   int itemCount;
-  OrderDetailsView({Key? key, this.itemCount = 0}) : super(key: key);
+  OrderDetailsView({Key? key, this.itemCount = 0, this.isSales = false})
+      : super(key: key);
   String removeEmptyLines(String input) {
     return input
         .replaceAll(RegExp(r'^\s*$\n', multiLine: true), '')
@@ -403,6 +408,17 @@ class OrderDetailsView extends StatelessWidget {
                       overflow: TextOverflow.ellipsis,
                       orderController
                               .currentOrderDetails?.order?.customer_name ??
+                          '',
+                      style: robotoRegular.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: Dimensions.fontSizeLarge,
+                        color: Theme.of(context).textTheme.bodyLarge!.color,
+                      ),
+                    ),
+                    Text(
+                      overflow: TextOverflow.ellipsis,
+                      orderController
+                              .currentOrderDetails?.order?.customer_email ??
                           '',
                       style: robotoRegular.copyWith(
                         fontWeight: FontWeight.bold,
@@ -879,32 +895,262 @@ class OrderDetailsView extends StatelessWidget {
                             );
                           }),
                     ),
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "Payment Status",
+                            style: robotoRegular.copyWith(
+                              fontWeight: FontWeight.bold,
+                              fontSize: Dimensions.fontSizeLarge,
+                              color:
+                                  Theme.of(context).textTheme.bodyLarge!.color,
+                            ),
+                          ),
+                          if (orderController
+                                  .currentOrderDetails?.order?.paymentStatus ==
+                              "paid")
+                            Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color:
+                                      const Color.fromARGB(255, 24, 112, 27)),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  orderController.currentOrderDetails?.order
+                                          ?.paymentStatus ??
+                                      "",
+                                  style: robotoRegular.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: Dimensions.fontSizeLarge,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          if (orderController
+                                  .currentOrderDetails?.order?.paymentStatus ==
+                              "unpaid")
+                            Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: Colors.red),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  orderController.currentOrderDetails?.order
+                                          ?.paymentStatus ??
+                                      "",
+                                  style: robotoRegular.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: Dimensions.fontSizeLarge,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          if (orderController
+                                  .currentOrderDetails?.order?.paymentStatus ==
+                              "refund")
+                            Container(
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(4),
+                                  color: Colors.indigo[900]),
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "${orderController.currentOrderDetails?.order?.paymentStatus ?? ""}ed",
+                                  style: robotoRegular.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: Dimensions.fontSizeLarge,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ),
+                        ]),
+
                     Padding(
                       padding: const EdgeInsets.only(bottom: 60),
-                      child: CustomButton(
-                        height: 60,
-                        // width: Dimensions.webMaxWidth - 50,
-                        transparent: true,
-                        onPressed: () async {
-                          bool conexionStatus =
-                              await PrintBluetoothThermal.connectionStatus;
-                          if (conexionStatus) {
-                            printTest();
-                          } else {
-                            Get.dialog(Dialog(
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      Dimensions.radiusSmall)),
-                              insetPadding: const EdgeInsets.all(20),
-                              child: const InvoicePrintScreen(),
-                            ));
-                          }
+                      child: Row(
+                        children: [
+                          if (orderController
+                                  .currentOrderDetails?.order?.paymentStatus ==
+                              "unpaid")
+                            Expanded(
+                                child: CustomButton(
+                              height: ResponsiveHelper.isSmallTab() ? 40 : 50,
+                              transparent: true,
+                              buttonText: 'Clear payment',
+                              onPressed: () {
+                                RouteHelper.openDialog(
+                                  context,
+                                  ConfirmationDialog(
+                                    title: 'Payment Recieved ?',
+                                    icon: Icons.money_rounded,
+                                    description:
+                                        'Paymemt received for this order',
+                                    onYesPressed: () {
+                                      orderController.updateOrderStatus(
+                                          order_id: orderController
+                                                  .currentOrderDetails
+                                                  ?.order
+                                                  ?.id ??
+                                              0,
+                                          payment_status: "paid");
+                                      orderController.getCurrentOrder(
+                                          orderController.currentOrderDetails
+                                                  ?.order?.id
+                                                  .toString() ??
+                                              '');
+                                      Get.back();
+                                    },
+                                    onNoPressed: () => Get.back(),
+                                  ),
+                                );
 
-                          //Get.dialog(const InVoicePrintScreen());
-                        },
-                        buttonText: "Print Order",
+                                //cartController.clearCartData();
+                              },
+                            )),
+                          if (orderController
+                                  .currentOrderDetails?.order?.paymentStatus ==
+                              "paid")
+                            Expanded(
+                                child: CustomButton(
+                              height: ResponsiveHelper.isSmallTab() ? 40 : 50,
+                              transparent: true,
+                              buttonText: 'Refund payment',
+                              onPressed: () {
+                                RouteHelper.openDialog(
+                                  context,
+                                  ConfirmationDialog(
+                                    title: 'Refund Payment ?',
+                                    icon: Icons.money_rounded,
+                                    description:
+                                        'Are you sure you want to refund the payment',
+                                    onYesPressed: () {
+                                      orderController.updateOrderStatus(
+                                          order_id: orderController
+                                                  .currentOrderDetails
+                                                  ?.order
+                                                  ?.id ??
+                                              0,
+                                          payment_status: "refund");
+                                      orderController.getCurrentOrder(
+                                          orderController.currentOrderDetails
+                                                  ?.order?.id
+                                                  .toString() ??
+                                              '');
+                                      Get.back();
+                                    },
+                                    onNoPressed: () => Get.back(),
+                                  ),
+                                );
+
+                                //cartController.clearCartData();
+                              },
+                            )),
+
+                          if (orderController.currentOrderDetails?.order
+                                      ?.paymentStatus ==
+                                  "paid" ||
+                              orderController.currentOrderDetails?.order
+                                      ?.paymentStatus ==
+                                  "unpaid")
+                            const SizedBox(width: 8),
+                          Expanded(
+                            child: CustomButton(
+                              height: ResponsiveHelper.isSmallTab() ? 40 : 50,
+                              buttonText: "Print Order",
+                              onPressed: () async {
+                                bool conexionStatus =
+                                    await PrintBluetoothThermal
+                                        .connectionStatus;
+                                if (conexionStatus) {
+                                  printTest();
+                                } else {
+                                  Get.dialog(Dialog(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                            Dimensions.radiusSmall)),
+                                    insetPadding: const EdgeInsets.all(20),
+                                    child: const InvoicePrintScreen(),
+                                  ));
+                                }
+
+                                //Get.dialog(const InVoicePrintScreen());
+                              },
+                            ),
+                          ),
+
+                          // CustomRoundedButton(onTap: (){}, image: Images.edit_icon, widget: Icon(Icons.delete)),
+                        ],
                       ),
                     ),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(bottom: 60),
+                    //   child: Row(
+                    //     children: [
+                    //       Expanded(
+                    //         flex: 1,
+                    //         child: CustomButton(
+                    //           height: 60,
+
+                    //           // width: Dimensions.webMaxWidth - 50,
+                    //           transparent: true,
+                    //           onPressed: () async {
+                    //             bool conexionStatus =
+                    //                 await PrintBluetoothThermal
+                    //                     .connectionStatus;
+                    //             if (conexionStatus) {
+                    //               printTest();
+                    //             } else {
+                    //               Get.dialog(Dialog(
+                    //                 shape: RoundedRectangleBorder(
+                    //                     borderRadius: BorderRadius.circular(
+                    //                         Dimensions.radiusSmall)),
+                    //                 insetPadding: const EdgeInsets.all(20),
+                    //                 child: const InvoicePrintScreen(),
+                    //               ));
+                    //             }
+
+                    //             //Get.dialog(const InVoicePrintScreen());
+                    //           },
+                    //           buttonText: "Print Order",
+                    //         ),
+                    //       ),
+                    //       Expanded(
+                    //         flex: 1,
+                    //         child: CustomButton(
+                    //           height: 60,
+
+                    //           // width: Dimensions.webMaxWidth - 50,
+                    //           transparent: true,
+                    //           onPressed: () async {
+                    //             bool conexionStatus =
+                    //                 await PrintBluetoothThermal
+                    //                     .connectionStatus;
+                    //             if (conexionStatus) {
+                    //               printTest();
+                    //             } else {
+                    //               Get.dialog(Dialog(
+                    //                 shape: RoundedRectangleBorder(
+                    //                     borderRadius: BorderRadius.circular(
+                    //                         Dimensions.radiusSmall)),
+                    //                 insetPadding: const EdgeInsets.all(20),
+                    //                 child: const InvoicePrintScreen(),
+                    //               ));
+                    //             }
+
+                    //             //Get.dialog(const InVoicePrintScreen());
+                    //           },
+                    //           buttonText: "Print Order",
+                    //         ),
+                    //       ),
+                    //     ],
+                    //   ),
+                    // ),
                   ],
                 ),
               );

@@ -39,6 +39,7 @@ class CartDetails extends StatefulWidget {
 
 class _CartDetailsState extends State<CartDetails> {
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
   bool isNumeric(String s) {
     return double.tryParse(s) != null;
   }
@@ -80,6 +81,7 @@ class _CartDetailsState extends State<CartDetails> {
             double tax = 0;
             double addOns = 0;
             String customerName = "";
+            String customerEmail = "";
             final orderController = Get.find<OrderController>();
 
             List<CartModel> cartList = cartController.cartList;
@@ -287,19 +289,19 @@ class _CartDetailsState extends State<CartDetails> {
                                   borderColor: Theme.of(context)
                                       .hintColor
                                       .withOpacity(0.4),
-                                  controller: _nameController,
+                                  controller: _emailController,
                                   onChanged: (value) {
                                     setState(() {
-                                      customerName = value;
-                                      cartController.setCustomerName =
-                                          customerName;
+                                      customerEmail = value;
+                                      cartController.setCustomerEmail =
+                                          customerEmail;
                                     });
                                   },
                                   onSubmit: (value) {
                                     setState(() {
-                                      customerName = value;
-                                      cartController.setCustomerName =
-                                          customerName;
+                                     customerEmail = value;
+                                      cartController.setCustomerEmail =
+                                          customerEmail;
                                     });
                                   },
                                   // inputType: TextInputType.number,
@@ -877,6 +879,7 @@ class _CartDetailsState extends State<CartDetails> {
                                           0,
                                           0,
                                           cartController.customerName,
+                                          cartController.customerEmail,
                                           '${splashController.getBranchId()}',
                                           '',
                                           Get.find<OrderController>()

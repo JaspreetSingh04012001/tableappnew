@@ -12,11 +12,13 @@ class AppConstants {
   static const String configUri = '/api/v1/config/table';
   static const String categoryUri = '/api/v1/categories';
   static const String productUri = '/api/v1/products/latest';
+  static const String salesUri = '/api/v1/table/order/stats';
   static const String categoryProductUri = '/api/v1/categories/products';
   static const String placeOrderUri = '/api/v1/table/order/place';
   static const String orderDetailsUri = '/api/v1/table/order/details?';
-  static const String orderList = '/api/v1/table/order/list?branch_table_token=';
-
+  static const String orderList =
+      '/api/v1/table/order/list?branch_table_token=';
+  static const String orderUpdate = '/api/v1/table/order/update';
 
   // Shared Key
   static const String theme = 'theme';
@@ -35,7 +37,15 @@ class AppConstants {
   static const String isFixTable = 'is_fix_table';
 
   static List<LanguageModel> languages = [
-    LanguageModel(imageUrl: Images.unitedKingdom, languageName: 'English', countryCode: 'US', languageCode: 'en'),
-    LanguageModel(imageUrl: Images.saudi, languageName: 'Arabic', countryCode: 'SA', languageCode: 'ar'),
+    LanguageModel(
+        imageUrl: Images.unitedKingdom,
+        languageName: 'English',
+        countryCode: 'US',
+        languageCode: 'en'),
+    LanguageModel(
+        imageUrl: Images.saudi,
+        languageName: 'Arabic',
+        countryCode: 'SA',
+        languageCode: 'ar'),
   ];
 }

@@ -45,7 +45,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     final productController = Get.find<ProductController>();
-
+    //Get.find<SalesController>();
     Get.find<OrderController>().getOrderList();
     selectedProductType = productController.productTypeList.first;
     productController.getCategoryList(true);
@@ -401,7 +401,9 @@ class _HomeScreenState extends State<HomeScreen> {
             //             : searchController.text,
             //       );
             //     })),
-
+            SizedBox(
+              height: productController.CatImage ? 65 : 35,
+            ),
             Expanded(
               child: PageViewProduct(
                   totalPage: totalPage,

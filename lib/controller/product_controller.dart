@@ -6,10 +6,39 @@ import 'package:efood_table_booking/data/model/response/product_model.dart';
 import 'package:efood_table_booking/data/repository/product_repo.dart';
 import 'package:efood_table_booking/view/base/custom_snackbar.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductController extends GetxController implements GetxService {
   final ProductRepo productRepo;
-  ProductController({required this.productRepo});
+  ProductController({required this.productRepo}) {
+    getNsave();
+  }
+  bool image = false;
+  bool CatImage = false;
+  bool listView = false;
+  bool gridView = true;
+
+  getNsave() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+   
+      image = sharedPreferences.getBool("image") ?? false;
+      CatImage = sharedPreferences.getBool("CatImage") ?? true;
+      listView = sharedPreferences.getBool("listView") ?? false;
+      gridView = sharedPreferences.getBool("gridView") ?? true;
+    
+
+    update();
+  }
+
+  save() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+
+    sharedPreferences.setBool("image", image);
+    sharedPreferences.setBool("CatImage", CatImage);
+    sharedPreferences.setBool("listView", listView);
+    sharedPreferences.setBool("gridView", gridView);
+    update();
+  }
 
   bool _isLoading = false;
   final List<int> _variationIndex = [];

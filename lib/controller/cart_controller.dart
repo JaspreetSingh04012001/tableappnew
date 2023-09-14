@@ -13,6 +13,7 @@ class CartController extends GetxController implements GetxService {
   int? _peopleNumber;
   double _totalAmount = 0.0;
   String? _customerName ;
+  String? _customerEmail ;
 
 
 
@@ -25,12 +26,16 @@ class CartController extends GetxController implements GetxService {
   bool get isCartUpdate => _isCartUpdate;
   int? get peopleNumber => _peopleNumber;
   String? get customerName => _customerName;
+  String? get customerEmail => _customerEmail;
 
   set setPeopleNumber(int value) {
     _peopleNumber = value;
   }
   set setCustomerName(String value) {
     _customerName = value;
+  }
+  set setCustomerEmail(String value) {
+    _customerEmail = value;
   }
 
 

@@ -21,25 +21,34 @@ class OrderRepo {
   Future<Response> getOderList(String orderToken) async {
     return await apiClient.getData('${AppConstants.orderList}$orderToken');
   }
+
   //
   Future<Response> placeOrder(PlaceOrderBody orderBody) async {
-    return await apiClient.postData(AppConstants.placeOrderUri, orderBody.toJson());
+    return await apiClient.postData(
+        AppConstants.placeOrderUri, orderBody.toJson());
+  }
+
+  Future<Response> upDateOrder(int orderId, String paymentStatus) async {
+    return await apiClient.postData(AppConstants.orderUpdate,
+        {"order_id": orderId, "payment_status": paymentStatus});
   }
 
   void setOrderID(String orderInfo) {
     sharedPreferences.setString(AppConstants.orderInfo, orderInfo);
   }
+
   String getOrderInfo() {
-   return sharedPreferences.getString(AppConstants.orderInfo) ?? '';
+    return sharedPreferences.getString(AppConstants.orderInfo) ?? '';
   }
 
   List<OrderSuccessModel> getOrderSuccessModelList() {
     List<String>? orderList = [];
-    if(sharedPreferences.containsKey(AppConstants.orderInfo)) {
+    if (sharedPreferences.containsKey(AppConstants.orderInfo)) {
       orderList = sharedPreferences.getStringList(AppConstants.orderInfo);
     }
     List<OrderSuccessModel> orderSuccessList = [];
-    orderList?.forEach((orderSuccessModel) => orderSuccessList.add(OrderSuccessModel.fromJson(jsonDecode(orderSuccessModel))) );
+    orderList?.forEach((orderSuccessModel) => orderSuccessList
+        .add(OrderSuccessModel.fromJson(jsonDecode(orderSuccessModel))));
     return orderSuccessList;
   }
 
@@ -50,7 +59,4 @@ class OrderRepo {
     }
     sharedPreferences.setStringList(AppConstants.orderInfo, orderList);
   }
-
-
-
 }

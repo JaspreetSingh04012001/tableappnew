@@ -5,6 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../../../controller/splash_controller.dart';
+import '../../../../helper/responsive_helper.dart';
+import '../../../../util/images.dart';
+import '../../../base/custom_image.dart';
+
 class CategoryView extends StatelessWidget {
   final Function(String id) onSelected;
 
@@ -58,22 +63,24 @@ class CategoryView extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  // ClipOval(
-                                  //     child: CustomImage(
-                                  //   height: ResponsiveHelper.isSmallTab()
-                                  //       ? 45
-                                  //       : ResponsiveHelper.isTab(context)
-                                  //           ? 60
-                                  //           : 50,
-                                  //   width: ResponsiveHelper.isSmallTab()
-                                  //       ? 45
-                                  //       : ResponsiveHelper.isTab(context)
-                                  //           ? 60
-                                  //           : 50,
-                                  //   image:
-                                  //       '${Get.find<SplashController>().configModel?.baseUrls?.categoryImageUrl}/${category.categoryList![index].image}',
-                                  //   placeholder: Images.placeholderImage,
-                                  // )),
+                                  category.CatImage
+                                      ? ClipOval(
+                                          child: CustomImage(
+                                          height: ResponsiveHelper.isSmallTab()
+                                              ? 45
+                                              : ResponsiveHelper.isTab(context)
+                                                  ? 60
+                                                  : 50,
+                                          width: ResponsiveHelper.isSmallTab()
+                                              ? 45
+                                              : ResponsiveHelper.isTab(context)
+                                                  ? 60
+                                                  : 50,
+                                          image:
+                                              '${Get.find<SplashController>().configModel?.baseUrls?.categoryImageUrl}/${category.categoryList![index].image}',
+                                          placeholder: Images.placeholderImage,
+                                        ))
+                                      : Container(),
                                   Flexible(
                                     child: Text(
                                       overflow: TextOverflow.ellipsis,
@@ -102,7 +109,7 @@ class CategoryShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 60,
+      height: 20,
       child: ListView.builder(
         itemCount: 14,
         padding: EdgeInsets.only(left: Dimensions.paddingSizeSmall),
@@ -110,24 +117,17 @@ class CategoryShimmer extends StatelessWidget {
         shrinkWrap: true,
         scrollDirection: Axis.horizontal,
         itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.only(right: Dimensions.paddingSizeSmall),
-            child: Shimmer.fromColors(
-              baseColor: Colors.grey[200]!,
-              period: const Duration(seconds: 3),
-              highlightColor: Colors.grey[100]!,
-              child: Column(children: [
-                Container(
-                  height: 50,
-                  width: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[300],
-                    shape: BoxShape.circle,
-                  ),
-                ),
-                const SizedBox(height: 5),
-                Container(height: 10, width: 50, color: Colors.grey[300]),
-              ]),
+          return Shimmer.fromColors(
+            baseColor: Colors.grey[200]!,
+            period: const Duration(seconds: 3),
+            highlightColor: Colors.grey[100]!,
+            child: Container(
+              height: 20,
+              width: 50,
+              decoration: BoxDecoration(
+                color: Colors.grey[300],
+                //  shape: BoxShape.circle,
+              ),
             ),
           );
         },

@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-
 class OrderController extends GetxController implements GetxService {
   final OrderRepo orderRepo;
   OrderController({required this.orderRepo});
@@ -43,6 +42,7 @@ class OrderController extends GetxController implements GetxService {
   set setPlaceOrderBody(PlaceOrderBody value) {
     _placeOrderBody = value;
   }
+
   set isLoadingUpdate(bool isLoad) {
     _isLoading = isLoad;
   }
@@ -53,9 +53,9 @@ class OrderController extends GetxController implements GetxService {
 
   void setSelectedMethod(String value, {bool isUpdate = true}) {
     _selectedMethod = value;
-   if(isUpdate) {
-     update();
-   }
+    if (isUpdate) {
+      update();
+    }
   }
 
   void updateOrderNote(String? value) {
@@ -63,10 +63,12 @@ class OrderController extends GetxController implements GetxService {
     update();
   }
 
+  updateOrderStatus( {required int order_id ,required String payment_status}) async {
+      Response response = await orderRepo.upDateOrder(order_id,payment_status);
+  }
 
-
-
-  Future<void> placeOrder(PlaceOrderBody placeOrderBody, Function callback, String paidAmount, double changeAmount) async {
+  Future<void> placeOrder(PlaceOrderBody placeOrderBody, Function callback,
+      String paidAmount, double changeAmount) async {
     _isLoading = true;
     update();
     Response response = await orderRepo.placeOrder(placeOrderBody);
@@ -85,38 +87,45 @@ class OrderController extends GetxController implements GetxService {
         branchId: Get.find<SplashController>().getBranchId().toString(),
       );
 
-
-
       List<OrderSuccessModel> list = [];
-     try{
-       list.addAll(orderRepo.getOrderSuccessModelList());
-     }catch(error){
-       debugPrint('orderSuccess -$error');
-
-     }
+      try {
+        list.addAll(orderRepo.getOrderSuccessModelList());
+      } catch (error) {
+        debugPrint('orderSuccess -$error');
+      }
 
       list.add(_orderSuccessModel!);
 
-     orderRepo.addOrderModel(list);
-     callback(true, message, orderID);
-
+      orderRepo.addOrderModel(list);
+      callback(true, message, orderID);
     } else {
-      callback(false, response.statusText, '-1',);
+      callback(
+        false,
+        response.statusText,
+        '-1',
+      );
     }
     update();
   }
 
   List<OrderSuccessModel>? getOrderSuccessModel() {
-    List<OrderSuccessModel>?  list;
+    List<OrderSuccessModel>? list;
     try {
-      list =   orderRepo.getOrderSuccessModelList();
+      list = orderRepo.getOrderSuccessModelList();
       list = list.reversed.toList();
       _orderSuccessModel = list.firstWhere((model) {
-        return model.tableId == Get.find<SplashController>().getTableId().toString() &&
-            Get.find<SplashController>().getBranchId().toString() == model.branchId.toString();
+        return model.tableId ==
+                Get.find<SplashController>().getTableId().toString() &&
+            Get.find<SplashController>().getBranchId().toString() ==
+                model.branchId.toString();
       });
-    }catch(e) {
-      list = [OrderSuccessModel(orderId: '-1', branchTableToken: '',)];
+    } catch (e) {
+      list = [
+        OrderSuccessModel(
+          orderId: '-1',
+          branchTableToken: '',
+        )
+      ];
       _orderSuccessModel = list.first;
     }
 
@@ -126,108 +135,100 @@ class OrderController extends GetxController implements GetxService {
   Future<List<Order>?> getOrderList() async {
     getOrderSuccessModel();
     _orderList = null;
-    if(_orderSuccessModel?.orderId != '-1') {
+    if (_orderSuccessModel?.orderId != '-1') {
       _isLoading = true;
-      Response response = await  orderRepo.getOderList(
+      Response response = await orderRepo.getOderList(
         _orderSuccessModel!.branchTableToken!,
       );
       if (response.statusCode == 200) {
-       try{
-         _orderList = OrderList(order: OrderList.fromJson(response.body).order?.reversed.toList()).order;
-       }catch(e) {
-         _orderList = [];
-       }
-
-
+        try {
+          _orderList = OrderList(
+                  order: OrderList.fromJson(response.body)
+                      .order
+                      ?.reversed
+                      .toList())
+              .order;
+        } catch (e) {
+          _orderList = [];
+        }
       } else {
         ApiChecker.checkApi(response);
       }
       _isLoading = false;
       update();
-    }else{
+    } else {
       _orderList = [];
     }
 
     return _orderList;
-
   }
 
   double previousDueAmount() {
     double amount = 0;
     _orderList?.forEach((order) {
-      if(order.paymentStatus == 'unpaid' && order.orderAmount != null) {
-        amount = amount + order.orderAmount!.toDouble() ;
+      if (order.paymentStatus == 'unpaid' && order.orderAmount != null) {
+        amount = amount + order.orderAmount!.toDouble();
       }
     });
 
     return amount;
-
   }
 
-
-
   Future<void> getCurrentOrder(String? orderId, {bool isLoading = true}) async {
-    if(isLoading) {
+    if (isLoading) {
       _isLoading = true;
     }
     _currentOrderDetails = null;
 
-   update();
+    update();
 
-   if(_orderSuccessModel?.orderId != '-1' && orderId != null) {
-     Response response = await  orderRepo.getOrderDetails(
-       orderId, _orderSuccessModel!.branchTableToken!,
-     );
+    if (_orderSuccessModel?.orderId != '-1' && orderId != null) {
+      Response response = await orderRepo.getOrderDetails(
+        orderId,
+        _orderSuccessModel!.branchTableToken!,
+      );
 
-     if (response.statusCode == 200) {
-       _currentOrderDetails =  OrderDetails.fromJson(response.body);
+      if (response.statusCode == 200) {
+        _currentOrderDetails = OrderDetails.fromJson(response.body);
+      } else {
+        ApiChecker.checkApi(response);
+      }
+    }
 
-     } else {
-       ApiChecker.checkApi(response);
-     }
-   }
-
-   _isLoading = false;
-   update();
-
+    _isLoading = false;
+    update();
   }
-
 
   Future<void> countDownTimer() async {
     DateTime orderTime;
-    if(Get.find<SplashController>().configModel?.timeFormat == '12') {
-      orderTime =  DateFormat("yyyy-MM-dd HH:mm").parse('${_currentOrderDetails?.order?.deliveryDate} ${_currentOrderDetails?.order?.deliveryTime}');
-
-    }else{
-      orderTime =  DateFormat("yyyy-MM-dd HH:mm").parse('${_currentOrderDetails?.order?.deliveryDate} ${_currentOrderDetails?.order?.deliveryTime}');
+    if (Get.find<SplashController>().configModel?.timeFormat == '12') {
+      orderTime = DateFormat("yyyy-MM-dd HH:mm").parse(
+          '${_currentOrderDetails?.order?.deliveryDate} ${_currentOrderDetails?.order?.deliveryTime}');
+    } else {
+      orderTime = DateFormat("yyyy-MM-dd HH:mm").parse(
+          '${_currentOrderDetails?.order?.deliveryDate} ${_currentOrderDetails?.order?.deliveryTime}');
     }
 
-    DateTime endTime = orderTime.add(Duration(minutes: int.parse('${_currentOrderDetails?.order?.preparationTime}')));
+    DateTime endTime = orderTime.add(Duration(
+        minutes: int.parse('${_currentOrderDetails?.order?.preparationTime}')));
 
     _duration = endTime.difference(DateTime.now());
     cancelTimer();
     _timer = null;
     _timer = Timer.periodic(const Duration(minutes: 1), (timer) {
-      if(!_duration.isNegative && _duration.inMinutes > 0) {
+      if (!_duration.isNegative && _duration.inMinutes > 0) {
         _duration = _duration - const Duration(minutes: 1);
         getOrderSuccessModel();
-        getCurrentOrder(_orderSuccessModel?.orderId).then((value) => countDownTimer());
+        getCurrentOrder(_orderSuccessModel?.orderId)
+            .then((value) => countDownTimer());
       }
-
     });
 
-
-
-
-    if(_duration.isNegative) {
+    if (_duration.isNegative) {
       _duration = const Duration();
-    }_duration = endTime.difference(DateTime.now());
-
+    }
+    _duration = endTime.difference(DateTime.now());
   }
 
   void cancelTimer() => _timer?.cancel();
-
-
-
-
 }

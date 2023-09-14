@@ -1,0 +1,393 @@
+import 'package:efood_table_booking/controller/order_controller.dart';
+import 'package:efood_table_booking/controller/splash_controller.dart';
+import 'package:efood_table_booking/data/model/response/product_model.dart';
+import 'package:efood_table_booking/helper/price_converter.dart';
+import 'package:esc_pos_utils/esc_pos_utils.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:get/get.dart';
+import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../data/model/response/config_model.dart';
+import '../data/model/response/order_details_model.dart';
+
+class PrinterController extends GetxController {
+  String removeEmptyLines(String input) {
+    return input
+        .replaceAll(RegExp(r'^\s*$\n', multiLine: true), '')
+        .split('\n')
+        .map((line) => line.trimLeft())
+        .join('\n');
+  }
+
+  final String _info = "";
+  String msj = '';
+  bool connected = false;
+  List<BluetoothInfo> items = [];
+  final List<String> _options = [
+    "permission bluetooth granted",
+    "bluetooth enabled",
+    "connection status",
+    "update info"
+  ];
+
+  bool progress = false;
+  bool openDrawer = false;
+
+  String msjprogress = "";
+  int printCount = 1;
+  String optionprinttype = "58 mm";
+  List<String> options = ["58 mm", "80 mm"];
+
+  Future<void> initPlatformState() async {
+    String platformVersion;
+
+    try {
+      platformVersion = await PrintBluetoothThermal.platformVersion;
+      print("patformversion: $platformVersion");
+      // porcentbatery = await PrintBluetoothThermal.batteryLevel;
+    } on PlatformException {
+      platformVersion = 'Failed to get platform version.';
+    }
+
+    // If the widget was removed from the tree while the asynchronous platform
+    // message was in flight, we want to discard the reply rather than calling
+    // setState to update our non-existent appearance.
+    //  if (!mounted) return;
+
+    final bool result = await PrintBluetoothThermal.bluetoothEnabled;
+    print("bluetooth enabled: $result");
+    if (result) {
+      msj = "Bluetooth enabled, please search and connect";
+    } else {
+      msj = "Bluetooth not enabled";
+    }
+
+    PrintBluetoothThermal.connectionStatus.then((value) => {connected = value});
+    // _info = "$platformVersion ($porcentbatery% battery)";
+
+    update();
+  }
+
+  Future<void> getBluetoots() async {
+    progress = true;
+    msjprogress = "Wait";
+    items = [];
+    update();
+    final List<BluetoothInfo> listResult =
+        await PrintBluetoothThermal.pairedBluetooths;
+
+    /*await Future.forEach(listResult, (BluetoothInfo bluetooth) {
+      String name = bluetooth.name;
+      String mac = bluetooth.macAdress;
+    });*/
+
+    progress = false;
+
+    update();
+    if (listResult.isEmpty) {
+      msj =
+          "There are no bluetoohs linked, go to settings and link the printer";
+    } else {
+      msj = "Touch an item in the list to connect";
+    }
+
+    items = listResult;
+
+    update();
+  }
+
+  Future<void> connect(String mac) async {
+    progress = true;
+    msjprogress = "Connecting...";
+    connected = false;
+    update();
+    final bool result =
+        await PrintBluetoothThermal.connect(macPrinterAddress: mac);
+    print("state conected $result");
+    if (result) connected = true;
+
+      progress = false;
+   
+    update();
+  }
+
+  Future<void> disconnect() async {
+    final bool status = await PrintBluetoothThermal.disconnect;
+
+      connected = false;
+   update();
+    print("status disconnect $status");
+  }
+
+  Future<void> printTest() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    print(printCount);
+    printCount;
+
+    pref.setInt("printCount", printCount);
+    // }
+    //pref.getInt("printCount");
+    bool conexionStatus = await PrintBluetoothThermal.connectionStatus;
+    //print("connection status: $conexionStatus");
+    if (conexionStatus) {
+      List<int> ticket = await testTicket();
+      for (int i = 0; i < printCount; i++) {
+        PrintBluetoothThermal.writeBytes(ticket);
+      }
+    } else {
+      //no conectado, reconecte
+    }
+  }
+
+  Future<List<int>> testTicket() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    List<int> bytes = [];
+    // Using default profile
+    final profile = await CapabilityProfile.load();
+    final generator = Generator(
+        optionprinttype == "58 mm" ? PaperSize.mm58 : PaperSize.mm80, profile);
+    bytes += generator.drawer(pin: PosDrawer.pin2);
+    bytes += generator.drawer();
+
+    //bytes += generator.setGlobalFont(PosFontType.fontA);
+    bytes += generator.reset();
+
+    OrderController orderController = Get.find<OrderController>();
+    SplashController splashController = Get.find<SplashController>();
+
+//orderController.currentOrderDetails.details;
+    double itemsPrice = 0;
+    double discount = 0;
+    double tax = 0;
+    double addOnsPrice = 0;
+    late String date;
+    String? name;
+    int itemCount = 0;
+    //SharedPreferences sharedPref//erences = await SharedPreferences.getInstance();
+    // sharedPreferences.setString("branchName", value.name.toString());
+    name = sharedPreferences.getString("branchName");
+
+    splashController.configModel?.branch?.forEach((Branch value) async {
+      if (splashController.selectedBranchId == value.id) {
+        name = value.name;
+        //splashController.updateBranchId(value.id);
+      }
+    });
+    List<Details> orderDetails =
+        orderController.currentOrderDetails?.details ?? [];
+    if (orderController.currentOrderDetails?.details != null) {
+      for (Details orderDetails in orderDetails) {
+        itemCount += orderDetails.quantity!.toInt();
+        itemsPrice =
+            itemsPrice + (orderDetails.price! * orderDetails.quantity!.toInt());
+        discount = discount +
+            (orderDetails.discountOnProduct! * orderDetails.quantity!.toInt());
+        tax = (tax +
+            (orderDetails.taxAmount! * orderDetails.quantity!.toInt()) +
+            orderDetails.addonTaxAmount!);
+        date = orderDetails.createdAt!.replaceAll("T", " ");
+      }
+    }
+
+    double total = itemsPrice - discount + tax;
+
+    // widget.order;
+    // widget.orderDetails;
+    // var date =
+    //     DateConverter.dateTimeStringToMonthAndTime(widget.order!.createdAt!);
+
+    // bytes += generator.text("EFood",
+    //     styles: const PosStyles(
+    //         bold: true,
+    //         align: PosAlign.center,
+    //         height: PosTextSize.size3,
+    //         width: PosTextSize.size3));
+
+    bytes += generator.text(name ?? " ",
+        styles: const PosStyles(
+            bold: true,
+            align: PosAlign.center,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2));
+    bytes += generator.text('order_summary'.tr,
+        styles: const PosStyles(
+            bold: true,
+            align: PosAlign.center,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2));
+    bytes += generator.text(
+        '${'order'.tr}# ${orderController.currentOrderDetails?.order?.id}',
+        styles: const PosStyles(
+            bold: true, align: PosAlign.center, height: PosTextSize.size1));
+    bytes += generator.text(date,
+        styles: const PosStyles(
+            bold: true, align: PosAlign.center, height: PosTextSize.size1));
+    // bytes += generator.text(
+    //     '${'table'.tr} ${Get.find<SplashController>().getTable(
+    //           orderController.currentOrderDetails?.order?.tableId,
+    //           branchId: orderController.currentOrderDetails?.order?.branchId,
+    //         )?.number} |',
+    //     styles: const PosStyles(
+    //         bold: true, align: PosAlign.center, height: PosTextSize.size1));
+    // bytes += generator.text(
+    //     '${orderController.currentOrderDetails?.order?.numberOfPeople ?? 'add'.tr} ${'people'.tr}',
+    //     styles: const PosStyles(
+    //         bold: true, align: PosAlign.center, height: PosTextSize.size1));
+    bytes += generator.text(
+        orderController.currentOrderDetails?.order?.customer_name ?? '',
+        styles: const PosStyles(
+            bold: true, align: PosAlign.center, height: PosTextSize.size1));
+    bytes += generator.text(
+        orderController.currentOrderDetails?.order?.customer_email ?? '',
+        styles: const PosStyles(
+            bold: true, align: PosAlign.center, height: PosTextSize.size1));
+    bytes += generator.text("Qty x Item info = Price");
+    bytes += generator.hr(ch: "-");
+
+    orderController.currentOrderDetails?.details?.forEach((details) {
+      String variationText = '';
+      int a = 0;
+      String addonsName = '';
+      bool takeAway = false;
+
+      List<AddOns> addons = details.productDetails == null
+          ? []
+          : details.productDetails!.addOns == null
+              ? []
+              : details.productDetails!.addOns!;
+      List<int> addQty = details.addOnQtys ?? [];
+      List<int> ids = details.addOnIds ?? [];
+      if (ids.length == details.addOnPrices?.length &&
+          ids.length == details.addOnQtys?.length) {
+        for (int i = 0; i < ids.length; i++) {
+          addOnsPrice =
+              addOnsPrice + (details.addOnPrices![i] * details.addOnQtys![i]);
+        }
+      }
+      try {
+        for (AddOns addOn in addons) {
+          if (ids.contains(addOn.id)) {
+            addonsName = addonsName + ('${addOn.name} (${(addQty[a])}), ');
+            a++;
+          }
+        }
+      } catch (e) {
+        debugPrint('order details view -$e');
+      }
+      if (details.variations != null && details.variations!.isNotEmpty) {
+        for (Variation variation in details.variations!) {
+          variationText +=
+              '${variationText.isNotEmpty ? ', ' : ''}${variation.name} (';
+          for (VariationValue value in variation.variationValues!) {
+            variationText +=
+                '${variationText.endsWith('(') ? '' : ', '}${value.level}';
+          }
+          variationText += ')';
+        }
+      } else if (details.oldVariations != null &&
+          details.oldVariations!.isNotEmpty) {
+        List<String> variationTypes = details.oldVariations![0].type != null
+            ? details.oldVariations![0].type!.split('-')
+            : [];
+
+        if (variationTypes.length ==
+            details.productDetails?.choiceOptions?.length) {
+          int index = 0;
+          details.productDetails?.choiceOptions?.forEach((choice) {
+            // choice.
+            variationText =
+                '$variationText${(index == 0) ? '' : ',  '}${choice.title} - ${variationTypes[index]}';
+            index = index + 1;
+          });
+        } else {
+          variationText = details.oldVariations?[0].type ?? '';
+        }
+      }
+      if (variationText.contains("Order Type (Take Away)")) {
+        takeAway = true;
+      }
+      print("Jass $variationText");
+      variationText = variationText
+          .replaceAll("Choose ()", "")
+          .replaceAll("optiona (", "")
+          .replaceAll("Order Type (Dining)", "")
+          .replaceAll("Order Type (Take Away)", "")
+          .replaceAll("Choose (", "\n")
+          .replaceAll("Choose One (", "\n")
+          .replaceAll(")", "")
+          .replaceAll(",", "\n");
+      variationText = removeEmptyLines(variationText);
+      // variationText.
+
+      bytes += generator.text(takeAway ? "** Take Away **" : "* Eat In *",
+          styles: const PosStyles(
+              bold: true,
+              height: PosTextSize.size1,
+              width: PosTextSize.size2,
+              align: PosAlign.center));
+
+      bytes += generator.text(
+          "${details.quantity} x ${details.productDetails?.name ?? ''} : ${PriceConverter.convertPrice(details.price! * details.quantity!)}",
+          styles: const PosStyles(
+            bold: true,
+            height: PosTextSize.size1,
+            width: PosTextSize.size2,
+          ));
+
+      if (addonsName.isNotEmpty) {
+        bytes += generator.text('${'addons'.tr}: $addonsName',
+            styles: const PosStyles(bold: true, height: PosTextSize.size1));
+      }
+      if (variationText != '') {
+        bytes += generator.text(variationText,
+            styles: const PosStyles(bold: true, height: PosTextSize.size1));
+      }
+      bytes += generator.hr(ch: "-");
+    });
+
+    orderController.currentOrderDetails?.order?.orderNote != null
+        ? bytes += generator.text(
+            'Note : ${orderController.currentOrderDetails?.order?.orderNote ?? ''}',
+            styles: const PosStyles(
+                height: PosTextSize.size1,
+                width: PosTextSize.size2,
+                bold: true))
+        : null;
+    bytes += generator.text("${'Item Count'} : $itemCount",
+        styles: const PosStyles(
+            height: PosTextSize.size1, width: PosTextSize.size2));
+    bytes += generator.text(
+        "${'item_price'.tr} : ${PriceConverter.convertPrice(itemsPrice)}");
+    // bytes += generator
+    //     .text("${'discount'.tr} : -${PriceConverter.convertPrice(discount)}");
+
+    // bytes += generator
+    //     .text("${'vat_tax'.tr} : +${PriceConverter.convertPrice(tax)}");
+    bytes += generator
+        .text("${'add_ons'.tr} : +${PriceConverter.convertPrice(addOnsPrice)}");
+    bytes += generator.text(
+        "${'total'.tr} : ${PriceConverter.convertPrice(total + addOnsPrice)}",
+        styles: const PosStyles(
+            height: PosTextSize.size2, width: PosTextSize.size2));
+
+    bytes += generator.text(
+        styles: const PosStyles(
+            height: PosTextSize.size1, width: PosTextSize.size1, bold: true),
+        "${'${'paid_amount'.tr}${orderController.currentOrderDetails?.order?.paymentMethod != null ?
+            //'(${orderController.currentOrderDetails?.order?.paymentMethod})' : ' (${'un_paid'.tr}) '}',
+            '(${orderController.currentOrderDetails?.order?.paymentMethod})' : ''}'} : ${PriceConverter.convertPrice(orderController.currentOrderDetails?.order?.paymentStatus != 'unpaid' ? orderController.currentOrderDetails?.order?.orderAmount ?? 0 : 0)}");
+    // bytes +=
+    //     generator.text("${'vat_tax'.tr} : \$${widget.order!.totalTaxAmount!}");
+    bytes += generator.text(
+        styles: const PosStyles(
+            height: PosTextSize.size1, width: PosTextSize.size1, bold: true),
+        "${'change'.tr} : ${PriceConverter.convertPrice(orderController.getOrderSuccessModel()?.firstWhere((order) => order.orderId == orderController.currentOrderDetails?.order?.id.toString()).changeAmount ?? 0)}");
+    bytes += generator.drawer();
+    bytes += generator.drawer(pin: PosDrawer.pin5);
+    bytes += generator.feed(2);
+    bytes += generator.cut();
+    return bytes;
+  }
+}
