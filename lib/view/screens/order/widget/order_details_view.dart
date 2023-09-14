@@ -1,4 +1,5 @@
 import 'package:efood_table_booking/controller/order_controller.dart';
+import 'package:efood_table_booking/controller/sales_controller.dart';
 import 'package:efood_table_booking/data/model/response/order_details_model.dart';
 import 'package:efood_table_booking/data/model/response/product_model.dart';
 import 'package:efood_table_booking/util/dimensions.dart';
@@ -1004,6 +1005,9 @@ class OrderDetailsView extends StatelessWidget {
                                                   ?.order?.id
                                                   .toString() ??
                                               '');
+                                      if (isSales) {
+                                        Get.find<SalesController>().getSales();
+                                      }
                                       Get.back();
                                     },
                                     onNoPressed: () => Get.back(),
@@ -1037,11 +1041,15 @@ class OrderDetailsView extends StatelessWidget {
                                                   ?.id ??
                                               0,
                                           payment_status: "refund");
+
                                       orderController.getCurrentOrder(
                                           orderController.currentOrderDetails
                                                   ?.order?.id
                                                   .toString() ??
                                               '');
+                                      if (isSales) {
+                                        Get.find<SalesController>().getSales();
+                                      }
                                       Get.back();
                                     },
                                     onNoPressed: () => Get.back(),
