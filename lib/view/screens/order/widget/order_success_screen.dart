@@ -15,6 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../../base/custom_text_field.dart';
 import '../../home/widget/filter_button_widget.dart';
 
 class OrderSuccessScreen extends StatefulWidget {
@@ -119,8 +120,10 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
   }
 
   Center _body(BuildContext context) {
+    
     return Center(
       child: GetBuilder<OrderController>(builder: (orderController) {
+        final TextEditingController nameController = TextEditingController();
         int days = 0, hours = 0, minutes = 0;
         days = orderController.duration.inDays;
         hours = orderController.duration.inHours - days * 24;
@@ -150,7 +153,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                                   style: robotoRegular.copyWith(
                                       color: Theme.of(context).hintColor),
                                   maxLines: 1,
-                                //  overflow: TextOverflow.ellipsis,
+                                  //  overflow: TextOverflow.ellipsis,
                                 )
                               : Text(
                                   overflow: TextOverflow.ellipsis,
@@ -201,6 +204,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                           SizedBox(
                             height: Dimensions.paddingSizeExtraLarge,
                           ),
+                       
                           CustomButton(
                             height: ResponsiveHelper.isSmallTab() ? 40 : 50,
                             width: 300,

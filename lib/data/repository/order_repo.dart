@@ -28,6 +28,12 @@ class OrderRepo {
         AppConstants.placeOrderUri, orderBody.toJson());
   }
 
+  Future<Response> sendEmailOrder(
+      {required String order_id, required String customer_email}) async {
+    return await apiClient.postData(AppConstants.sendEmailOrderUri,
+        {"order_id": order_id, "customer_email": customer_email});
+  }
+
   Future<Response> upDateOrder(int orderId, String paymentStatus) async {
     return await apiClient.postData(AppConstants.orderUpdate,
         {"order_id": orderId, "payment_status": paymentStatus});

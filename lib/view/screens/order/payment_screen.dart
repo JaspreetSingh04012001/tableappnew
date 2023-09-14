@@ -1,5 +1,6 @@
 import 'package:efood_table_booking/controller/cart_controller.dart';
 import 'package:efood_table_booking/controller/order_controller.dart';
+import 'package:efood_table_booking/controller/printer_controller.dart';
 import 'package:efood_table_booking/data/model/response/cart_model.dart';
 import 'package:efood_table_booking/helper/price_converter.dart';
 import 'package:efood_table_booking/helper/responsive_helper.dart';
@@ -142,7 +143,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ),
           Padding(
             padding: ResponsiveHelper.isTab(context)
-                ? EdgeInsets.symmetric(horizontal: Get.width * 0.08)
+                ? EdgeInsets.symmetric(horizontal: Get.width * 0.04)
                 : EdgeInsets.all(Dimensions.paddingSizeDefault),
             child: Container(
               padding: EdgeInsets.symmetric(
@@ -286,7 +287,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   !ResponsiveHelper.isTab(context)
                       ? Padding(
                           padding: EdgeInsets.symmetric(
-                              horizontal: Dimensions.paddingSizeLarge),
+                              horizontal: Dimensions.paddingSizeSmall),
                           child: Row(
                             children: [
                               Flexible(
@@ -339,82 +340,89 @@ class _PaymentScreenState extends State<PaymentScreen> {
                           child: CustomLoader(
                               color: Theme.of(context).primaryColor),
                         )
-                      : Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: Dimensions.paddingSizeDefault),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: CustomButton(
-                                  height: ResponsiveHelper.isSmallTab()
-                                      ? 40
-                                      : ResponsiveHelper.isTab(context)
-                                          ? 50
-                                          : 40,
-                                  transparent: true,
-                                  buttonText: 'pay_after_eating'.tr,
-                                  fontSize: Get.width < 390 ? 12 : null,
-                                  onPressed: () {
+                      : Row(
+                          children: [
+                            GetBuilder<PrinterController>(
+                                builder: (printerController) {
+                              return printerController.connected
+                                  ? IconButton(
+                                      onPressed:
+                                          printerController.openDrawerOnClick,
+                                      icon: Icon(
+                                        Icons.electric_bolt_rounded,
+                                        color: Theme.of(context).primaryColor,
+                                      ))
+                                  : Container();
+                            }),
+                            Expanded(
+                              child: CustomButton(
+                                height: ResponsiveHelper.isSmallTab()
+                                    ? 40
+                                    : ResponsiveHelper.isTab(context)
+                                        ? 50
+                                        : 40,
+                                transparent: true,
+                                buttonText: 'pay_after_eating'.tr,
+                                fontSize: Get.width < 390 ? 12 : null,
+                                onPressed: () {
+                                  orderController.placeOrder(
+                                    orderController.placeOrderBody!.copyWith(
+                                      paymentStatus: 'unpaid',
+                                      paymentMethod: '',
+                                      previousDue:
+                                          orderController.previousDueAmount(),
+                                    ),
+                                    callback,
+                                    '0',
+                                    0,
+                                  );
+                                },
+                              ),
+                            ),
+                            SizedBox(
+                              width: Dimensions.paddingSizeLarge,
+                            ),
+                            Expanded(
+                              child: CustomButton(
+                                height: ResponsiveHelper.isSmallTab()
+                                    ? 40
+                                    : ResponsiveHelper.isTab(context)
+                                        ? 50
+                                        : 40,
+                                buttonText: 'confirm_payment'.tr,
+                                fontSize: Get.width < 390 ? 12 : null,
+                                onPressed: () {
+                                  if (orderController.selectedMethod ==
+                                          'cash' &&
+                                      _amountTextController.text.isEmpty) {
+                                    showCustomSnackBar(
+                                        'please_enter_your_amount'.tr);
+                                  } else if (orderController.selectedMethod ==
+                                          'cash' &&
+                                      orderController
+                                              .placeOrderBody!.orderAmount! >
+                                          int.parse(
+                                              _amountTextController.text)) {
+                                    showCustomSnackBar(
+                                        'you_need_pay_more_amount'.tr);
+                                  } else {
                                     orderController.placeOrder(
                                       orderController.placeOrderBody!.copyWith(
-                                        paymentStatus: 'unpaid',
-                                        paymentMethod: '',
+                                        paymentStatus: 'paid',
+                                        paymentMethod:
+                                            orderController.selectedMethod,
                                         previousDue:
                                             orderController.previousDueAmount(),
                                       ),
                                       callback,
-                                      '0',
-                                      0,
+                                      _amountTextController.text,
+                                      _changeAmount,
                                     );
-                                  },
-                                ),
+                                  }
+                                },
                               ),
-                              SizedBox(
-                                width: Dimensions.paddingSizeLarge,
-                              ),
-                              Expanded(
-                                child: CustomButton(
-                                  height: ResponsiveHelper.isSmallTab()
-                                      ? 40
-                                      : ResponsiveHelper.isTab(context)
-                                          ? 50
-                                          : 40,
-                                  buttonText: 'confirm_payment'.tr,
-                                  fontSize: Get.width < 390 ? 12 : null,
-                                  onPressed: () {
-                                    if (orderController.selectedMethod ==
-                                            'cash' &&
-                                        _amountTextController.text.isEmpty) {
-                                      showCustomSnackBar(
-                                          'please_enter_your_amount'.tr);
-                                    } else if (orderController.selectedMethod ==
-                                            'cash' &&
-                                        orderController
-                                                .placeOrderBody!.orderAmount! >
-                                            int.parse(
-                                                _amountTextController.text)) {
-                                      showCustomSnackBar(
-                                          'you_need_pay_more_amount'.tr);
-                                    } else {
-                                      orderController.placeOrder(
-                                        orderController.placeOrderBody!
-                                            .copyWith(
-                                          paymentStatus: 'paid',
-                                          paymentMethod:
-                                              orderController.selectedMethod,
-                                          previousDue: orderController
-                                              .previousDueAmount(),
-                                        ),
-                                        callback,
-                                        _amountTextController.text,
-                                        _changeAmount,
-                                      );
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                   if (ResponsiveHelper.isTab(context))
                     SizedBox(

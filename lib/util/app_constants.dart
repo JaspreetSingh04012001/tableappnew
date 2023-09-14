@@ -15,6 +15,7 @@ class AppConstants {
   static const String salesUri = '/api/v1/table/order/stats';
   static const String categoryProductUri = '/api/v1/categories/products';
   static const String placeOrderUri = '/api/v1/table/order/place';
+  static const String sendEmailOrderUri = '/api/v1/table/order/invoice';
   static const String orderDetailsUri = '/api/v1/table/order/details?';
   static const String orderList =
       '/api/v1/table/order/list?branch_table_token=';

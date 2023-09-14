@@ -1,6 +1,5 @@
 import 'package:efood_table_booking/controller/order_controller.dart';
 import 'package:efood_table_booking/controller/product_controller.dart';
-import 'package:efood_table_booking/helper/responsive_helper.dart';
 import 'package:efood_table_booking/util/dimensions.dart';
 import 'package:efood_table_booking/view/base/custom_app_bar.dart';
 import 'package:efood_table_booking/view/screens/cart/widget/cart_detais.dart';
@@ -24,157 +23,102 @@ class BodyTemplate extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    return Column(
       children: [
-        Column(
-          children: [
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Expanded(
-                      flex: 6,
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: MediaQuery.of(context).viewPadding.top +
-                                (ResponsiveHelper.isSmallTab() ? 50 : 90),
-                          ),
-                          body,
-                        ],
-                      )),
-                  GetBuilder<OrderController>(builder: (orderController) {
-                    return (orderController.isLoading ||
-                                orderController.currentOrderDetails == null) &&
-                            isOrderDetails
-                        ? const SizedBox()
-                        : Expanded(
-                            flex: 4,
-                            child: SafeArea(
-                              child: GetBuilder<ProductController>(
-                                  builder: (productController) {
-                                return Container(
-                                  // transform: Matrix4.translationValues(0.0, 10.0, 0.0),
-                                  margin: EdgeInsets.only(
-                                    top: productController.CatImage ? 120 : 90,
-                                    bottom: Dimensions.paddingSizeDefault,
-                                    right: Dimensions.paddingSizeDefault,
-                                    left: Dimensions.paddingSizeSmall,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    // color: Colors.amber,
-                                    color: Get.isDarkMode
-                                        ? Colors.black
-                                        : Theme.of(context).canvasColor,
-                                    borderRadius: BorderRadius.circular(5),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Get.isDarkMode
-                                            ? Theme.of(context)
-                                                .canvasColor
-                                                .withOpacity(0.1)
-                                            : Colors.black.withOpacity(0.1),
-                                        offset: const Offset(0, 3.75),
-                                        blurRadius: 9.29,
-                                      )
-                                    ],
-                                  ),
-                                  // decoration: BoxDecoration(
-                                  //   color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(10),
-                                  //   boxShadow: [
-                                  //     BoxShadow(
-                                  //       color: Theme.of(context).cardColor.withOpacity(0.1),
-                                  //       offset: Offset(0, 2.75), blurRadius: 6.86,
-                                  //     )
-                                  //   ],
-                                  // ),
-
-                                  child: Column(
-                                    children: [
-                                      ClipPath(
-                                        clipper: MovieTicketClippe(),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                            // color: Colors.red
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                          ),
-                                          height: 13,
-                                        ),
-                                      ),
-                                      isOrderDetails
-                                          ? const Expanded(child: OrderScreen())
-                                          : CartDetails(
-                                              showButton: showOrderButton,
-                                            ),
-                                    ],
-                                  ),
-                                );
-                              }),
-                            ));
-                  }),
-                ],
-              ),
-            )
-          ],
-        ),
-        // if (showSetting)
-        //   Positioned.fill(
-        //       child: Align(
-        //           alignment: Alignment.bottomCenter,
-        //           child: Padding(
-        //               padding: EdgeInsets.all(
-        //                 ResponsiveHelper.isSmallTab()
-        //                     ? Dimensions.paddingSizeSmall
-        //                     : Dimensions.paddingSizeDefault,
-        //               ),
-        //               child: Container()
-
-        //               // Row(
-        //               //   children: [
-        //               //     CustomRoundedButton(
-        //               //       image: Images.themeIcon,
-        //               //       onTap: () =>
-        //               //           Get.find<ThemeController>().toggleTheme(),
-        //               //     ),
-        //               //     SizedBox(
-        //               //       width: Dimensions.paddingSizeLarge,
-        //               //     ),
-        //               //     CustomRoundedButton(
-        //               //         image: Images.settingIcon,
-        //               //         onTap: () {
-        //               //           showAnimatedDialog(
-        //               //             context: context,
-        //               //             barrierDismissible: true,
-        //               //             builder: (BuildContext context) {
-        //               //               return const Dialog(
-        //               //                 backgroundColor: Colors.transparent,
-        //               //                 child: SettingWidget(formSplash: false),
-        //               //               );
-        //               //             },
-        //               //             animationType:
-        //               //                 DialogTransitionType.slideFromBottomFade,
-        //               //           );
-        //               //         }),
-        //               //     SizedBox(
-        //               //       width: Dimensions.paddingSizeLarge,
-        //               //     ),
-        //               //     CustomRoundedButton(
-        //               //       image: Images.order,
-        //               //       //  onTap: () => Get.to(() => const AllOrdersScreen()),
-        //               //       onTap: () => Get.to(() => const OrderSuccessScreen()),
-        //               //     ),
-        //               //   ],
-        //               // ),
-        //               )
-        //               )
-        //               ),
-        CustomAppBar(
-          showCart: true && !isOrderDetails,
+        const CustomAppBar(
+          showCart: true,
+          //  showCart: true && !isOrderDetails,
           isBackButtonExist: true,
           onBackPressed: null,
         ),
+        Expanded(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                  flex: 6,
+                  child: Column(
+                    children: [
+                      // SizedBox(
+                      //   height: MediaQuery.of(context).viewPadding.top +
+                      //       (ResponsiveHelper.isSmallTab() ? 50 : 90),
+                      // ),
+                      body,
+                    ],
+                  )),
+              GetBuilder<OrderController>(builder: (orderController) {
+                return (orderController.isLoading ||
+                            orderController.currentOrderDetails == null) &&
+                        isOrderDetails
+                    ? const SizedBox()
+                    : Expanded(
+                        flex: 4,
+                        child: SafeArea(
+                          child: GetBuilder<ProductController>(
+                              builder: (productController) {
+                            return Container(
+                              // transform: Matrix4.translationValues(0.0, 10.0, 0.0),
+                              margin: EdgeInsets.only(
+                                // top: productController.CatImage ? 120 : 90,
+                                bottom: Dimensions.paddingSizeDefault,
+                                right: Dimensions.paddingSizeDefault,
+                                left: Dimensions.paddingSizeSmall,
+                              ),
+                              decoration: BoxDecoration(
+                                // color: Colors.amber,
+                                color: Get.isDarkMode
+                                    ? Colors.black
+                                    : Theme.of(context).canvasColor,
+                                borderRadius: BorderRadius.circular(5),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Get.isDarkMode
+                                        ? Theme.of(context)
+                                            .canvasColor
+                                            .withOpacity(0.1)
+                                        : Colors.black.withOpacity(0.1),
+                                    offset: const Offset(0, 3.75),
+                                    blurRadius: 9.29,
+                                  )
+                                ],
+                              ),
+                              // decoration: BoxDecoration(
+                              //   color: Theme.of(context).cardColor, borderRadius: BorderRadius.circular(10),
+                              //   boxShadow: [
+                              //     BoxShadow(
+                              //       color: Theme.of(context).cardColor.withOpacity(0.1),
+                              //       offset: Offset(0, 2.75), blurRadius: 6.86,
+                              //     )
+                              //   ],
+                              // ),
+
+                              child: Column(
+                                children: [
+                                  ClipPath(
+                                    clipper: MovieTicketClippe(),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        // color: Colors.red
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                      height: 13,
+                                    ),
+                                  ),
+                                  isOrderDetails
+                                      ? const Expanded(child: OrderScreen())
+                                      : CartDetails(
+                                          showButton: showOrderButton,
+                                        ),
+                                ],
+                              ),
+                            );
+                          }),
+                        ));
+              }),
+            ],
+          ),
+        )
       ],
     );
   }

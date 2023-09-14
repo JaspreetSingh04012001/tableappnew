@@ -174,12 +174,12 @@ class _TabAppBarState extends State<TabAppBar> {
                       placeholder: Images.logo,
                     ),
                   ),
-                  if (widget.ishome)
+                  if (Get.currentRoute.contains("/home"))
                     Expanded(
                       child: SearchBarView(
                           controller: TextEditingController(), type: null),
                     ),
-                  if (widget.ishome)
+                  if (Get.currentRoute.contains("/home"))
                     Row(
                       children: [
                         SizedBox(
@@ -209,22 +209,22 @@ class _TabAppBarState extends State<TabAppBar> {
                                     DialogTransitionType.slideFromBottomFade,
                               );
                             }),
-                        if (widget.ishome)
+                        if (Get.currentRoute.contains("/home"))
                           SizedBox(
                             width: Dimensions.paddingSizeLarge,
                           ),
-                        if (widget.ishome)
+                        if (Get.currentRoute.contains("/home"))
                           CustomRoundedButton(
                             image: Images.order,
                             //  onTap: () => Get.to(() => const AllOrdersScreen()),
                             onTap: () =>
                                 Get.to(() => const OrderSuccessScreen()),
                           ),
-                        if (widget.ishome)
+                        if (Get.currentRoute.contains("/home"))
                           SizedBox(
                             width: Dimensions.paddingSizeLarge,
                           ),
-                        if (widget.ishome)
+                        if (Get.currentRoute.contains("/home"))
                           GetBuilder<PrinterController>(
                               builder: (printerController) {
                             return CustomRoundedButton(
@@ -240,7 +240,7 @@ class _TabAppBarState extends State<TabAppBar> {
                         SizedBox(
                           width: Dimensions.paddingSizeLarge,
                         ),
-                        if (widget.ishome)
+                        if (Get.currentRoute.contains("/home"))
                           CustomRoundedButton(
                             image: "assets/image/eye.png",
 
@@ -264,11 +264,11 @@ class _TabAppBarState extends State<TabAppBar> {
                                   });
                             },
                           ),
-                        if (widget.ishome)
+                        if (Get.currentRoute.contains("/home"))
                           SizedBox(
                             width: Dimensions.paddingSizeLarge,
                           ),
-                        if (widget.ishome)
+                        if (Get.currentRoute.contains("/home"))
                           CustomRoundedButton(
                             image: Images.order,
                             //  onTap: () => Get.to(() => const AllOrdersScreen()),
@@ -282,7 +282,7 @@ class _TabAppBarState extends State<TabAppBar> {
                 ],
               ),
             ),
-            if (widget.ishome)
+            if (Get.currentRoute.contains("/home"))
               SizedBox(
                   height: productController.CatImage ? 65 : 20,
                   child: CategoryView(onSelected: (id) {

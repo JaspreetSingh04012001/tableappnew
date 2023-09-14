@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:efood_table_booking/controller/splash_controller.dart';
 import 'package:efood_table_booking/data/api/api_checker.dart';
 import 'package:efood_table_booking/data/model/response/order_details_model.dart';
@@ -63,8 +64,16 @@ class OrderController extends GetxController implements GetxService {
     update();
   }
 
-  updateOrderStatus( {required int order_id ,required String payment_status}) async {
-      Response response = await orderRepo.upDateOrder(order_id,payment_status);
+  updateOrderStatus(
+      {required int order_id, required String payment_status}) async {
+    Response response = await orderRepo.upDateOrder(order_id, payment_status);
+  }
+
+  Future<Response> sendEmail(
+      {required String order_id, required String customer_email}) async {
+    Response response = await orderRepo.sendEmailOrder(
+        order_id: order_id ?? '', customer_email: customer_email);
+    return response;
   }
 
   Future<void> placeOrder(PlaceOrderBody placeOrderBody, Function callback,

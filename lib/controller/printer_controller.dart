@@ -70,6 +70,16 @@ class PrinterController extends GetxController {
     update();
   }
 
+  openDrawerOnClick() async {
+    final profile = await CapabilityProfile.load();
+    final generator = Generator(
+        optionprinttype == "58 mm" ? PaperSize.mm58 : PaperSize.mm80, profile);
+    List<int> bytes = [];
+    bytes += generator.drawer(pin: PosDrawer.pin2);
+    bytes += generator.drawer();
+    PrintBluetoothThermal.writeBytes(bytes);
+  }
+
   Future<void> getBluetoots() async {
     progress = true;
     msjprogress = "Wait";
@@ -108,16 +118,16 @@ class PrinterController extends GetxController {
     print("state conected $result");
     if (result) connected = true;
 
-      progress = false;
-   
+    progress = false;
+
     update();
   }
 
   Future<void> disconnect() async {
     final bool status = await PrintBluetoothThermal.disconnect;
 
-      connected = false;
-   update();
+    connected = false;
+    update();
     print("status disconnect $status");
   }
 

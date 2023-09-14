@@ -8,6 +8,7 @@ import 'package:efood_table_booking/view/base/custom_divider.dart';
 import 'package:efood_table_booking/view/base/custom_loader.dart';
 import 'package:efood_table_booking/view/base/product_type_view.dart';
 import 'package:efood_table_booking/view/screens/cart/widget/cart_detais.dart';
+import 'package:efood_table_booking/view/screens/order/widget/emailDialog.dart';
 import 'package:efood_table_booking/view/screens/order/widget/invoice_print_screen.dart';
 import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ import '../../../../data/model/response/config_model.dart';
 import '../../../../helper/price_converter.dart';
 import '../../../../helper/responsive_helper.dart';
 import '../../../../helper/route_helper.dart';
+import '../../../base/animated_dialog.dart';
 import '../../../base/confirmation_dialog.dart';
 import '../../../base/custom_button.dart';
 
@@ -973,92 +975,35 @@ class OrderDetailsView extends StatelessWidget {
                         ]),
 
                     Padding(
-                      padding: const EdgeInsets.only(bottom: 60),
+                      padding: const EdgeInsets.only(bottom: 5),
                       child: Row(
                         children: [
-                          if (orderController
-                                  .currentOrderDetails?.order?.paymentStatus ==
-                              "unpaid")
-                            Expanded(
-                                child: CustomButton(
-                              height: ResponsiveHelper.isSmallTab() ? 40 : 50,
-                              transparent: true,
-                              buttonText: 'Clear payment',
-                              onPressed: () {
-                                RouteHelper.openDialog(
-                                  context,
-                                  ConfirmationDialog(
-                                    title: 'Payment Recieved ?',
-                                    icon: Icons.money_rounded,
-                                    description:
-                                        'Paymemt received for this order',
-                                    onYesPressed: () {
-                                      orderController.updateOrderStatus(
-                                          order_id: orderController
-                                                  .currentOrderDetails
-                                                  ?.order
-                                                  ?.id ??
-                                              0,
-                                          payment_status: "paid");
-                                      orderController.getCurrentOrder(
-                                          orderController.currentOrderDetails
-                                                  ?.order?.id
-                                                  .toString() ??
-                                              '');
-                                      if (isSales) {
-                                        Get.find<SalesController>().getSales();
-                                      }
-                                      Get.back();
-                                    },
-                                    onNoPressed: () => Get.back(),
-                                  ),
-                                );
+                          Expanded(
+                              child: CustomButton(
+                            height: ResponsiveHelper.isSmallTab() ? 40 : 50,
+                            transparent: true,
+                            buttonText: 'Email Order',
+                            onPressed: () {
+                              showAnimatedDialog(
+                                  barrierDismissible: true,
+                                  context: context,
+                                  builder: (context) {
+                                    return AlertDialog(
+                                      title: Text(
+                                        overflow: TextOverflow.ellipsis,
+                                        'Send Order Details',
+                                        style: robotoMedium.copyWith(
+                                            fontSize: Dimensions.fontSizeLarge),
+                                      ),
+                                      content: const EmailDialog(),
+                                      actionsPadding: EdgeInsets.zero,
+                                      actions: const [],
+                                    );
+                                  });
 
-                                //cartController.clearCartData();
-                              },
-                            )),
-                          if (orderController
-                                  .currentOrderDetails?.order?.paymentStatus ==
-                              "paid")
-                            Expanded(
-                                child: CustomButton(
-                              height: ResponsiveHelper.isSmallTab() ? 40 : 50,
-                              transparent: true,
-                              buttonText: 'Refund payment',
-                              onPressed: () {
-                                RouteHelper.openDialog(
-                                  context,
-                                  ConfirmationDialog(
-                                    title: 'Refund Payment ?',
-                                    icon: Icons.money_rounded,
-                                    description:
-                                        'Are you sure you want to refund the payment',
-                                    onYesPressed: () {
-                                      orderController.updateOrderStatus(
-                                          order_id: orderController
-                                                  .currentOrderDetails
-                                                  ?.order
-                                                  ?.id ??
-                                              0,
-                                          payment_status: "refund");
-
-                                      orderController.getCurrentOrder(
-                                          orderController.currentOrderDetails
-                                                  ?.order?.id
-                                                  .toString() ??
-                                              '');
-                                      if (isSales) {
-                                        Get.find<SalesController>().getSales();
-                                      }
-                                      Get.back();
-                                    },
-                                    onNoPressed: () => Get.back(),
-                                  ),
-                                );
-
-                                //cartController.clearCartData();
-                              },
-                            )),
+                              //cartController.clearCartData();
+                            },
+                          )),
 
                           if (orderController.currentOrderDetails?.order
                                       ?.paymentStatus ==
@@ -1096,7 +1041,81 @@ class OrderDetailsView extends StatelessWidget {
                         ],
                       ),
                     ),
-                    // Padding(
+                    if (orderController
+                            .currentOrderDetails?.order?.paymentStatus ==
+                        "unpaid")
+                      CustomButton(
+                        height: ResponsiveHelper.isSmallTab() ? 40 : 50,
+                        transparent: true,
+                        buttonText: 'Clear payment',
+                        onPressed: () {
+                          RouteHelper.openDialog(
+                            context,
+                            ConfirmationDialog(
+                              title: 'Payment Recieved ?',
+                              icon: Icons.money_rounded,
+                              description: 'Paymemt received for this order',
+                              onYesPressed: () {
+                                orderController.updateOrderStatus(
+                                    order_id: orderController
+                                            .currentOrderDetails?.order?.id ??
+                                        0,
+                                    payment_status: "paid");
+                                orderController.getCurrentOrder(orderController
+                                        .currentOrderDetails?.order?.id
+                                        .toString() ??
+                                    '');
+                                if (isSales) {
+                                  Get.find<SalesController>().getSales();
+                                }
+                                Get.back();
+                              },
+                              onNoPressed: () => Get.back(),
+                            ),
+                          );
+
+                          //cartController.clearCartData();
+                        },
+                      ),
+                    if (orderController
+                            .currentOrderDetails?.order?.paymentStatus ==
+                        "paid")
+                      CustomButton(
+                        height: ResponsiveHelper.isSmallTab() ? 40 : 50,
+                        transparent: true,
+                        buttonText: 'Refund payment',
+                        onPressed: () {
+                          RouteHelper.openDialog(
+                            context,
+                            ConfirmationDialog(
+                              title: 'Refund Payment ?',
+                              icon: Icons.money_rounded,
+                              description:
+                                  'Are you sure you want to refund the payment',
+                              onYesPressed: () {
+                                orderController.updateOrderStatus(
+                                    order_id: orderController
+                                            .currentOrderDetails?.order?.id ??
+                                        0,
+                                    payment_status: "refund");
+
+                                orderController.getCurrentOrder(orderController
+                                        .currentOrderDetails?.order?.id
+                                        .toString() ??
+                                    '');
+                                if (isSales) {
+                                  Get.find<SalesController>().getSales();
+                                }
+                                Get.back();
+                              },
+                              onNoPressed: () => Get.back(),
+                            ),
+                          );
+
+                          //cartController.clearCartData();
+                        },
+                      ),
+                    const SizedBox(height: 60) // Padding(
                     //   padding: const EdgeInsets.only(bottom: 60),
                     //   child: Row(
                     //     children: [

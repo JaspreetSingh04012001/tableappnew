@@ -401,9 +401,9 @@ class _HomeScreenState extends State<HomeScreen> {
             //             : searchController.text,
             //       );
             //     })),
-            SizedBox(
-              height: productController.CatImage ? 65 : 35,
-            ),
+            // SizedBox(
+            //   height: productController.CatImage ? 65 : 35,
+            // ),
             Expanded(
               child: PageViewProduct(
                   totalPage: totalPage,

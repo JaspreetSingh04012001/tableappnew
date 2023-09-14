@@ -130,53 +130,53 @@ class _SalesState extends State<Sales> {
                     const SizedBox(
                       height: 15,
                     ),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: CustomTextField(
-                              borderColor:
-                                  Theme.of(context).hintColor.withOpacity(0.4),
-                              controller: _nameController,
-                              onChanged: (value) {
-                                setState(() {
-                                  customerName = value;
-                                });
-                              },
-                              onSubmit: (value) {
-                                setState(() {
-                                  customerName = value;
-                                });
-                              },
-                              // inputType: TextInputType.number,
-                              //inputFormatter:[FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
-                              hintText: 'Enter Email',
-                              hintStyle: robotoRegular.copyWith(
-                                  fontSize: Dimensions.fontSizeSmall),
-                              //  focusNode: _nameFocusNode,
-                            ),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Container(
-                            alignment: Alignment.center,
-                            height: 46,
-                            width: 140,
-                            decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
-                                borderRadius: BorderRadius.circular(12)),
-                            child: Text(
-                              "Send Email",
-                              style: robotoRegular.copyWith(
-                                  color: Colors.white,
-                                  fontSize: Dimensions.fontSizeLarge),
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+                    // Row(
+                    //   children: [
+                    //     Expanded(
+                    //       child: Padding(
+                    //         padding: const EdgeInsets.all(8.0),
+                    //         child: CustomTextField(
+                    //           borderColor:
+                    //               Theme.of(context).hintColor.withOpacity(0.4),
+                    //           controller: _nameController,
+                    //           onChanged: (value) {
+                    //             setState(() {
+                    //               customerName = value;
+                    //             });
+                    //           },
+                    //           onSubmit: (value) {
+                    //             setState(() {
+                    //               customerName = value;
+                    //             });
+                    //           },
+                    //           // inputType: TextInputType.number,
+                    //           //inputFormatter:[FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
+                    //           hintText: 'Enter Email',
+                    //           hintStyle: robotoRegular.copyWith(
+                    //               fontSize: Dimensions.fontSizeSmall),
+                    //           //  focusNode: _nameFocusNode,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     Padding(
+                    //       padding: const EdgeInsets.all(8.0),
+                    //       child: Container(
+                    //         alignment: Alignment.center,
+                    //         height: 46,
+                    //         width: 140,
+                    //         decoration: BoxDecoration(
+                    //             color: Theme.of(context).primaryColor,
+                    //             borderRadius: BorderRadius.circular(12)),
+                    //         child: Text(
+                    //           "Send Email",
+                    //           style: robotoRegular.copyWith(
+                    //               color: Colors.white,
+                    //               fontSize: Dimensions.fontSizeLarge),
+                    //         ),
+                    //       ),
+                    //     )
+                    //   ],
+                    // ),
                     InkWell(
                       onTap: () {
                         salesController.getSales();
