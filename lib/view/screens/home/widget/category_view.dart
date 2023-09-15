@@ -69,13 +69,13 @@ class CategoryView extends StatelessWidget {
                                           height: ResponsiveHelper.isSmallTab()
                                               ? 45
                                               : ResponsiveHelper.isTab(context)
-                                                  ? 55
-                                                  : 45,
+                                                  ? 60
+                                                  : 50,
                                           width: ResponsiveHelper.isSmallTab()
                                               ? 45
                                               : ResponsiveHelper.isTab(context)
-                                                  ? 55
-                                                  : 45,
+                                                  ? 60
+                                                  : 50,
                                           image:
                                               '${Get.find<SplashController>().configModel?.baseUrls?.categoryImageUrl}/${category.categoryList![index].image}',
                                           placeholder: Images.placeholderImage,

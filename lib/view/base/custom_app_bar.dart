@@ -284,7 +284,7 @@ class _TabAppBarState extends State<TabAppBar> {
             ),
             if (Get.currentRoute.contains("/home"))
               SizedBox(
-                  height: productController.CatImage ? 75 : 25,
+                  height: productController.CatImage ? 95 : 25,
                   child: CategoryView(onSelected: (id) {
                     if (productController.selectedCategory == id) {
                       productController.setSelectedCategory(null);
