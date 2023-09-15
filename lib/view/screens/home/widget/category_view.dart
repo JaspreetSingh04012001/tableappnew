@@ -49,6 +49,8 @@ class CategoryView extends StatelessWidget {
                         //   category.selectedCategory == category.categoryList![index].id.toString() ? Dimensions.PADDING_SIZE_EXTRA_SMALL : 0,
                         // ),
                         child: Container(
+                          alignment: Alignment.center,
+                          width: 90,
                           margin: EdgeInsets.only(
                             right: Dimensions.paddingSizeSmall,
                             top: Dimensions.paddingSizeSmall,
@@ -60,6 +62,7 @@ class CategoryView extends StatelessWidget {
                             onTap: () => onSelected(
                                 category.categoryList![index].id.toString()),
                             child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
@@ -69,27 +72,26 @@ class CategoryView extends StatelessWidget {
                                           height: ResponsiveHelper.isSmallTab()
                                               ? 45
                                               : ResponsiveHelper.isTab(context)
-                                                  ? 60
-                                                  : 50,
+                                                  ? 65
+                                                  : 55,
                                           width: ResponsiveHelper.isSmallTab()
                                               ? 45
                                               : ResponsiveHelper.isTab(context)
-                                                  ? 60
-                                                  : 50,
+                                                  ? 65
+                                                  : 55,
                                           image:
                                               '${Get.find<SplashController>().configModel?.baseUrls?.categoryImageUrl}/${category.categoryList![index].image}',
                                           placeholder: Images.placeholderImage,
                                         ))
                                       : Container(),
-                                  Flexible(
-                                    child: Text(
-                                      overflow: TextOverflow.ellipsis,
-                                      name,
-                                      style: robotoRegular.copyWith(
-                                          fontSize: Dimensions.fontSizeSmall),
-                                      maxLines: 2,
-                                      //    overflow: TextOverflow.ellipsis,
-                                    ),
+                                  Text(
+                                    textAlign: TextAlign.center,
+                                    overflow: TextOverflow.ellipsis,
+                                    name,
+                                    style: robotoRegular.copyWith(
+                                        fontSize: Dimensions.fontSizeLarge),
+                                    maxLines: 1,
+                                    //    overflow: TextOverflow.ellipsis,
                                   ),
                                 ]),
                           ),

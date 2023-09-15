@@ -22,6 +22,8 @@ import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../base/custom_text_field.dart';
+
 class ProductBottomSheet extends StatefulWidget {
   final Product product;
   final CartModel? cart;
@@ -34,10 +36,12 @@ class ProductBottomSheet extends StatefulWidget {
 }
 
 class _ProductBottomSheetState extends State<ProductBottomSheet> {
+  TextEditingController note = TextEditingController();
   @override
   void initState() {
     super.initState();
     Get.find<ProductController>().initData(widget.product, widget.cart);
+    if (widget.cart?.note != null) note.text = widget.cart?.note ?? '';
   }
 
   @override
@@ -68,6 +72,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
               ),
             ),
             child: GetBuilder<CartController>(builder: (cartController) {
+              // note.text = cartController.
               return GetBuilder<ProductController>(
                   builder: (productController) {
                 double variationPrice = 0;
@@ -396,93 +401,179 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                       index]
                                                                   .variationValues !=
                                                               null)
-                                                            ListView.builder(
-                                                              shrinkWrap: true,
-                                                              physics:
-                                                                  const NeverScrollableScrollPhysics(),
-                                                              padding:
-                                                                  EdgeInsets
-                                                                      .zero,
-                                                              itemCount:
-                                                                  variationList[
-                                                                          index]
-                                                                      .variationValues
-                                                                      ?.length,
-                                                              itemBuilder:
-                                                                  (context, i) {
-                                                                return InkWell(
-                                                                  onTap: () {
-                                                                    productController.setCartVariationIndex(
-                                                                        index,
-                                                                        i,
-                                                                        widget
-                                                                            .product,
-                                                                        variationList[index]
-                                                                            .isMultiSelect!);
-                                                                  },
-                                                                  child: Row(
-                                                                      children: [
-                                                                        Row(
-                                                                            crossAxisAlignment:
-                                                                                CrossAxisAlignment.center,
-                                                                            children: [
-                                                                              variationList[index].isMultiSelect!
-                                                                                  ? Checkbox(
-                                                                                      value: productController.selectedVariations[index][i],
-                                                                                      activeColor: Theme.of(context).primaryColor,
-                                                                                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
-                                                                                      onChanged: (bool? newValue) {
-                                                                                        productController.setCartVariationIndex(
-                                                                                          index,
-                                                                                          i,
-                                                                                          widget.product,
-                                                                                          variationList[index].isMultiSelect!,
-                                                                                        );
-                                                                                      },
-                                                                                      visualDensity: const VisualDensity(horizontal: -3, vertical: -3),
-                                                                                    )
-                                                                                  : Radio(
-                                                                                      value: i,
-                                                                                      groupValue: productController.selectedVariations[index].indexOf(true),
-                                                                                      onChanged: (value) {
-                                                                                        productController.setCartVariationIndex(
-                                                                                          index,
-                                                                                          i,
-                                                                                          widget.product,
-                                                                                          variationList[index].isMultiSelect!,
-                                                                                        );
-                                                                                      },
-                                                                                      activeColor: Theme.of(context).primaryColor,
-                                                                                      toggleable: false,
-                                                                                      visualDensity: const VisualDensity(horizontal: -3, vertical: -3),
-                                                                                    ),
-                                                                              Text(
-                                                                                overflow: TextOverflow.ellipsis,
-                                                                                variationList[index].variationValues![i].level != null ? variationList[index].variationValues![i].level!.trim() : '',
-                                                                                maxLines: 1,
-                                                                                //  overflow: TextOverflow.ellipsis,
-                                                                                style: productController.selectedVariations[index][i] ? robotoMedium : robotoRegular,
+                                                            Wrap(
+                                                              children:
+                                                                  List.generate(
+                                                                      variationList[index]
+                                                                              .variationValues
+                                                                              ?.length ??
+                                                                          0,
+                                                                      (i) =>
+                                                                          Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
+                                                                            child:
+                                                                                InkWell(
+                                                                              onTap: () {
+                                                                                productController.setCartVariationIndex(index, i, widget.product, variationList[index].isMultiSelect!);
+                                                                              },
+                                                                              child: Container(
+                                                                                decoration: BoxDecoration(border: Border.all(width: 1, color: Theme.of(context).disabledColor), borderRadius: BorderRadius.circular(4), color: productController.selectedVariations[index][i] ? Theme.of(context).primaryColor : null),
+                                                                                child: Padding(
+                                                                                  padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 6),
+                                                                                  child: Row(
+                                                                                      mainAxisSize: MainAxisSize.min,
+                                                                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                                                                      //  mainAxisAlignment: MainAxisAlignment.end,
+                                                                                      children: [
+                                                                                        Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: [
+                                                                                          // variationList[index].isMultiSelect!
+                                                                                          //     ? Checkbox(
+                                                                                          //         value: productController.selectedVariations[index][i],
+                                                                                          //         activeColor: Theme.of(context).primaryColor,
+                                                                                          //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
+                                                                                          //         onChanged: (bool? newValue) {
+                                                                                          //           productController.setCartVariationIndex(
+                                                                                          //             index,
+                                                                                          //             i,
+                                                                                          //             widget.product,
+                                                                                          //             variationList[index].isMultiSelect!,
+                                                                                          //           );
+                                                                                          //         },
+                                                                                          //         visualDensity: const VisualDensity(horizontal: -3, vertical: -3),
+                                                                                          //       )
+                                                                                          //     : Radio(
+                                                                                          //         value: i,
+                                                                                          //         groupValue: productController.selectedVariations[index].indexOf(true),
+                                                                                          //         onChanged: (value) {
+                                                                                          //           productController.setCartVariationIndex(
+                                                                                          //             index,
+                                                                                          //             i,
+                                                                                          //             widget.product,
+                                                                                          //             variationList[index].isMultiSelect!,
+                                                                                          //           );
+                                                                                          //         },
+                                                                                          //         activeColor: Theme.of(context).primaryColor,
+                                                                                          //         toggleable: false,
+                                                                                          //         visualDensity: const VisualDensity(horizontal: -3, vertical: -3),
+                                                                                          //       ),
+                                                                                          Text(
+                                                                                            overflow: TextOverflow.ellipsis,
+                                                                                            variationList[index].variationValues![i].level != null ? variationList[index].variationValues![i].level!.trim() : '',
+                                                                                            maxLines: 1,
+                                                                                            //  overflow: TextOverflow.ellipsis,
+                                                                                            style: productController.selectedVariations[index][i] ? robotoMedium.copyWith(color: Colors.white) : robotoRegular,
+                                                                                          ),
+                                                                                        ]),
+                                                                                        //const Spacer(),
+                                                                                        const SizedBox(
+                                                                                          width: 3,
+                                                                                        ),
+                                                                                        Text(
+                                                                                          overflow: TextOverflow.ellipsis,
+                                                                                          variationList[index].variationValues![i].optionPrice! > 0 ? '+${PriceConverter.convertPrice(variationList[index].variationValues![i].optionPrice ?? 0)}' : 'free'.tr,
+                                                                                          maxLines: 1,
+                                                                                          // overflow:
+                                                                                          //     TextOverflow.ellipsis,
+                                                                                          style: productController.selectedVariations[index][i] ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Colors.white) : robotoRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor),
+                                                                                        ),
+                                                                                      ]),
+                                                                                ),
                                                                               ),
-                                                                            ]),
-                                                                        const Spacer(),
-                                                                        Text(
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
-                                                                          variationList[index].variationValues![i].optionPrice! > 0
-                                                                              ? '+${PriceConverter.convertPrice(variationList[index].variationValues![i].optionPrice ?? 0)}'
-                                                                              : 'free'.tr,
-                                                                          maxLines:
-                                                                              1,
-                                                                          // overflow:
-                                                                          //     TextOverflow.ellipsis,
-                                                                          style: productController.selectedVariations[index][i]
-                                                                              ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraSmall)
-                                                                              : robotoRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor),
-                                                                        ),
-                                                                      ]),
-                                                                );
-                                                              },
+                                                                            ),
+                                                                          )),
                                                             ),
+                                                          // ListView.builder(
+                                                          //   // scrollDirection:
+                                                          //   //     Axis.horizontal,
+                                                          //   shrinkWrap: true,
+                                                          //   physics:
+                                                          //       const NeverScrollableScrollPhysics(),
+                                                          //   padding:
+                                                          //       EdgeInsets
+                                                          //           .zero,
+                                                          //   itemCount:
+                                                          //       variationList[
+                                                          //               index]
+                                                          //           .variationValues
+                                                          //           ?.length,
+                                                          //   itemBuilder:
+                                                          //       (context, i) {
+                                                          //     return
+                                                          //     InkWell(
+                                                          //       onTap: () {
+                                                          //         productController.setCartVariationIndex(
+                                                          //             index,
+                                                          //             i,
+                                                          //             widget
+                                                          //                 .product,
+                                                          //             variationList[index]
+                                                          //                 .isMultiSelect!);
+                                                          //       },
+                                                          //       child: Row(
+                                                          //           children: [
+                                                          //             Row(
+                                                          //                 crossAxisAlignment:
+                                                          //                     CrossAxisAlignment.center,
+                                                          //                 children: [
+                                                          //                   // variationList[index].isMultiSelect!
+                                                          //                   //     ? Checkbox(
+                                                          //                   //         value: productController.selectedVariations[index][i],
+                                                          //                   //         activeColor: Theme.of(context).primaryColor,
+                                                          //                   //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
+                                                          //                   //         onChanged: (bool? newValue) {
+                                                          //                   //           productController.setCartVariationIndex(
+                                                          //                   //             index,
+                                                          //                   //             i,
+                                                          //                   //             widget.product,
+                                                          //                   //             variationList[index].isMultiSelect!,
+                                                          //                   //           );
+                                                          //                   //         },
+                                                          //                   //         visualDensity: const VisualDensity(horizontal: -3, vertical: -3),
+                                                          //                   //       )
+                                                          //                   //     : Radio(
+                                                          //                   //         value: i,
+                                                          //                   //         groupValue: productController.selectedVariations[index].indexOf(true),
+                                                          //                   //         onChanged: (value) {
+                                                          //                   //           productController.setCartVariationIndex(
+                                                          //                   //             index,
+                                                          //                   //             i,
+                                                          //                   //             widget.product,
+                                                          //                   //             variationList[index].isMultiSelect!,
+                                                          //                   //           );
+                                                          //                   //         },
+                                                          //                   //         activeColor: Theme.of(context).primaryColor,
+                                                          //                   //         toggleable: false,
+                                                          //                   //         visualDensity: const VisualDensity(horizontal: -3, vertical: -3),
+                                                          //                   //       ),
+                                                          //                   Text(
+                                                          //                     overflow: TextOverflow.ellipsis,
+                                                          //                     variationList[index].variationValues![i].level != null ? variationList[index].variationValues![i].level!.trim() : '',
+                                                          //                     maxLines: 1,
+                                                          //                     //  overflow: TextOverflow.ellipsis,
+                                                          //                     style: productController.selectedVariations[index][i] ? robotoMedium : robotoRegular,
+                                                          //                   ),
+                                                          //                 ]),
+                                                          //             //const Spacer(),
+                                                          //             Text(
+                                                          //               overflow:
+                                                          //                   TextOverflow.ellipsis,
+                                                          //               variationList[index].variationValues![i].optionPrice! > 0
+                                                          //                   ? '+${PriceConverter.convertPrice(variationList[index].variationValues![i].optionPrice ?? 0)}'
+                                                          //                   : 'free'.tr,
+                                                          //               maxLines:
+                                                          //                   1,
+                                                          //               // overflow:
+                                                          //               //     TextOverflow.ellipsis,
+                                                          //               style: productController.selectedVariations[index][i]
+                                                          //                   ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraSmall)
+                                                          //                   : robotoRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor),
+                                                          //             ),
+                                                          //           ]),
+                                                          //     );
+                                                          //   },
+                                                          // ),
+
                                                           SizedBox(
                                                               height: index !=
                                                                       variationList
@@ -704,8 +795,39 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                         ]),
                                   ]),
                             ),
-                            if (!ResponsiveHelper.isSmallTab())
-                              SizedBox(height: Dimensions.paddingSizeSmall),
+                            // if (!ResponsiveHelper.isSmallTab())
+                            //   SizedBox(height: Dimensions.paddingSizeSmall),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 12)
+                                      .copyWith(bottom: 20),
+                              child: CustomTextField(
+                                borderColor: Theme.of(context)
+                                    .hintColor
+                                    .withOpacity(0.4),
+                                controller: note,
+                                onChanged: (value) {
+                                  setState(() {
+                                    // customerName = value;
+                                    // cartController.setCustomerName =
+                                    //     customerName;
+                                  });
+                                },
+                                onSubmit: (value) {
+                                  // setState(() {
+                                  //   customerName = value;
+                                  //   cartController.setCustomerName =
+                                  //       customerName;
+                                  // });
+                                },
+                                // inputType: TextInputType.number,
+                                //inputFormatter:[FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
+                                hintText: 'Note',
+                                hintStyle: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeSmall + 5),
+                                //  focusNode: _nameFocusNode,
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -879,6 +1001,9 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                         }
 
                                         cart.CartModel cartModel = CartModel(
+                                          note: note.text.isNotEmpty
+                                              ? note.text.toString()
+                                              : null,
                                           price: priceWithVariation,
                                           discountedPrice: priceWithDiscount,
                                           variation: [],

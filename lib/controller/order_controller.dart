@@ -198,6 +198,8 @@ class OrderController extends GetxController implements GetxService {
       );
 
       if (response.statusCode == 200) {
+        print("byJass");
+        print(response.body);
         _currentOrderDetails = OrderDetails.fromJson(response.body);
       } else {
         ApiChecker.checkApi(response);

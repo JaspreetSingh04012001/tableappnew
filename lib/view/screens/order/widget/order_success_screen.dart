@@ -8,14 +8,13 @@ import 'package:efood_table_booking/view/base/body_template.dart';
 import 'package:efood_table_booking/view/base/custom_app_bar.dart';
 import 'package:efood_table_booking/view/base/custom_button.dart';
 import 'package:efood_table_booking/view/base/custom_loader.dart';
-import 'package:efood_table_booking/view/screens/home/home_screen.dart';
 import 'package:efood_table_booking/view/screens/order/widget/order_screen.dart';
 import 'package:efood_table_booking/view/screens/root/no_data_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
-import '../../../base/custom_text_field.dart';
+import '../../../../helper/route_helper.dart';
 import '../../home/widget/filter_button_widget.dart';
 
 class OrderSuccessScreen extends StatefulWidget {
@@ -120,7 +119,6 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
   }
 
   Center _body(BuildContext context) {
-    
     return Center(
       child: GetBuilder<OrderController>(builder: (orderController) {
         final TextEditingController nameController = TextEditingController();
@@ -204,15 +202,15 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                           SizedBox(
                             height: Dimensions.paddingSizeExtraLarge,
                           ),
-                       
                           CustomButton(
                             height: ResponsiveHelper.isSmallTab() ? 40 : 50,
                             width: 300,
                             transparent: true,
                             buttonText: 'back_to_home'.tr,
                             fontSize: Dimensions.fontSizeDefault,
-                            onPressed: () =>
-                                Get.offAll(() => const HomeScreen()),
+                            onPressed: () => Get.offAllNamed(
+                              RouteHelper.home,
+                            ),
                           ),
                           SizedBox(
                             height: Dimensions.paddingSizeDefault,

@@ -139,6 +139,7 @@ class Order {
 }
 
 class Details {
+  String? note;
   int? id;
   int? productId;
   int? orderId;
@@ -175,6 +176,7 @@ class Details {
     this.addOnQtys,
     this.addOnPrices,
     this.addonTaxAmount,
+    this.note
   });
 
   Details.fromJson(Map<String, dynamic> json) {
@@ -183,6 +185,9 @@ class Details {
     orderId = json['order_id'];
     if (json['price'] != null && json['price'] != 'null') {
       price = double.parse('${json['price']}');
+    }
+    if (json['note'] != null && json['note'] != 'null') {
+      note =json['note'];
     }
     productDetails = json['product_details'] != null
         ? ProductDetails.fromJson(json['product_details'])
@@ -248,6 +253,7 @@ class Details {
     data['product_id'] = productId;
     data['order_id'] = orderId;
     data['price'] = price;
+    data['note'] = note;
     if (productDetails != null) {
       data['product_details'] = productDetails!.toJson();
     }

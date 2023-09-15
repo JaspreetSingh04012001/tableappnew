@@ -351,7 +351,7 @@ class _CartDetailsState extends State<CartDetails> {
                               } else {
                                 variationList = cartItem.product!.variations;
                               }
-
+                              String? note = cartItem.note;
                               String variationText = '';
                               String addonsName = '';
 
@@ -669,6 +669,17 @@ class _CartDetailsState extends State<CartDetails> {
                                             mainAxisSize: MainAxisSize.min,
                                             children: variationWidgetList,
                                           ),
+                                          if (cartItem.note != null)
+                                            Text(
+                                                textAlign: TextAlign.left,
+                                                overflow: TextOverflow.ellipsis,
+                                                'Note: ${cartItem.note}',
+                                                style: robotoRegular.copyWith(
+                                                  fontSize:
+                                                      Dimensions.fontSizeLarge,
+                                                  color: Theme.of(context)
+                                                      .primaryColor,
+                                                ))
                                         ],
                                       ),
                                     ),
@@ -871,6 +882,7 @@ class _CartDetailsState extends State<CartDetails> {
                                             cart.taxAmount!,
                                             addOnIdList,
                                             addOnQtyList,
+                                            cart.note
                                           ));
                                         }
 

@@ -652,6 +652,25 @@ class OrderDetailsView extends StatelessWidget {
                                                               Theme.of(context)
                                                                   .hintColor,
                                                         )),
+                                                  if (orderController
+                                                          .currentOrderDetails!
+                                                          .details![index]
+                                                          .note !=
+                                                      null)
+                                                    Text(
+                                                        textAlign:
+                                                            TextAlign.left,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        'Note: ${orderController.currentOrderDetails!.details![index].note}',
+                                                        style: robotoRegular
+                                                            .copyWith(
+                                                          fontSize: Dimensions
+                                                              .fontSizeLarge,
+                                                          color:
+                                                              Theme.of(context)
+                                                                  .primaryColor,
+                                                        ))
                                                 ],
                                               )),
                                           Expanded(

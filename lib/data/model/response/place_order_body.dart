@@ -111,6 +111,7 @@ class PlaceOrderBody {
 class Cart {
   String? _productId;
   String? _price;
+  String? _note;
   String? _variant;
   List<OrderVariation>? _variation;
   double? _discountAmount;
@@ -128,7 +129,7 @@ class Cart {
       int quantity,
       double taxAmount,
       List<int> addOnIds,
-      List<int> addOnQtys) {
+      List<int> addOnQtys , String? note) {
     _productId = productId;
     _price = price;
     _variant = variant;
@@ -138,10 +139,12 @@ class Cart {
     _taxAmount = taxAmount;
     _addOnIds = addOnIds;
     _addOnQtys = addOnQtys;
+    _note = note;
   }
 
   String? get productId => _productId;
   String? get price => _price;
+  String? get note => _note;
   String? get variant => _variant;
   List<OrderVariation>? get variation => _variation;
   double? get discountAmount => _discountAmount;
@@ -150,9 +153,11 @@ class Cart {
   List<int>? get addOnIds => _addOnIds;
   List<int>? get addOnQtys => _addOnQtys;
 
+
   Cart.fromJson(Map<String, dynamic> json) {
     _productId = json['product_id'];
     _price = json['price'];
+    _note = json['note'];
     _variant = json['variant'];
     if (json['variations'] != null) {
       _variation = [];
@@ -171,6 +176,7 @@ class Cart {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['product_id'] = _productId;
     data['price'] = _price;
+    data['note'] = _note;
     data['variant'] = _variant;
     if (_variation != null) {
       data['variations'] = _variation?.map((v) => v.toJson()).toList();
