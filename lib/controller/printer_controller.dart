@@ -258,6 +258,7 @@ class PrinterController extends GetxController {
 
     orderController.currentOrderDetails?.details?.forEach((details) {
       String variationText = '';
+      String? note = details.note;
       int a = 0;
       String addonsName = '';
       bool takeAway = false;
@@ -352,6 +353,10 @@ class PrinterController extends GetxController {
       }
       if (variationText != '') {
         bytes += generator.text(variationText,
+            styles: const PosStyles(bold: true, height: PosTextSize.size1));
+      }
+      if (note != null) {
+        bytes += generator.text(note,
             styles: const PosStyles(bold: true, height: PosTextSize.size1));
       }
       bytes += generator.hr(ch: "-");
