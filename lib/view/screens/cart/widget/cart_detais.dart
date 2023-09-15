@@ -255,7 +255,7 @@ class _CartDetailsState extends State<CartDetails> {
                                         hintText: 'Customer Name/Table No.',
                                         hintStyle: robotoRegular.copyWith(
                                             fontSize:
-                                                Dimensions.fontSizeSmall + 3),
+                                                Dimensions.fontSizeSmall + 5),
                                         //  focusNode: _nameFocusNode,
                                       ),
                                     ),
@@ -301,7 +301,7 @@ class _CartDetailsState extends State<CartDetails> {
                                         hintText: 'Customer Email',
                                         hintStyle: robotoRegular.copyWith(
                                             fontSize:
-                                                Dimensions.fontSizeSmall + 3),
+                                                Dimensions.fontSizeSmall + 5),
                                         //  focusNode: _nameFocusNode,
                                       ),
                                     ),
