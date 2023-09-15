@@ -252,9 +252,10 @@ class _CartDetailsState extends State<CartDetails> {
                                         },
                                         // inputType: TextInputType.number,
                                         //inputFormatter:[FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
-                                        hintText: 'Customer Name',
+                                        hintText: 'Customer Name/Table No.',
                                         hintStyle: robotoRegular.copyWith(
-                                            fontSize: Dimensions.fontSizeSmall),
+                                            fontSize:
+                                                Dimensions.fontSizeSmall + 3),
                                         //  focusNode: _nameFocusNode,
                                       ),
                                     ),
@@ -297,9 +298,10 @@ class _CartDetailsState extends State<CartDetails> {
                                         },
                                         // inputType: TextInputType.number,
                                         //inputFormatter:[FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
-                                        hintText: 'Customer Email/Table No.',
+                                        hintText: 'Customer Email',
                                         hintStyle: robotoRegular.copyWith(
-                                            fontSize: Dimensions.fontSizeSmall),
+                                            fontSize:
+                                                Dimensions.fontSizeSmall + 3),
                                         //  focusNode: _nameFocusNode,
                                       ),
                                     ),
