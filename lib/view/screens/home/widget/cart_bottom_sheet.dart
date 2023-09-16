@@ -323,16 +323,22 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                     CrossAxisAlignment
                                                                         .start,
                                                                 children: [
-                                                                  Text(
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    variationList[index]
-                                                                            .name ??
-                                                                        '',
-                                                                    style: robotoMedium.copyWith(
-                                                                        fontSize:
-                                                                            Dimensions.fontSizeLarge),
+                                                                  Padding(
+                                                                    padding: const EdgeInsets
+                                                                            .only(
+                                                                        left:
+                                                                            4),
+                                                                    child: Text(
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      variationList[index]
+                                                                              .name ??
+                                                                          '',
+                                                                      style: robotoMedium.copyWith(
+                                                                          fontSize:
+                                                                              Dimensions.fontSizeLarge),
+                                                                    ),
                                                                   ),
                                                                   SizedBox(
                                                                       height: Dimensions
