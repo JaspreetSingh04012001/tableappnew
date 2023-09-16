@@ -386,9 +386,8 @@ class _CartDetailsState extends State<CartDetails> {
                                         //     .variationValues![i]
                                         //     .level
                                         //     .toString();
-                                        print(variationList[index]
-                                            .variationValues?[i]
-                                            .level);
+                                        print(
+                                            "${variationList[index].variationValues![i].level ?? ""}jass");
                                         if (variationList[index]
                                                 .variationValues![i]
                                                 .level!
@@ -873,17 +872,16 @@ class _CartDetailsState extends State<CartDetails> {
                                           }
 
                                           carts.add(Cart(
-                                            cart.product!.id!.toString(),
-                                            cart.discountedPrice.toString(),
-                                            '',
-                                            variations,
-                                            cart.discountAmount!,
-                                            cart.quantity!,
-                                            cart.taxAmount!,
-                                            addOnIdList,
-                                            addOnQtyList,
-                                            cart.note
-                                          ));
+                                              cart.product!.id!.toString(),
+                                              cart.discountedPrice.toString(),
+                                              '',
+                                              variations,
+                                              cart.discountAmount!,
+                                              cart.quantity!,
+                                              cart.taxAmount!,
+                                              addOnIdList,
+                                              addOnQtyList,
+                                              cart.note));
                                         }
 
                                         PlaceOrderBody placeOrderBody =

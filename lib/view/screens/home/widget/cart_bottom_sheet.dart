@@ -238,7 +238,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                               .copyWith(
                                                             fontSize: Dimensions
                                                                     .fontSizeExtraLarge +
-                                                                5,
+                                                                3,
                                                           ),
                                                           maxLines: 3,
                                                         ),
@@ -268,7 +268,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                     style: robotoMedium.copyWith(
                                                                         fontSize:
                                                                             Dimensions.fontSizeExtraLarge +
-                                                                                10),
+                                                                                5),
                                                                   ),
                                                                   SizedBox(
                                                                       width: Dimensions
@@ -323,26 +323,33 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                     CrossAxisAlignment
                                                                         .start,
                                                                 children: [
-                                                                  Padding(
-                                                                    padding: const EdgeInsets
-                                                                            .only(
-                                                                        left:
-                                                                            4),
-                                                                    child: Text(
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      variationList[index]
-                                                                              .name ??
-                                                                          '',
-                                                                      style: robotoMedium.copyWith(
-                                                                          fontSize:
-                                                                              Dimensions.fontSizeLarge),
-                                                                    ),
-                                                                  ),
                                                                   SizedBox(
-                                                                      height: Dimensions
-                                                                          .paddingSizeExtraSmall),
+                                                                    width: 150,
+                                                                    child: Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment
+                                                                                .center,
+                                                                        crossAxisAlignment:
+                                                                            CrossAxisAlignment.center,
+                                                                        children: [
+                                                                          Text(
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                            variationList[index].name ??
+                                                                                '',
+                                                                            style:
+                                                                                robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+                                                                          ),
+                                                                          if (variationList[index].isRequired !=
+                                                                              null)
+                                                                            Text(
+                                                                              overflow: TextOverflow.ellipsis,
+                                                                              ' (${variationList[index].isRequired! ? 'required'.tr : ''})',
+                                                                              style: robotoMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeSmall),
+                                                                            ),
+                                                                        ]),
+                                                                  ),
+
                                                                   Row(
                                                                       mainAxisSize:
                                                                           MainAxisSize
@@ -374,21 +381,22 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                       children: List.generate(
                                                                           variationList[index].variationValues?.length ?? 0,
                                                                           (i) => Padding(
-                                                                                padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 3),
+                                                                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
                                                                                 child: InkWell(
                                                                                   onTap: () {
                                                                                     productController.setCartVariationIndex(index, i, widget.product, variationList[index].isMultiSelect!);
                                                                                   },
                                                                                   child: Container(
-                                                                                    constraints: const BoxConstraints(minWidth: 110, maxWidth: 160),
+                                                                                    constraints: const BoxConstraints(minWidth: 110, maxWidth: 150),
                                                                                     alignment: Alignment.center,
                                                                                     // width: 110,
-                                                                                    decoration: BoxDecoration(border: Border.all(width: 1, color: Theme.of(context).disabledColor), borderRadius: BorderRadius.circular(4), color: productController.selectedVariations[index][i] ? Theme.of(context).primaryColor : null),
+                                                                                    decoration: BoxDecoration(border: Border.all(width: 1.5, color: Theme.of(context).disabledColor), borderRadius: BorderRadius.circular(4), color: productController.selectedVariations[index][i] ? Theme.of(context).primaryColor : null),
                                                                                     child: Padding(
-                                                                                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                                                                                      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
                                                                                       child: Row(
                                                                                           mainAxisSize: MainAxisSize.min,
                                                                                           crossAxisAlignment: CrossAxisAlignment.end,
+
                                                                                           //  mainAxisAlignment: MainAxisAlignment.end,
                                                                                           children: [
                                                                                             Text(
