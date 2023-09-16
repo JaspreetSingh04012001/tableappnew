@@ -1,19 +1,9 @@
 import 'package:efood_table_booking/controller/printer_controller.dart';
 import 'package:efood_table_booking/view/screens/home/widget/quantity_button.dart';
-import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../../../../controller/order_controller.dart';
-import '../../../../controller/splash_controller.dart';
-import '../../../../data/model/response/config_model.dart';
-import '../../../../data/model/response/order_details_model.dart';
-import '../../../../data/model/response/product_model.dart';
-import '../../../../helper/price_converter.dart';
 import '../../../../util/dimensions.dart';
 import '../../../../util/styles.dart';
 
@@ -39,6 +29,15 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
   Widget build(BuildContext context) {
     return GetBuilder<PrinterController>(builder: (printerController) {
       return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Theme.of(context).primaryColor,
+          centerTitle: true,
+          title: Text(
+            "Printer Setup",
+            style:
+                robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraLarge),
+          ),
+        ),
         body: Container(
           padding: const EdgeInsets.all(20),
           child: Column(
@@ -179,7 +178,7 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                           Theme.of(context).primaryColor)),
                   onPressed: printerController.connected
                       ? () {
-                       // printerController.
+                          // printerController.
                           printerController.printTest;
                         }
                       : null,

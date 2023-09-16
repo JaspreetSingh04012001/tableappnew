@@ -395,8 +395,9 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                     productController.setCartVariationIndex(index, i, widget.product, variationList[index].isMultiSelect!);
                                                                                   },
                                                                                   child: Container(
+                                                                                    constraints: const BoxConstraints(minWidth: 110, maxWidth: 160),
                                                                                     alignment: Alignment.center,
-                                                                                    width: 110,
+                                                                                    // width: 110,
                                                                                     decoration: BoxDecoration(border: Border.all(width: 1, color: Theme.of(context).disabledColor), borderRadius: BorderRadius.circular(4), color: productController.selectedVariations[index][i] ? Theme.of(context).primaryColor : null),
                                                                                     child: Padding(
                                                                                       padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
@@ -410,7 +411,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                               variationList[index].variationValues![i].level != null ? variationList[index].variationValues![i].level!.trim() : '',
                                                                                               maxLines: 1,
                                                                                               //  overflow: TextOverflow.ellipsis,
-                                                                                              style: productController.selectedVariations[index][i] ? robotoMedium.copyWith(color: Colors.white) : robotoRegular,
+                                                                                              style: productController.selectedVariations[index][i] ? robotoMedium.copyWith(color: Colors.white, fontSize: Dimensions.fontSizeLarge) : robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
                                                                                             ),
                                                                                             //const Spacer(),
                                                                                             const SizedBox(
@@ -422,7 +423,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                               maxLines: 1,
                                                                                               // overflow:
                                                                                               //     TextOverflow.ellipsis,
-                                                                                              style: productController.selectedVariations[index][i] ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Colors.white) : robotoRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor),
+                                                                                              style: productController.selectedVariations[index][i] ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault, color: Colors.white) : robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault, color: Theme.of(context).disabledColor),
                                                                                             ),
                                                                                           ]),
                                                                                     ),
