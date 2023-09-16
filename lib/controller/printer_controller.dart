@@ -316,15 +316,15 @@ class PrinterController extends GetxController {
           variationText = details.oldVariations?[0].type ?? '';
         }
       }
-      if (variationText.contains("Order Type (Take Away)")) {
+      if (variationText.contains("Order Type (Take away)")) {
         takeAway = true;
       }
       print("Jass $variationText");
       variationText = variationText
           .replaceAll("Choose ()", "")
           .replaceAll("optiona (", "")
-          .replaceAll("Order Type (Dining)", "")
-          .replaceAll("Order Type (Take Away)", "")
+          .replaceAll("Order Type (Dine in)", "")
+          .replaceAll("Order Type (Take away)", "")
           .replaceAll("Choose (", "\n")
           .replaceAll("Choose One (", "\n")
           .replaceAll(")", "")
@@ -332,7 +332,7 @@ class PrinterController extends GetxController {
       variationText = removeEmptyLines(variationText);
       // variationText.
 
-      bytes += generator.text(takeAway ? "** Take Away **" : "* Eat In *",
+      bytes += generator.text(takeAway ? "** Take away **" : "* Eat In *",
           styles: const PosStyles(
               bold: true,
               height: PosTextSize.size1,

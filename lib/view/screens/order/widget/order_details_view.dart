@@ -196,15 +196,15 @@ class OrderDetailsView extends StatelessWidget {
           variationText = details.oldVariations?[0].type ?? '';
         }
       }
-      if (variationText.contains("Order Type (Take Away)")) {
+      if (variationText.contains("Order Type (Take away)")) {
         takeAway = true;
       }
       print("Jass $variationText");
       variationText = variationText
           .replaceAll("Choose ()", "")
           .replaceAll("optiona (", "")
-          .replaceAll("Order Type (Dining)", "")
-          .replaceAll("Order Type (Take Away)", "")
+          .replaceAll("Order Type (Dine in)", "")
+          .replaceAll("Order Type (Take away)", "")
           .replaceAll("Choose (", "\n")
           .replaceAll("Choose One (", "\n")
           .replaceAll(")", "")
@@ -212,7 +212,7 @@ class OrderDetailsView extends StatelessWidget {
       variationText = removeEmptyLines(variationText);
       // variationText.
 
-      bytes += generator.text(takeAway ? "** Take Away **" : "* Eat In *",
+      bytes += generator.text(takeAway ? "** Take away **" : "* Eat In *",
           styles: const PosStyles(
               bold: true,
               height: PosTextSize.size1,
@@ -528,15 +528,15 @@ class OrderDetailsView extends StatelessWidget {
                               }
                             }
                             if (variationText
-                                .contains("Order Type (Take Away)")) {
+                                .contains("Order Type (Take away)")) {
                               takeAway = true;
                             }
                             variationText = variationText
                                 .replaceAll("Choose ()", "")
                                 .replaceAll("optiona (", "")
                                 .replaceAll("Optiona (", "")
-                                .replaceAll("Order Type (Dining)", "")
-                                .replaceAll("Order Type (Take Away)", "")
+                                .replaceAll("Order Type (Dine in)", "")
+                                .replaceAll("Order Type (Take away)", "")
                                 .replaceAll("Choose (", "\n")
                                 .replaceAll(")", "");
                             // orderController.
@@ -552,7 +552,7 @@ class OrderDetailsView extends StatelessWidget {
                                       takeAway
                                           ? Text(
                                               overflow: TextOverflow.ellipsis,
-                                              "**Take Away**",
+                                              "**Take away**",
                                               style: robotoRegular.copyWith(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize:

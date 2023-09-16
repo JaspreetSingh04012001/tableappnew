@@ -391,15 +391,15 @@ class _CartDetailsState extends State<CartDetails> {
                                         if (variationList[index]
                                                 .variationValues![i]
                                                 .level!
-                                                .contains("Take Away") ||
+                                                .contains("Take away") ||
                                             variationList[index]
                                                 .variationValues![i]
                                                 .level!
-                                                .contains("Dining")) {
+                                                .contains("Dine in")) {
                                           if (variationList[index]
                                               .variationValues![i]
                                               .level!
-                                              .contains("Take Away")) {
+                                              .contains("Take away")) {
                                             takeAway = true;
                                           }
                                           continue;
@@ -537,7 +537,7 @@ class _CartDetailsState extends State<CartDetails> {
                                               ? Text(
                                                   overflow:
                                                       TextOverflow.ellipsis,
-                                                  "** Take Away **",
+                                                  "** Take away **",
                                                   style: robotoRegular.copyWith(
                                                     fontSize: Dimensions
                                                         .fontSizeLarge,

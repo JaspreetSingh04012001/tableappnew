@@ -340,11 +340,11 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                             style:
                                                                                 robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
                                                                           ),
-                                                                          if (variationList[index].isRequired !=
-                                                                              null)
+                                                                          if (variationList[index].isRequired ??
+                                                                              false)
                                                                             Text(
                                                                               overflow: TextOverflow.ellipsis,
-                                                                              ' (${variationList[index].isRequired! ? 'required'.tr : ''})',
+                                                                              ' (${'required'.tr})',
                                                                               style: robotoMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeSmall),
                                                                             ),
                                                                         ]),
@@ -386,40 +386,37 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                   onTap: () {
                                                                                     productController.setCartVariationIndex(index, i, widget.product, variationList[index].isMultiSelect!);
                                                                                   },
-                                                                                  child: Container(
-                                                                                    constraints: const BoxConstraints(minWidth: 110, maxWidth: 150),
-                                                                                    alignment: Alignment.center,
-                                                                                    // width: 110,
-                                                                                    decoration: BoxDecoration(border: Border.all(width: 1.5, color: Theme.of(context).disabledColor), borderRadius: BorderRadius.circular(4), color: productController.selectedVariations[index][i] ? Theme.of(context).primaryColor : null),
-                                                                                    child: Padding(
-                                                                                      padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
-                                                                                      child: Row(
-                                                                                          mainAxisSize: MainAxisSize.min,
-                                                                                          crossAxisAlignment: CrossAxisAlignment.end,
-
-                                                                                          //  mainAxisAlignment: MainAxisAlignment.end,
-                                                                                          children: [
-                                                                                            Text(
-                                                                                              overflow: TextOverflow.ellipsis,
-                                                                                              variationList[index].variationValues![i].level != null ? variationList[index].variationValues![i].level!.trim() : '',
-                                                                                              maxLines: 1,
-                                                                                              //  overflow: TextOverflow.ellipsis,
-                                                                                              style: productController.selectedVariations[index][i] ? robotoMedium.copyWith(color: Colors.white, fontSize: Dimensions.fontSizeLarge) : robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
-                                                                                            ),
-                                                                                            //const Spacer(),
-                                                                                            const SizedBox(
-                                                                                              width: 3,
-                                                                                            ),
-                                                                                            Text(
-                                                                                              overflow: TextOverflow.ellipsis,
-                                                                                              variationList[index].variationValues![i].optionPrice! > 0 ? '+${PriceConverter.convertPrice(variationList[index].variationValues![i].optionPrice ?? 0)}' : 'free'.tr,
-                                                                                              maxLines: 1,
-                                                                                              // overflow:
-                                                                                              //     TextOverflow.ellipsis,
-                                                                                              style: productController.selectedVariations[index][i] ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault, color: Colors.white) : robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault, color: Theme.of(context).disabledColor),
-                                                                                            ),
-                                                                                          ]),
-                                                                                    ),
+                                                                                  child: Stack(
+                                                                                    alignment: Alignment.topRight,
+                                                                                    children: [
+                                                                                      Container(
+                                                                                        constraints: const BoxConstraints(minWidth: 110, maxWidth: 150),
+                                                                                        alignment: Alignment.center,
+                                                                                        // width: 110,
+                                                                                        decoration: BoxDecoration(border: Border.all(width: 1.5, color: Theme.of(context).disabledColor), borderRadius: BorderRadius.circular(4), color: productController.selectedVariations[index][i] ? Theme.of(context).primaryColor : null),
+                                                                                        child: Padding(
+                                                                                          padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 5),
+                                                                                          child: Text(
+                                                                                            overflow: TextOverflow.ellipsis,
+                                                                                            variationList[index].variationValues![i].level != null ? variationList[index].variationValues![i].level!.trim() : '',
+                                                                                            maxLines: 1,
+                                                                                            //  overflow: TextOverflow.ellipsis,
+                                                                                            style: productController.selectedVariations[index][i] ? robotoMedium.copyWith(color: Colors.white, fontSize: Dimensions.fontSizeLarge) : robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
+                                                                                          ),
+                                                                                        ),
+                                                                                      ),
+                                                                                      Padding(
+                                                                                        padding: const EdgeInsets.only(top: 3, right: 3),
+                                                                                        child: Text(
+                                                                                          overflow: TextOverflow.ellipsis,
+                                                                                          variationList[index].variationValues![i].optionPrice! > 0 ? '+${PriceConverter.convertPrice(variationList[index].variationValues![i].optionPrice ?? 0)}' : 'free'.tr,
+                                                                                          maxLines: 1,
+                                                                                          // overflow:
+                                                                                          //     TextOverflow.ellipsis,
+                                                                                          style: productController.selectedVariations[index][i] ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault, color: Colors.white) : robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault, color: Theme.of(context).disabledColor),
+                                                                                        ),
+                                                                                      ),
+                                                                                    ],
                                                                                   ),
                                                                                 ),
                                                                               )),
