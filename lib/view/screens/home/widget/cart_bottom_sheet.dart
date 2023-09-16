@@ -237,9 +237,10 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                           style: robotoBold
                                                               .copyWith(
                                                             fontSize: Dimensions
-                                                                .fontSizeLarge,
+                                                                    .fontSizeExtraLarge +
+                                                                5,
                                                           ),
-                                                          maxLines: 2,
+                                                          maxLines: 3,
                                                         ),
                                                         SizedBox(
                                                           height: Dimensions
@@ -266,7 +267,8 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                     ),
                                                                     style: robotoMedium.copyWith(
                                                                         fontSize:
-                                                                            Dimensions.fontSizeLarge),
+                                                                            Dimensions.fontSizeExtraLarge +
+                                                                                10),
                                                                   ),
                                                                   SizedBox(
                                                                       width: Dimensions
@@ -296,15 +298,9 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                     .paddingSizeSmall),
 
                                           if (!isTab) _productDescription(),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.end,
-                                            children: [
-                                              ButtonWidget(
-                                                  cartIndex:
-                                                      widget.cartIndex ?? -1),
-                                            ],
-                                          ),
+                                          ButtonWidget(
+                                              cartIndex:
+                                                  widget.cartIndex ?? -1),
                                           SizedBox(
                                               height: Dimensions
                                                   .paddingSizeDefault),
@@ -327,34 +323,17 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                     CrossAxisAlignment
                                                                         .start,
                                                                 children: [
-                                                                  Row(
-                                                                      mainAxisSize:
-                                                                          MainAxisSize
-                                                                              .min,
-                                                                      mainAxisAlignment:
-                                                                          MainAxisAlignment
-                                                                              .spaceBetween,
-                                                                      children: [
-                                                                        Row(
-                                                                            mainAxisSize:
-                                                                                MainAxisSize.min,
-                                                                            mainAxisAlignment: MainAxisAlignment.start,
-                                                                            crossAxisAlignment: CrossAxisAlignment.center,
-                                                                            children: [
-                                                                              Text(
-                                                                                overflow: TextOverflow.ellipsis,
-                                                                                variationList[index].name ?? '',
-                                                                                style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
-                                                                              ),
-                                                                              Text(
-                                                                                overflow: TextOverflow.ellipsis,
-                                                                                ' (${variationList[index].isRequired! ? 'required'.tr : 'optional'.tr})',
-                                                                                style: robotoMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeSmall),
-                                                                              ),
-                                                                            ]),
-                                                                        // if (index ==
-                                                                        //     0)
-                                                                      ]),
+                                                                  Text(
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    variationList[index]
+                                                                            .name ??
+                                                                        '',
+                                                                    style: robotoMedium.copyWith(
+                                                                        fontSize:
+                                                                            Dimensions.fontSizeLarge),
+                                                                  ),
                                                                   SizedBox(
                                                                       height: Dimensions
                                                                           .paddingSizeExtraSmall),
@@ -400,7 +379,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                     // width: 110,
                                                                                     decoration: BoxDecoration(border: Border.all(width: 1, color: Theme.of(context).disabledColor), borderRadius: BorderRadius.circular(4), color: productController.selectedVariations[index][i] ? Theme.of(context).primaryColor : null),
                                                                                     child: Padding(
-                                                                                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 0),
+                                                                                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                                                                                       child: Row(
                                                                                           mainAxisSize: MainAxisSize.min,
                                                                                           crossAxisAlignment: CrossAxisAlignment.end,
@@ -1402,7 +1381,7 @@ class ButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<ProductController>(builder: (productController) {
-      return Row(children: [
+      return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
         QuantityButton(
             isIncrement: false,
             onTap: () {
@@ -1419,7 +1398,7 @@ class ButtonWidget extends StatelessWidget {
           productController.quantity.toString(),
           style: robotoBold.copyWith(
               color: Theme.of(context).primaryColor,
-              fontSize: Dimensions.fontSizeExtraLarge),
+              fontSize: Dimensions.fontSizeExtraLarge + 15),
         ),
         SizedBox(width: Dimensions.paddingSizeExtraSmall),
         QuantityButton(
