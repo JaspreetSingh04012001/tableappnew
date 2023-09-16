@@ -4,6 +4,9 @@ class PlaceOrderBody {
 
   List<Cart>? get cart => _cart;
   String? _paymentMethod;
+  String? _card;
+  String? _cash;
+
   String? _orderNote;
   String? _deliveryTime;
   String? _deliveryDate;
@@ -19,6 +22,8 @@ class PlaceOrderBody {
     this._cart,
     this._orderAmount,
     this._paymentMethod,
+    // this._card,
+    // this._cash,
     this._orderNote,
     this._deliveryTime,
     this._deliveryDate,
@@ -34,6 +39,8 @@ class PlaceOrderBody {
   PlaceOrderBody copyWith(
       {String? paymentStatus,
       String? paymentMethod,
+      String? card,
+      String? cash,
       String? token,
       double? previousDue}) {
     if (paymentStatus != null) {
@@ -41,6 +48,10 @@ class PlaceOrderBody {
     }
     if (paymentMethod != null) {
       _paymentMethod = paymentMethod;
+      if (paymentMethod == 'split') {
+        _card = card;
+        _cash = cash;
+      }
     }
     if (token != null) {
       _branchTableToken = token;
@@ -60,6 +71,10 @@ class PlaceOrderBody {
     }
     _orderAmount = json['order_amount'];
     _paymentMethod = json['payment_method'];
+    if (json['payment_method'] == 'split') {
+      _cash = json['cash'];
+      _card = json['card'];
+    }
     _orderNote = json['order_note'];
     _deliveryTime = json['delivery_time'];
     _deliveryDate = json['delivery_date'];
@@ -80,6 +95,10 @@ class PlaceOrderBody {
 
     data['order_amount'] = _orderAmount;
     data['payment_method'] = _paymentMethod;
+    if (data['payment_method'] == 'split') {
+      data['card'] = _card;
+      data['cash'] = _cash;
+    }
     data['order_note'] = _orderNote;
     data['delivery_time'] = _deliveryTime;
     data['delivery_date'] = _deliveryDate;
@@ -105,6 +124,8 @@ class PlaceOrderBody {
   int? get peopleNumber => _peopleNumber;
   String? get customerName => _customerName;
   String? get paymentStatus => _paymentStatus;
+  String? get cash => _cash;
+  String? get card => _card;
   String? get branchTableToken => _branchTableToken;
 }
 
@@ -129,7 +150,8 @@ class Cart {
       int quantity,
       double taxAmount,
       List<int> addOnIds,
-      List<int> addOnQtys , String? note) {
+      List<int> addOnQtys,
+      String? note) {
     _productId = productId;
     _price = price;
     _variant = variant;
@@ -152,7 +174,6 @@ class Cart {
   double? get taxAmount => _taxAmount;
   List<int>? get addOnIds => _addOnIds;
   List<int>? get addOnQtys => _addOnQtys;
-
 
   Cart.fromJson(Map<String, dynamic> json) {
     _productId = json['product_id'];

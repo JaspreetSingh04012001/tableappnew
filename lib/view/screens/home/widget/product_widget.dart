@@ -59,6 +59,7 @@ class _ProductWidgetState extends State<ProductWidget> {
 
         return InkWell(
           onTap: () => RouteHelper.openDialog(
+            
               context,
               ProductBottomSheet(
                 product: widget.product,

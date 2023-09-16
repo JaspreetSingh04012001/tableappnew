@@ -15,7 +15,7 @@ class OrderController extends GetxController implements GetxService {
   OrderController({required this.orderRepo});
 
   bool _isLoading = false;
-  final List<String> _paymentMethodList = ['cash', 'card'];
+  final List<String> _paymentMethodList = ['cash', 'card', 'split'];
   String _selectedMethod = 'cash';
   PlaceOrderBody? _placeOrderBody;
   String? _orderNote;

@@ -38,6 +38,8 @@ class Order {
   String? orderStatus;
   int? totalTaxAmount;
   String? paymentMethod;
+  String? cash;
+  String? card;
   String? createdAt;
   String? updatedAt;
   int? checked;
@@ -64,6 +66,8 @@ class Order {
       this.orderStatus,
       this.totalTaxAmount,
       this.paymentMethod,
+      this.cash,
+      this.card,
       this.createdAt,
       this.updatedAt,
       this.checked,
@@ -90,6 +94,10 @@ class Order {
     orderStatus = json['order_status'];
     totalTaxAmount = int.tryParse('${json['total_tax_amount']}');
     paymentMethod = json['payment_method'];
+    if (json['payment_method'] == 'split') {
+      cash = json['cash'];
+      card = json['card'];
+    }
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     checked = int.tryParse('${json['checked']}');
@@ -118,6 +126,10 @@ class Order {
     data['order_status'] = orderStatus;
     data['total_tax_amount'] = totalTaxAmount;
     data['payment_method'] = paymentMethod;
+    if (data['payment_method'] == 'split') {
+      data['card'] = card;
+      data['cash'] = cash;
+    }
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
     data['checked'] = checked;
@@ -158,26 +170,25 @@ class Details {
   List<double>? addOnPrices;
   double? addonTaxAmount;
 
-  Details({
-    this.id,
-    this.productId,
-    this.orderId,
-    this.price,
-    this.productDetails,
-    this.variations,
-    this.oldVariations,
-    this.discountOnProduct,
-    this.discountType,
-    this.quantity,
-    this.taxAmount,
-    this.createdAt,
-    this.updatedAt,
-    this.addOnIds,
-    this.addOnQtys,
-    this.addOnPrices,
-    this.addonTaxAmount,
-    this.note
-  });
+  Details(
+      {this.id,
+      this.productId,
+      this.orderId,
+      this.price,
+      this.productDetails,
+      this.variations,
+      this.oldVariations,
+      this.discountOnProduct,
+      this.discountType,
+      this.quantity,
+      this.taxAmount,
+      this.createdAt,
+      this.updatedAt,
+      this.addOnIds,
+      this.addOnQtys,
+      this.addOnPrices,
+      this.addonTaxAmount,
+      this.note});
 
   Details.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -187,7 +198,7 @@ class Details {
       price = double.parse('${json['price']}');
     }
     if (json['note'] != null && json['note'] != 'null') {
-      note =json['note'];
+      note = json['note'];
     }
     productDetails = json['product_details'] != null
         ? ProductDetails.fromJson(json['product_details'])

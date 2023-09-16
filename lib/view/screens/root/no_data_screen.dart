@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../helper/responsive_helper.dart';
+import '../../../helper/route_helper.dart';
 import '../../base/custom_button.dart';
 import '../home/home_screen.dart';
 
@@ -44,7 +45,9 @@ class NoDataScreen extends StatelessWidget {
                   transparent: true,
                   buttonText: 'back_to_home'.tr,
                   fontSize: Dimensions.fontSizeDefault,
-                  onPressed: () => Get.offAll(() => const HomeScreen()),
+                  onPressed: () => Get.offAllNamed(
+                              RouteHelper.home,
+                            ),
                 ),
               ),
           ]),

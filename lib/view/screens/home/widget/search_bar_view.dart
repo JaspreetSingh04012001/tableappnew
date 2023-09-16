@@ -33,7 +33,6 @@ class _SearchBarViewState extends State<SearchBarView> {
         child: SearchField(
           controller: widget.controller,
           hint: 'search'.tr,
-          
           iconPressed: () {
             if (productController.isSearch) {
               if (widget.controller.value.text.isEmpty) {

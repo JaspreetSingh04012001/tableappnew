@@ -880,6 +880,36 @@ class OrderDetailsView extends StatelessWidget {
                                                           0
                                                       : 0),
                                             ),
+                                            if (orderController
+                                                    .currentOrderDetails
+                                                    ?.order
+                                                    ?.paymentMethod ==
+                                                "split")
+                                              PriceWithType(
+                                                type: 'Card',
+                                                amount: PriceConverter.convertPrice(
+                                                    double.parse(orderController
+                                                                .currentOrderDetails
+                                                                ?.order
+                                                                ?.card ??
+                                                            "0") ??
+                                                        0),
+                                              ),
+                                            if (orderController
+                                                    .currentOrderDetails
+                                                    ?.order
+                                                    ?.paymentMethod ==
+                                                "split")
+                                              PriceWithType(
+                                                type: 'Cash',
+                                                amount: PriceConverter.convertPrice(
+                                                    double.parse(orderController
+                                                                .currentOrderDetails
+                                                                ?.order
+                                                                ?.cash ??
+                                                            "0") ??
+                                                        0),
+                                              ),
                                             PriceWithType(
                                               type: 'change'.tr,
                                               amount: PriceConverter

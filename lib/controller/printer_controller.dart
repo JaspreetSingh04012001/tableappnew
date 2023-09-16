@@ -382,6 +382,7 @@ class PrinterController extends GetxController {
     //     .text("${'vat_tax'.tr} : +${PriceConverter.convertPrice(tax)}");
     bytes += generator
         .text("${'add_ons'.tr} : +${PriceConverter.convertPrice(addOnsPrice)}");
+
     bytes += generator.text(
         "${'total'.tr} : ${PriceConverter.convertPrice(total + addOnsPrice)}",
         styles: const PosStyles(
@@ -395,6 +396,19 @@ class PrinterController extends GetxController {
             '(${orderController.currentOrderDetails?.order?.paymentMethod})' : ''}'} : ${PriceConverter.convertPrice(orderController.currentOrderDetails?.order?.paymentStatus != 'unpaid' ? orderController.currentOrderDetails?.order?.orderAmount ?? 0 : 0)}");
     // bytes +=
     //     generator.text("${'vat_tax'.tr} : \$${widget.order!.totalTaxAmount!}");
+    if (orderController.currentOrderDetails?.order?.paymentMethod != null) {
+      bytes += generator.text(
+          "Payment Method : +${orderController.currentOrderDetails?.order?.paymentMethod}");
+    }
+    if (orderController.currentOrderDetails?.order?.paymentMethod == "split") {
+      bytes += generator.text(
+          "Cash : +${PriceConverter.convertPrice(double.parse(orderController.currentOrderDetails?.order?.cash ?? "0"))}");
+    }
+    if (orderController.currentOrderDetails?.order?.paymentMethod == "split") {
+      bytes += generator.text(
+          "Card : +${PriceConverter.convertPrice(double.parse(orderController.currentOrderDetails?.order?.card ?? "0"))}");
+    }
+
     bytes += generator.text(
         styles: const PosStyles(
             height: PosTextSize.size1, width: PosTextSize.size1, bold: true),

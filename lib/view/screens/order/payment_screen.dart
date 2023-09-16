@@ -28,6 +28,8 @@ class PaymentScreen extends StatefulWidget {
 
 class _PaymentScreenState extends State<PaymentScreen> {
   final TextEditingController _amountTextController = TextEditingController();
+  final TextEditingController _splitCardamountTextController =
+      TextEditingController();
   double _changeAmount = 0;
   double _currentAmount = 0;
   double _payableAmount = 0;
@@ -122,11 +124,13 @@ class _PaymentScreenState extends State<PaymentScreen> {
               type: orderController.selectedMethod,
               isBorder: true,
               onSelected: (method) {
-                if (method != 'cash') {
+                if (method == 'card') {
                   _amountTextController.text = PriceConverter.convertPrice(
                       orderController.placeOrderBody!.orderAmount!);
                 } else {
+                  _splitCardamountTextController.clear();
                   _amountTextController.clear();
+                  _changeAmount = 0;
                 }
                 orderController.setSelectedMethod(method);
               }),
@@ -171,29 +175,85 @@ class _PaymentScreenState extends State<PaymentScreen> {
                     SizedBox(
                       height: Dimensions.paddingSizeExtraLarge,
                     ),
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                        horizontal: Dimensions.paddingSizeLarge),
-                    child: Row(
-                      children: [
-                        SizedBox(
-                            width: 100,
-                            child: Text(
-                                overflow: TextOverflow.ellipsis,
-                                'paid_amount'.tr)),
-                        SizedBox(width: Dimensions.paddingSizeLarge),
-                        Expanded(
-                          child: SizedBox(
-                            height: Get.width < 390
-                                ? 30
-                                : ResponsiveHelper.isSmallTab()
-                                    ? 40
-                                    : ResponsiveHelper.isTab(context)
-                                        ? 50
-                                        : 40,
-                            child: IgnorePointer(
-                              ignoring:
-                                  orderController.selectedMethod != 'cash',
+                  if (orderController.selectedMethod == 'cash' ||
+                      orderController.selectedMethod == 'card')
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.paddingSizeLarge),
+                      child: Row(
+                        children: [
+                          SizedBox(
+                              width: 100,
+                              child: Text(
+                                  overflow: TextOverflow.ellipsis,
+                                  'paid_amount'.tr)),
+                          SizedBox(width: Dimensions.paddingSizeLarge),
+                          Expanded(
+                            child: SizedBox(
+                              height: Get.width < 390
+                                  ? 30
+                                  : ResponsiveHelper.isSmallTab()
+                                      ? 40
+                                      : ResponsiveHelper.isTab(context)
+                                          ? 50
+                                          : 40,
+                              child: IgnorePointer(
+                                ignoring:
+                                    orderController.selectedMethod != 'cash',
+                                child: CustomTextField(
+                                  borderColor: Theme.of(context)
+                                      .primaryColor
+                                      .withOpacity(0.4),
+                                  hintText: 'enter_amount'.tr,
+                                  controller: _amountTextController,
+                                  inputFormatter: [
+                                    FilteringTextInputFormatter.allow(
+                                        RegExp("[0-9]")),
+                                    LengthLimitingTextInputFormatter(10),
+                                  ],
+                                  hintStyle: robotoRegular.copyWith(
+                                      fontSize: Dimensions.fontSizeSmall),
+                                  onChanged: (value) {
+                                    if (double.parse(value) >
+                                        Get.find<CartController>()
+                                            .totalAmount) {
+                                      _changeAmount =
+                                          (Get.find<CartController>()
+                                                      .totalAmount -
+                                                  double.parse(value)) *
+                                              -1.0;
+                                    } else {
+                                      _changeAmount = 0;
+                                    }
+                                    orderController.update();
+                                  },
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  if (orderController.selectedMethod == 'split')
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.paddingSizeLarge),
+                      child: Row(
+                        children: [
+                          const SizedBox(
+                              width: 100,
+                              child: Text(
+                                  overflow: TextOverflow.ellipsis, "Cash")),
+                          SizedBox(width: Dimensions.paddingSizeLarge),
+                          Expanded(
+                            child: SizedBox(
+                              height: Get.width < 390
+                                  ? 30
+                                  : ResponsiveHelper.isSmallTab()
+                                      ? 40
+                                      : ResponsiveHelper.isTab(context)
+                                          ? 50
+                                          : 40,
                               child: CustomTextField(
                                 borderColor: Theme.of(context)
                                     .primaryColor
@@ -208,11 +268,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 hintStyle: robotoRegular.copyWith(
                                     fontSize: Dimensions.fontSizeSmall),
                                 onChanged: (value) {
-                                  if (double.parse(value) >
+                                  if ((double.parse(value) +
+                                          double.parse(
+                                              _splitCardamountTextController
+                                                  .text)) >
                                       Get.find<CartController>().totalAmount) {
                                     _changeAmount = (Get.find<CartController>()
                                                 .totalAmount -
-                                            double.parse(value)) *
+                                            (double.parse(value) +
+                                                double.parse(
+                                                    _splitCardamountTextController
+                                                        .text))) *
                                         -1.0;
                                   } else {
                                     _changeAmount = 0;
@@ -222,10 +288,66 @@ class _PaymentScreenState extends State<PaymentScreen> {
                               ),
                             ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
+                  SizedBox(height: Dimensions.paddingSizeLarge),
+                  if (orderController.selectedMethod == 'split')
+                    Padding(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: Dimensions.paddingSizeLarge),
+                      child: Row(
+                        children: [
+                          const SizedBox(
+                              width: 100,
+                              child: Text(
+                                  overflow: TextOverflow.ellipsis, "Card")),
+                          SizedBox(width: Dimensions.paddingSizeLarge),
+                          Expanded(
+                            child: SizedBox(
+                              height: Get.width < 390
+                                  ? 30
+                                  : ResponsiveHelper.isSmallTab()
+                                      ? 40
+                                      : ResponsiveHelper.isTab(context)
+                                          ? 50
+                                          : 40,
+                              child: CustomTextField(
+                                borderColor: Theme.of(context)
+                                    .primaryColor
+                                    .withOpacity(0.4),
+                                hintText: 'enter_amount'.tr,
+                                controller: _splitCardamountTextController,
+                                inputFormatter: [
+                                  FilteringTextInputFormatter.allow(
+                                      RegExp("[0-9]")),
+                                  LengthLimitingTextInputFormatter(10),
+                                ],
+                                hintStyle: robotoRegular.copyWith(
+                                    fontSize: Dimensions.fontSizeSmall),
+                                onChanged: (value) {
+                                  if ((double.parse(value) +
+                                          double.parse(
+                                              _amountTextController.text)) >
+                                      Get.find<CartController>().totalAmount) {
+                                    _changeAmount = (Get.find<CartController>()
+                                                .totalAmount -
+                                            (double.parse(value) +
+                                                double.parse(
+                                                    _amountTextController
+                                                        .text))) *
+                                        -1.0;
+                                  } else {
+                                    _changeAmount = 0;
+                                  }
+                                  orderController.update();
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
                   if (!ResponsiveHelper.isTab(context))
                     SizedBox(
                       height: Dimensions.paddingSizeDefault,
@@ -310,7 +432,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   SizedBox(
                     height: Dimensions.paddingSizeDefault,
                   ),
-                  orderController.selectedMethod == 'cash'
+                  orderController.selectedMethod == 'cash' ||
+                          orderController.selectedMethod == 'split'
                       ? Padding(
                           padding: EdgeInsets.symmetric(
                               horizontal: Dimensions.paddingSizeLarge),
@@ -392,8 +515,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                 buttonText: 'confirm_payment'.tr,
                                 fontSize: Get.width < 390 ? 12 : null,
                                 onPressed: () {
-                                  if (orderController.selectedMethod ==
-                                          'cash' &&
+                                  if ((orderController.selectedMethod ==
+                                              'cash' ||
+                                          orderController.selectedMethod ==
+                                              'split') &&
                                       _amountTextController.text.isEmpty) {
                                     showCustomSnackBar(
                                         'please_enter_your_amount'.tr);
@@ -411,6 +536,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                         paymentStatus: 'paid',
                                         paymentMethod:
                                             orderController.selectedMethod,
+                                        card:
+                                            _splitCardamountTextController.text,
+                                        cash: _amountTextController.text,
                                         previousDue:
                                             orderController.previousDueAmount(),
                                       ),
