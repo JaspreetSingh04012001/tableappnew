@@ -15,4 +15,14 @@ class SalesRepo {
         '${AppConstants.salesUri}?branch_id=$branch_id&from=$from&to=$to');
     //'${AppConstants.salesUri}?branch_id=1&from=04-07-2023&to=04-07-2023');
   }
+
+  Future<Response> sendSales(
+      {required int branch_id, required String year, String? quarter}) async {
+    return await apiClient.postData(AppConstants.sendSalesUri, {
+      "branch_id": branch_id,
+      "year": year,
+      if (quarter != null) "quarter": quarter
+    });
+    //'${AppConstants.salesUri}?branch_id=1&from=04-07-2023&to=04-07-2023');
+  }
 }

@@ -8,7 +8,8 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:time_picker_spinner_pop_up/time_picker_spinner_pop_up.dart';
 
-import '../../../base/custom_text_field.dart';
+import '../../../base/animated_dialog.dart';
+import '../../order/widget/emailDialog.dart';
 import '../../order/widget/order_details_view.dart';
 
 class Sales extends StatefulWidget {
@@ -199,6 +200,48 @@ class _SalesState extends State<Sales> {
                         ),
                       ),
                     ),
+
+                    InkWell(
+                      onTap: () {
+                        showAnimatedDialog(
+                            barrierDismissible: true,
+                            context: context,
+                            builder: (context) {
+                              return AlertDialog(
+                                title: Text(
+                                  overflow: TextOverflow.ellipsis,
+                                  'Send Yearly Report',
+                                  style: robotoMedium.copyWith(
+                                      fontSize: Dimensions.fontSizeLarge),
+                                ),
+                                content: EmailDialog(
+                                  sales: true,
+                                ),
+                                actionsPadding: EdgeInsets.zero,
+                                actions: const [],
+                              );
+                            });
+                        //  salesController.getSales();
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          alignment: Alignment.center,
+                          height: 50,
+                          width: 160,
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.circular(12)),
+                          child: Text(
+                            "Send Yearly Report",
+                            style: robotoRegular.copyWith(
+                                color: Colors.white,
+                                fontSize: Dimensions.fontSizeLarge),
+                          ),
+                        ),
+                      ),
+                    ),
+
                     const Divider(),
                     Row(
                       children: [

@@ -1044,7 +1044,7 @@ class OrderDetailsView extends StatelessWidget {
                                         style: robotoMedium.copyWith(
                                             fontSize: Dimensions.fontSizeLarge),
                                       ),
-                                      content: const EmailDialog(),
+                                      content: EmailDialog(),
                                       actionsPadding: EdgeInsets.zero,
                                       actions: const [],
                                     );

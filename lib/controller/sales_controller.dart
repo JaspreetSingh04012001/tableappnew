@@ -33,4 +33,23 @@ class SalesController extends GetxController {
       update();
     }
   }
+
+  Future<Response> sendSales(String year, String? quarter) async {
+    // DateTime yo = DateTime.now();
+    // final DateFormat formatter = DateFormat('dd/MM/yyyy');
+    // final String formatted = formatter.format(yo).replaceAll("/", '-');
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    Response response = await salesRepo.sendSales(
+        branch_id: sharedPreferences.getInt(AppConstants.branch) ?? 0,
+        year: year,
+        quarter: quarter);
+    // print(sharedPreferences.getInt(AppConstants.branch));
+    // print(from ?? formatted);
+    // print(to ?? formatted);
+    return response;
+    // if (response.statusCode == 200) {
+    //   //  sales = [...response.body["orders"]];
+    //   update();
+    // }
+  }
 }

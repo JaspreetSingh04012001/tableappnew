@@ -13,6 +13,7 @@ class AppConstants {
   static const String categoryUri = '/api/v1/categories';
   static const String productUri = '/api/v1/products/latest';
   static const String salesUri = '/api/v1/table/order/stats';
+  static const String sendSalesUri = '/api/v1/table/sales/export';
   static const String categoryProductUri = '/api/v1/categories/products';
   static const String placeOrderUri = '/api/v1/table/order/place';
   static const String sendEmailOrderUri = '/api/v1/table/order/invoice';
