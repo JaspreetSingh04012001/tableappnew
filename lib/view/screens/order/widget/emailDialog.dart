@@ -8,6 +8,7 @@ import 'package:lottie/lottie.dart';
 import '../../../../util/dimensions.dart';
 import '../../../../util/images.dart';
 import '../../../../util/styles.dart';
+import '../../../base/custom_snackbar.dart';
 import '../../../base/custom_text_field.dart';
 
 class EmailDialog extends StatefulWidget {
@@ -53,7 +54,7 @@ class _EmailDialogState extends State<EmailDialog> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        if (!succes)
+        if (!widget.sales && !succes)
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: CustomTextField(
@@ -158,7 +159,7 @@ class _EmailDialogState extends State<EmailDialog> {
                                   borderRadius: BorderRadius.circular(4),
                                   color: (index == selectedindex)
                                       ? Theme.of(context).primaryColor
-                                      : Colors.white),
+                                      : null),
                               child: Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
@@ -177,34 +178,44 @@ class _EmailDialogState extends State<EmailDialog> {
           InkWell(
             onTap: () {
               if (!widget.sales) {
-                Get.find<OrderController>()
-                    .sendEmail(
-                        order_id: Get.find<OrderController>()
-                                .currentOrderDetails
-                                ?.order
-                                ?.id
-                                .toString() ??
-                            '',
-                        customer_email: nameController.text)
-                    .whenComplete(() => null)
-                    .then((value) {
-                  print(value.body.toString());
+                if (nameController.text.isEmpty) {
+                  showCustomSnackBar('Enter email');
+                } else {
+                  Get.find<OrderController>()
+                      .sendEmail(
+                          order_id: Get.find<OrderController>()
+                                  .currentOrderDetails
+                                  ?.order
+                                  ?.id
+                                  .toString() ??
+                              '',
+                          customer_email: nameController.text)
+                      .whenComplete(() => null)
+                      .then((value) {
+                    print(value.body.toString());
 
-                  if (value.body["email_status"] == "sent") {
-                    setState(() {
-                      succes = true;
-                    });
-                  }
-                });
+                    if (value.body["email_status"] == "sent") {
+                      setState(() {
+                        succes = true;
+                      });
+                    }
+                  });
+                }
               } else {
-                Get.find<SalesController>()
-                    .sendSales(
-                        "2023",
-                        (selectedindex != null)
-                            ? "${selectedindex! + 1}"
-                            : null)
-                    .whenComplete(() => null)
-                    .then((value) {});
+                if (yaerController.text.isEmpty) {
+                  showCustomSnackBar('Enter year');
+                } else {
+                  Get.find<SalesController>()
+                      .sendSales(
+                          yaerController.text,
+                          (selectedindex != null)
+                              ? "${selectedindex! + 1}"
+                              : null)
+                      .whenComplete(() => null)
+                      .then((value) {
+                    print(value.body.toString());
+                  });
+                }
               }
             },
             child: Padding(

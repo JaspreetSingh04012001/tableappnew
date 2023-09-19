@@ -20,6 +20,7 @@ class Images {
   static const String three = 'assets/image/3.png';
   static const String four = 'assets/image/4.png';
   static const String possImage = 'assets/image/pos_image.png';
+  static const String accounting = 'assets/image/accounting.png';
   static const String successAnimation = 'assets/image/success_animation.json';
   static const String order = 'assets/image/order.png';
   static const String videoPlaceHolder = 'assets/image/video_place_holder.png';

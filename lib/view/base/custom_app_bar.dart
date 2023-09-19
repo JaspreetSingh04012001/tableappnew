@@ -234,7 +234,14 @@ class _TabAppBarState extends State<TabAppBar> {
                                   color: Theme.of(context).primaryColor,
                                 ),
                                 onTap: () {
-                                  Get.to(const InvoicePrintScreen());
+                                  Get.dialog(Dialog(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(
+                                            Dimensions.radiusSmall)),
+                                    insetPadding: const EdgeInsets.all(20),
+                                    child: const InvoicePrintScreen(),
+                                  ));
+                                  //   Get.to(const InvoicePrintScreen());
                                 });
                           }),
                         SizedBox(
@@ -270,7 +277,7 @@ class _TabAppBarState extends State<TabAppBar> {
                           ),
                         if (Get.currentRoute.contains("/home"))
                           CustomRoundedButton(
-                            image: Images.order,
+                            image: Images.accounting,
                             //  onTap: () => Get.to(() => const AllOrdersScreen()),
                             onTap: () => Get.to(() => const Sales()),
                           ),

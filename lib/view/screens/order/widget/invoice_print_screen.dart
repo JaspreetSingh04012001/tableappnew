@@ -30,6 +30,18 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
     return GetBuilder<PrinterController>(builder: (printerController) {
       return Scaffold(
         appBar: AppBar(
+          leading: Container(),
+          actions: [
+            IconButton(
+              icon: const Icon(
+                Icons.cancel,
+                color: Colors.white,
+              ),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            )
+          ],
           backgroundColor: Theme.of(context).primaryColor,
           centerTitle: true,
           title: Text(

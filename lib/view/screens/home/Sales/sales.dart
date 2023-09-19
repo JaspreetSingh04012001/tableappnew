@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:time_picker_spinner_pop_up/time_picker_spinner_pop_up.dart';
 
+import '../../../../helper/route_helper.dart';
 import '../../../base/animated_dialog.dart';
 import '../../order/widget/emailDialog.dart';
 import '../../order/widget/order_details_view.dart';
@@ -31,6 +32,12 @@ class _SalesState extends State<Sales> {
       // salesController.getSales();
       return Scaffold(
         appBar: AppBar(
+          leading: IconButton(
+            onPressed: () => Get.offAllNamed(
+              RouteHelper.home,
+            ),
+            icon: const Icon(Icons.arrow_back),
+          ),
           centerTitle: true,
           backgroundColor: Theme.of(context).primaryColor,
           title: Text(
@@ -342,14 +349,14 @@ class _SalesState extends State<Sales> {
                                                           index)
                                                   ? Theme.of(context)
                                                       .primaryColor
-                                                  : Colors.white,
+                                                  : null,
                                               boxShadow: const [
-                                                BoxShadow(
-                                                    color: Color.fromARGB(
-                                                        255, 225, 224, 224),
-                                                    spreadRadius: 1,
-                                                    blurRadius: 5,
-                                                    offset: Offset(0, 4))
+                                                // BoxShadow(
+                                                //     color: Color.fromARGB(
+                                                //         255, 225, 224, 224),
+                                                //     spreadRadius: 1,
+                                                //     blurRadius: 5,
+                                                //     offset: Offset(0, 4))
                                               ]),
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
@@ -371,7 +378,7 @@ class _SalesState extends State<Sales> {
                                                                           .selectedIndex ==
                                                                       index)
                                                               ? Colors.white
-                                                              : Colors.black,
+                                                              : null,
                                                           fontSize: Dimensions
                                                               .fontSizeDefault),
                                                     ),
@@ -392,7 +399,7 @@ class _SalesState extends State<Sales> {
                                                                           .selectedIndex ==
                                                                       index)
                                                               ? Colors.white
-                                                              : Colors.black,
+                                                              : null,
                                                           fontSize: Dimensions
                                                               .fontSizeDefault),
                                                     ),
@@ -413,7 +420,7 @@ class _SalesState extends State<Sales> {
                                                                           .selectedIndex ==
                                                                       index)
                                                               ? Colors.white
-                                                              : Colors.black,
+                                                              : null,
                                                           fontSize: Dimensions
                                                               .fontSizeDefault),
                                                     ),
@@ -434,7 +441,7 @@ class _SalesState extends State<Sales> {
                                                                           .selectedIndex ==
                                                                       index)
                                                               ? Colors.white
-                                                              : Colors.black,
+                                                              : null,
                                                           fontSize: Dimensions
                                                               .fontSizeDefault),
                                                     ),
@@ -455,7 +462,7 @@ class _SalesState extends State<Sales> {
                                                                           .selectedIndex ==
                                                                       index)
                                                               ? Colors.white
-                                                              : Colors.black,
+                                                              : null,
                                                           fontSize: Dimensions
                                                               .fontSizeDefault),
                                                     ),

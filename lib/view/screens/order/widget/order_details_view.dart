@@ -10,15 +10,11 @@ import 'package:efood_table_booking/view/base/product_type_view.dart';
 import 'package:efood_table_booking/view/screens/cart/widget/cart_detais.dart';
 import 'package:efood_table_booking/view/screens/order/widget/emailDialog.dart';
 import 'package:efood_table_booking/view/screens/order/widget/invoice_print_screen.dart';
-import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../../controller/printer_controller.dart';
-import '../../../../controller/splash_controller.dart';
-import '../../../../data/model/response/config_model.dart';
 import '../../../../helper/price_converter.dart';
 import '../../../../helper/responsive_helper.dart';
 import '../../../../helper/route_helper.dart';
@@ -1067,6 +1063,13 @@ class OrderDetailsView extends StatelessWidget {
                               height: ResponsiveHelper.isSmallTab() ? 40 : 50,
                               buttonText: "Print Order",
                               onPressed: () async {
+                                // Get.dialog(Dialog(
+                                //   shape: RoundedRectangleBorder(
+                                //       borderRadius: BorderRadius.circular(
+                                //           Dimensions.radiusSmall)),
+                                //   insetPadding: const EdgeInsets.all(20),
+                                //   child: const InvoicePrintScreen(),
+                                // ));
                                 bool conexionStatus =
                                     await PrintBluetoothThermal
                                         .connectionStatus;
