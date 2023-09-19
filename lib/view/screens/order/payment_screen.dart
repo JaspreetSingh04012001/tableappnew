@@ -33,7 +33,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
   double _changeAmount = 0;
   double _currentAmount = 0;
   double _payableAmount = 0;
-
+  int? selectedindex;
   @override
   void dispose() {
     _amountTextController.dispose();
@@ -171,9 +171,97 @@ class _PaymentScreenState extends State<PaymentScreen> {
               ),
               child: Column(
                 children: [
-                  if (ResponsiveHelper.isTab(context))
-                    SizedBox(
-                      height: Dimensions.paddingSizeExtraLarge,
+                  // if (ResponsiveHelper.isTab(context))
+                  // SizedBox(
+                  //   height: Dimensions.paddingSizeExtraLarge,
+                  // ),
+                  if (orderController.selectedMethod == 'cash' ||
+                      orderController.selectedMethod == 'split')
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 10),
+                      child: Wrap(
+                          children: List.generate(
+                              10,
+                              (index) => InkWell(
+                                    onTap: () {
+                                      setState(() {
+                                        // if (selectedindex != null) {
+                                        // selectedindex = null;
+                                        //  _amountTextController.
+                                        // _amountTextController
+                                        //     .text = (double.parse(
+                                        //             _amountTextController
+                                        //                 .text) +
+                                        //         double.parse(
+                                        //             "${(index + 1) * 10}"))
+                                        //     .toString();
+                                        // if (double.parse(
+                                        //         _amountTextController.text) >
+                                        //     Get.find<CartController>()
+                                        //         .totalAmount) {
+                                        //   _changeAmount = (Get.find<
+                                        //                   CartController>()
+                                        //               .totalAmount -
+                                        //           double.parse(
+                                        //               _amountTextController
+                                        //                   .text)) *
+                                        //       -1.0;
+                                        // } else {
+                                        //   _changeAmount = 0;
+                                        // }
+                                        // orderController.update();
+                                        //   } else {
+                                        selectedindex = index;
+                                        _amountTextController.text =
+                                            "${(index + 1) * 10}";
+                                        if (double.parse(
+                                                _amountTextController.text) >
+                                            Get.find<CartController>()
+                                                .totalAmount) {
+                                          _changeAmount =
+                                              (Get.find<CartController>()
+                                                          .totalAmount -
+                                                      double.parse(
+                                                          _amountTextController
+                                                              .text)) *
+                                                  -1.0;
+                                        } else {
+                                          _changeAmount = 0;
+                                        }
+                                        orderController.update();
+                                      });
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 4, horizontal: 4),
+                                      child: Container(
+                                          decoration: BoxDecoration(
+                                              border: Border.all(
+                                                  color: Theme.of(context)
+                                                      .primaryColor),
+                                              borderRadius:
+                                                  BorderRadius.circular(4),
+                                              color: (index == selectedindex)
+                                                  ? Theme.of(context)
+                                                      .primaryColor
+                                                  : Colors.white),
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 12, vertical: 8),
+                                            child: Text(
+                                              "\$${(index + 1) * 10}",
+                                              style: robotoRegular.copyWith(
+                                                  color:
+                                                      (index == selectedindex)
+                                                          ? Colors.white
+                                                          : null,
+                                                  //  color: Colors.white,
+                                                  fontSize:
+                                                      Dimensions.fontSizeLarge),
+                                            ),
+                                          )),
+                                    ),
+                                  ))),
                     ),
                   if (orderController.selectedMethod == 'cash' ||
                       orderController.selectedMethod == 'card')
