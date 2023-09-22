@@ -649,11 +649,33 @@ class OrderDetailsView extends StatelessWidget {
                                                               Theme.of(context)
                                                                   .hintColor,
                                                         )),
+                                                  // Text(
+                                                  //     textAlign: TextAlign.left,
+                                                  //     overflow:
+                                                  //         TextOverflow.ellipsis,
+                                                  //     'Note: ${orderController.currentOrderDetails!.details![index].productDetails?.printType}',
+                                                  //     style: robotoRegular
+                                                  //         .copyWith(
+                                                  //       fontSize: Dimensions
+                                                  //           .fontSizeLarge,
+                                                  //       color: Theme.of(context)
+                                                  //           .primaryColor,
+                                                  //     )),
                                                   if (orderController
-                                                          .currentOrderDetails!
-                                                          .details![index]
-                                                          .note !=
-                                                      null)
+                                                              .currentOrderDetails!
+                                                              .details![index]
+                                                              .note !=
+                                                          null &&
+                                                      orderController
+                                                              .currentOrderDetails!
+                                                              .details![index]
+                                                              .note !=
+                                                          "null" &&
+                                                      orderController
+                                                              .currentOrderDetails!
+                                                              .details![index]
+                                                              .note !=
+                                                          "")
                                                     Text(
                                                         textAlign:
                                                             TextAlign.left,
@@ -762,11 +784,19 @@ class OrderDetailsView extends StatelessWidget {
                                               textAlign: TextAlign.start,
                                               maxLines: 2,
                                               TextSpan(
-                                                children: orderController
-                                                            .currentOrderDetails
-                                                            ?.order
-                                                            ?.orderNote !=
-                                                        null
+                                                children: orderController.currentOrderDetails?.order
+                                                                ?.orderNote !=
+                                                            null ||
+                                                        orderController
+                                                                .currentOrderDetails
+                                                                ?.order
+                                                                ?.orderNote ==
+                                                            "null" ||
+                                                        orderController
+                                                                .currentOrderDetails
+                                                                ?.order
+                                                                ?.orderNote ==
+                                                            " "
                                                     ? [
                                                         TextSpan(
                                                           text: 'note'.tr,

@@ -64,6 +64,7 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
               //  Text('info: $_info\n '),
               Text(printerController.msj),
               Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text("Type print"),
                   const SizedBox(width: 10),
@@ -76,9 +77,8 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                       );
                     }).toList(),
                     onChanged: (String? newValue) {
-                      setState(() {
-                        printerController.optionprinttype = newValue!;
-                      });
+                      printerController.optionprinttype = newValue!;
+                      printerController.update();
                     },
                   ),
                   const SizedBox(
@@ -91,10 +91,9 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                   QuantityButton(
                       isIncrement: true,
                       onTap: () {
-                        setState(() {
-                          printerController.printCount =
-                              printerController.printCount + 1;
-                        });
+                        printerController.printCount =
+                            printerController.printCount + 1;
+                        printerController.update();
                       }),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -104,27 +103,49 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                       isIncrement: false,
                       onTap: () {
                         if (printerController.printCount > 1) {
-                          setState(() {
-                            printerController.printCount =
-                                printerController.printCount - 1;
-                          });
+                          printerController.printCount =
+                              printerController.printCount - 1;
+                          printerController.update();
                         }
                       }),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
                   const SizedBox(
                     width: 15,
                   ),
                   const Text("Open Drawer"),
                   Padding(
-                    padding: const EdgeInsets.all(8.0),
+                    padding: const EdgeInsets.all(4.0),
                     child: CupertinoSwitch(
                       // This bool value toggles the switch.
                       value: printerController.openDrawer,
                       activeColor: Theme.of(context).primaryColor,
                       onChanged: (bool value) {
                         // This is called when the user toggles the switch.
-                        setState(() {
-                          printerController.openDrawer = value;
-                        });
+
+                        printerController.openDrawer = value;
+                        printerController.update();
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 25,
+                  ),
+                  const Text("Print Front/Back Items Separate"),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: CupertinoSwitch(
+                      // This bool value toggles the switch.
+                      value: printerController.seperateByFrontBack,
+                      activeColor: Theme.of(context).primaryColor,
+                      onChanged: (bool value) {
+                        // This is called when the user toggles the switch.
+
+                        printerController.seperateByFrontBack = value;
+                        printerController.update();
                       },
                     ),
                   )
@@ -191,7 +212,8 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                   onPressed: printerController.connected
                       ? () {
                           // printerController.
-                          printerController.printTest;
+                          printerController.save();
+                          Navigator.pop(context);
                         }
                       : null,
                   child: const Text("Save and Print"),

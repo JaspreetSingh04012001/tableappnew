@@ -13,6 +13,10 @@ import '../data/model/response/config_model.dart';
 import '../data/model/response/order_details_model.dart';
 
 class PrinterController extends GetxController {
+  PrinterController() {
+    getDataFromStorages();
+  }
+
   String removeEmptyLines(String input) {
     return input
         .replaceAll(RegExp(r'^\s*$\n', multiLine: true), '')
@@ -31,14 +35,50 @@ class PrinterController extends GetxController {
     "connection status",
     "update info"
   ];
-
+  bool seperateByFrontBack = false;
   bool progress = false;
   bool openDrawer = false;
 
   String msjprogress = "";
+  String? lastConnectDeviceAddress;
   int printCount = 1;
   String optionprinttype = "58 mm";
   List<String> options = ["58 mm", "80 mm"];
+
+  getDataFromStorages() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+//  image = sharedPreferences.getBool("image") ?? false;
+//       CatImage = sharedPreferences.getBool("CatImage") ?? true;
+//       listView = sharedPreferences.getBool("listView") ?? false;
+//       gridView = sharedPreferences.getBool("gridView") ?? true;
+
+    lastConnectDeviceAddress =
+        sharedPreferences.getString("lastConnectDeviceAddress");
+
+    optionprinttype = sharedPreferences.getString("optionprinttype") ?? "58 mm";
+    printCount = sharedPreferences.getInt("printCount") ?? 1;
+    openDrawer = sharedPreferences.getBool("openDrawer") ?? false;
+    seperateByFrontBack =
+        sharedPreferences.getBool("seperateByFrontBack") ?? false;
+    update();
+    if (lastConnectDeviceAddress != null) {
+      initPlatformState();
+      getBluetoots();
+      connect(lastConnectDeviceAddress ?? "");
+    }
+  }
+
+  save() async {
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
+    sharedPreferences.setString("optionprinttype", optionprinttype);
+    if (lastConnectDeviceAddress != null) {
+      sharedPreferences.setString(
+          "lastConnectDeviceAddress", lastConnectDeviceAddress ?? "");
+    }
+    sharedPreferences.setInt("printCount", printCount);
+    sharedPreferences.setBool("openDrawer", openDrawer);
+    sharedPreferences.setBool("seperateByFrontBack", seperateByFrontBack);
+  }
 
   Future<void> initPlatformState() async {
     String platformVersion;
@@ -117,7 +157,7 @@ class PrinterController extends GetxController {
         await PrintBluetoothThermal.connect(macPrinterAddress: mac);
     print("state conected $result");
     if (result) connected = true;
-
+    if (result) lastConnectDeviceAddress = mac;
     progress = false;
 
     update();
@@ -133,7 +173,7 @@ class PrinterController extends GetxController {
 
   Future<void> printTest() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    print(printCount);
+
     printCount;
 
     pref.setInt("printCount", printCount);
@@ -154,6 +194,8 @@ class PrinterController extends GetxController {
   Future<List<int>> testTicket() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     List<int> bytes = [];
+    List<int> Frontbytes = [];
+    List<int> Backbytes = [];
     // Using default profile
     final profile = await CapabilityProfile.load();
     final generator = Generator(
@@ -256,6 +298,55 @@ class PrinterController extends GetxController {
     bytes += generator.text("Qty x Item info = Price");
     bytes += generator.hr(ch: "-");
 
+    Frontbytes += generator.hr(ch: "-");
+    Frontbytes += generator.text('order_summary'.tr,
+        styles: const PosStyles(
+            bold: true,
+            align: PosAlign.center,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2));
+    Frontbytes += generator.text("Front Items",
+        styles: const PosStyles(
+            bold: true,
+            align: PosAlign.center,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2));
+    Frontbytes += generator.text(
+        '${'order'.tr}# ${orderController.currentOrderDetails?.order?.id}',
+        styles: const PosStyles(
+            bold: true, align: PosAlign.center, height: PosTextSize.size1));
+    Frontbytes += generator.text(date,
+        styles: const PosStyles(
+            bold: true, align: PosAlign.center, height: PosTextSize.size1));
+
+    Frontbytes += generator.hr(ch: "-");
+    Frontbytes += generator.text("Qty x Item info = Price");
+    Frontbytes += generator.hr(ch: "-");
+
+    Backbytes += generator.hr(ch: "-");
+    Backbytes += generator.text('order_summary'.tr,
+        styles: const PosStyles(
+            bold: true,
+            align: PosAlign.center,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2));
+    Backbytes += generator.text("Front Items",
+        styles: const PosStyles(
+            bold: true,
+            align: PosAlign.center,
+            height: PosTextSize.size2,
+            width: PosTextSize.size2));
+    Backbytes += generator.text(
+        '${'order'.tr}# ${orderController.currentOrderDetails?.order?.id}',
+        styles: const PosStyles(
+            bold: true, align: PosAlign.center, height: PosTextSize.size1));
+    Backbytes += generator.text(date,
+        styles: const PosStyles(
+            bold: true, align: PosAlign.center, height: PosTextSize.size1));
+    Backbytes += generator.hr(ch: "-");
+    Backbytes += generator.text("Qty x Item info = Price");
+    Backbytes += generator.hr(ch: "-");
+
     orderController.currentOrderDetails?.details?.forEach((details) {
       String variationText = '';
       String? note = details.note;
@@ -331,7 +422,66 @@ class PrinterController extends GetxController {
           .replaceAll(",", "\n");
       variationText = removeEmptyLines(variationText);
       // variationText.
+      if (details.productDetails?.printType == "front") {
+        Frontbytes += generator.text(
+            takeAway ? "** Take away **" : "* Eat In *",
+            styles: const PosStyles(
+                bold: true,
+                height: PosTextSize.size1,
+                width: PosTextSize.size2,
+                align: PosAlign.center));
 
+        Frontbytes += generator.text(
+            "${details.quantity} x ${details.productDetails?.name ?? ''} : ${PriceConverter.convertPrice(details.price! * details.quantity!)}",
+            styles: const PosStyles(
+              bold: true,
+              height: PosTextSize.size1,
+              width: PosTextSize.size2,
+            ));
+
+        if (addonsName.isNotEmpty) {
+          Frontbytes += generator.text('${'addons'.tr}: $addonsName',
+              styles: const PosStyles(bold: true, height: PosTextSize.size1));
+        }
+        if (variationText != '') {
+          Frontbytes += generator.text(variationText,
+              styles: const PosStyles(bold: true, height: PosTextSize.size1));
+        }
+        if (note != null && note != "null" && note != "") {
+          Frontbytes += generator.text(note,
+              styles: const PosStyles(bold: true, height: PosTextSize.size1));
+        }
+        Frontbytes += generator.hr(ch: "-");
+      } else if (details.productDetails?.printType == "back") {
+        Backbytes += generator.text(takeAway ? "** Take away **" : "* Eat In *",
+            styles: const PosStyles(
+                bold: true,
+                height: PosTextSize.size1,
+                width: PosTextSize.size2,
+                align: PosAlign.center));
+
+        Backbytes += generator.text(
+            "${details.quantity} x ${details.productDetails?.name ?? ''} : ${PriceConverter.convertPrice(details.price! * details.quantity!)}",
+            styles: const PosStyles(
+              bold: true,
+              height: PosTextSize.size1,
+              width: PosTextSize.size2,
+            ));
+
+        if (addonsName.isNotEmpty) {
+          Backbytes += generator.text('${'addons'.tr}: $addonsName',
+              styles: const PosStyles(bold: true, height: PosTextSize.size1));
+        }
+        if (variationText != '') {
+          Backbytes += generator.text(variationText,
+              styles: const PosStyles(bold: true, height: PosTextSize.size1));
+        }
+        if (note != null && note != "null" && note != "") {
+          Backbytes += generator.text(note,
+              styles: const PosStyles(bold: true, height: PosTextSize.size1));
+        }
+        Backbytes += generator.hr(ch: "-");
+      }
       bytes += generator.text(takeAway ? "** Take away **" : "* Eat In *",
           styles: const PosStyles(
               bold: true,
@@ -355,7 +505,7 @@ class PrinterController extends GetxController {
         bytes += generator.text(variationText,
             styles: const PosStyles(bold: true, height: PosTextSize.size1));
       }
-      if (note != null) {
+      if (note != null && note != "null" && note != "") {
         bytes += generator.text(note,
             styles: const PosStyles(bold: true, height: PosTextSize.size1));
       }
@@ -417,6 +567,6 @@ class PrinterController extends GetxController {
     bytes += generator.drawer(pin: PosDrawer.pin5);
     bytes += generator.feed(2);
     bytes += generator.cut();
-    return bytes;
+    return seperateByFrontBack ? bytes + Frontbytes + Backbytes : bytes;
   }
 }
