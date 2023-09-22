@@ -134,7 +134,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 }
                 orderController.setSelectedMethod(method);
               }),
-          Image.asset(Images.possImage, height: Get.height * 0.2),
+          if (orderController.selectedMethod == 'card')
+            Image.asset(Images.possImage, height: Get.height * 0.2),
           SizedBox(
             height: Dimensions.paddingSizeLarge,
           ),
@@ -213,7 +214,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                         //   } else {
                                         selectedindex = index;
                                         _amountTextController.text =
-                                            "${(index + 1) * 10}";
+                                            "${(index + 1) * 5}";
                                         if (double.parse(
                                                 _amountTextController.text) >
                                             Get.find<CartController>()
@@ -249,7 +250,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                             padding: const EdgeInsets.symmetric(
                                                 horizontal: 12, vertical: 8),
                                             child: Text(
-                                              "\$${(index + 1) * 10}",
+                                              "\$${(index + 1) * 5}",
                                               style: robotoRegular.copyWith(
                                                   color:
                                                       (index == selectedindex)

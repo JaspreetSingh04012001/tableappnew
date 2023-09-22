@@ -108,11 +108,6 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                           printerController.update();
                         }
                       }),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
                   const SizedBox(
                     width: 15,
                   ),
@@ -131,20 +126,43 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                       },
                     ),
                   ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
                   const SizedBox(
                     width: 25,
                   ),
-                  const Text("Print Front/Back Items Separate"),
+                  const Text("Print Front Items Separate"),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: CupertinoSwitch(
                       // This bool value toggles the switch.
-                      value: printerController.seperateByFrontBack,
+                      value: printerController.seperateByFront,
                       activeColor: Theme.of(context).primaryColor,
                       onChanged: (bool value) {
                         // This is called when the user toggles the switch.
 
-                        printerController.seperateByFrontBack = value;
+                        printerController.seperateByFront = value;
+                        printerController.update();
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 25,
+                  ),
+                  const Text("Print Back Items Separate"),
+                  Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: CupertinoSwitch(
+                      // This bool value toggles the switch.
+                      value: printerController.seperateByBack,
+                      activeColor: Theme.of(context).primaryColor,
+                      onChanged: (bool value) {
+                        // This is called when the user toggles the switch.
+
+                        printerController.seperateByBack = value;
                         printerController.update();
                       },
                     ),

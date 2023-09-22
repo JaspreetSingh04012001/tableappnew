@@ -35,7 +35,8 @@ class PrinterController extends GetxController {
     "connection status",
     "update info"
   ];
-  bool seperateByFrontBack = false;
+  bool seperateByFront = false;
+  bool seperateByBack = false;
   bool progress = false;
   bool openDrawer = false;
 
@@ -58,8 +59,8 @@ class PrinterController extends GetxController {
     optionprinttype = sharedPreferences.getString("optionprinttype") ?? "58 mm";
     printCount = sharedPreferences.getInt("printCount") ?? 1;
     openDrawer = sharedPreferences.getBool("openDrawer") ?? false;
-    seperateByFrontBack =
-        sharedPreferences.getBool("seperateByFrontBack") ?? false;
+    seperateByFront = sharedPreferences.getBool("seperateByFront") ?? false;
+    seperateByBack = sharedPreferences.getBool("seperateByBack") ?? false;
     update();
     if (lastConnectDeviceAddress != null) {
       initPlatformState();
@@ -77,7 +78,8 @@ class PrinterController extends GetxController {
     }
     sharedPreferences.setInt("printCount", printCount);
     sharedPreferences.setBool("openDrawer", openDrawer);
-    sharedPreferences.setBool("seperateByFrontBack", seperateByFrontBack);
+    sharedPreferences.setBool("seperateByFront", seperateByFront);
+    sharedPreferences.setBool("seperateByBack", seperateByBack);
   }
 
   Future<void> initPlatformState() async {
@@ -567,6 +569,12 @@ class PrinterController extends GetxController {
     bytes += generator.drawer(pin: PosDrawer.pin5);
     bytes += generator.feed(2);
     bytes += generator.cut();
-    return seperateByFrontBack ? bytes + Frontbytes + Backbytes : bytes;
+    if (seperateByFront) {
+      bytes += Frontbytes;
+    }
+    if (seperateByBack) {
+      bytes += Backbytes;
+    }
+    return bytes;
   }
 }

@@ -627,7 +627,7 @@ class OrderDetailsView extends StatelessWidget {
                                                         style: robotoRegular
                                                             .copyWith(
                                                           fontSize: Dimensions
-                                                              .fontSizeSmall,
+                                                              .fontSizeDefault,
                                                           color:
                                                               Theme.of(context)
                                                                   .hintColor,
@@ -644,7 +644,7 @@ class OrderDetailsView extends StatelessWidget {
                                                         style: robotoRegular
                                                             .copyWith(
                                                           fontSize: Dimensions
-                                                              .fontSizeSmall,
+                                                              .fontSizeDefault,
                                                           color:
                                                               Theme.of(context)
                                                                   .hintColor,

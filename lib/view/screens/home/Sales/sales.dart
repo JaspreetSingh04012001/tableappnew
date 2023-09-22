@@ -22,7 +22,7 @@ class Sales extends StatefulWidget {
 
 class _SalesState extends State<Sales> {
   String customerName = "";
-
+  int? selectedIndex = 2;
   final TextEditingController _nameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -100,7 +100,7 @@ class _SalesState extends State<Sales> {
                           width: 10,
                         ),
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.only(right: 8),
                           child: Text(
                             "End :",
                             style: robotoMedium.copyWith(
@@ -132,6 +132,18 @@ class _SalesState extends State<Sales> {
                             salesController.getSales();
                             // Implement your logic with select dateTime
                           },
+                        ),
+                        InkWell(
+                          onTap: () {
+                            salesController.getSales();
+                          },
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.search,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            onPressed: () {},
+                          ),
                         ),
                       ],
                     ),
@@ -185,29 +197,61 @@ class _SalesState extends State<Sales> {
                     //     )
                     //   ],
                     // ),
-                    InkWell(
-                      onTap: () {
-                        salesController.getSales();
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Container(
-                          alignment: Alignment.center,
-                          height: 50,
-                          width: 160,
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              borderRadius: BorderRadius.circular(12)),
-                          child: Text(
-                            "Search Sales",
-                            style: robotoRegular.copyWith(
-                                color: Colors.white,
-                                fontSize: Dimensions.fontSizeLarge),
-                          ),
-                        ),
-                      ),
-                    ),
 
+                    Wrap(
+                      alignment: WrapAlignment.center,
+                      children: List.generate(3, (index) {
+                        String text = "";
+                        if (index == 0) {
+                          text = 'Last 7 months';
+                        } else if (index == 1) {
+                          text = 'Last Week';
+                        } else if (index == 2) {
+                          text = 'Today';
+                        }
+                        return Padding(
+                          padding: const EdgeInsets.all(3.0),
+                          child: InkWell(
+                            onTap: () {
+                              setState(() {
+                                selectedIndex = index;
+                              });
+                              if (index == 2) {
+                                salesController.months();
+                              }
+                              if (index == 1) {
+                                salesController.week();
+                              }
+                              if (index == 0) {
+                                salesController.today();
+                              }
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                  color: selectedIndex == index
+                                      ? Theme.of(context).primaryColor
+                                      : null,
+                                  border: Border.all(
+                                      color: Theme.of(context).primaryColor),
+                                  // color: Theme.of(context).,
+                                  borderRadius: BorderRadius.circular(4)),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 10, horizontal: 15),
+                                child: Text(
+                                  text,
+                                  style: robotoRegular.copyWith(
+                                      color: selectedIndex == index
+                                          ? Colors.white
+                                          : Theme.of(context).primaryColor,
+                                      fontSize: Dimensions.fontSizeLarge),
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      }),
+                    ),
                     InkWell(
                       onTap: () {
                         showAnimatedDialog(
@@ -234,7 +278,7 @@ class _SalesState extends State<Sales> {
                         padding: const EdgeInsets.all(8.0),
                         child: Container(
                           alignment: Alignment.center,
-                          height: 50,
+                          height: 40,
                           width: 160,
                           decoration: BoxDecoration(
                               color: Theme.of(context).primaryColor,

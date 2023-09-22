@@ -25,6 +25,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import '../../../../controller/printer_controller.dart';
 import '../../../base/custom_text_field.dart';
 
 class CartDetails extends StatefulWidget {
@@ -750,6 +751,19 @@ class _CartDetailsState extends State<CartDetails> {
                           if (widget.showButton)
                             Row(
                               children: [
+                                GetBuilder<PrinterController>(
+                                    builder: (printerController) {
+                                  return printerController.connected
+                                      ? IconButton(
+                                          onPressed: printerController
+                                              .openDrawerOnClick,
+                                          icon: Icon(
+                                            Icons.electric_bolt_rounded,
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                          ))
+                                      : Container();
+                                }),
                                 if (cartController.cartList.isNotEmpty)
                                   Expanded(
                                       child: CustomButton(
