@@ -753,7 +753,7 @@ class _CartDetailsState extends State<CartDetails> {
                               children: [
                                 GetBuilder<PrinterController>(
                                     builder: (printerController) {
-                                  return printerController.connected
+                                  return printerController.openDrawer
                                       ? IconButton(
                                           onPressed: printerController
                                               .openDrawerOnClick,

@@ -59,7 +59,7 @@ class _ProductWidgetState extends State<ProductWidget> {
 
         return InkWell(
           onTap: () => RouteHelper.openDialog(
-            
+              alignment: Alignment.centerLeft,
               context,
               ProductBottomSheet(
                 product: widget.product,
@@ -200,7 +200,9 @@ class _ProductWidgetState extends State<ProductWidget> {
                           ),
                           child: Text(
                             overflow: TextOverflow.ellipsis,
-                          productController.image ?  widget.product.name! :  "${widget.product.name!}\n${PriceConverter.convertPrice(double.parse('$productPrice'))}",
+                            productController.image
+                                ? widget.product.name!
+                                : "${widget.product.name!}\n${PriceConverter.convertPrice(double.parse('$productPrice'))}",
                             style: robotoRegular.copyWith(
                               fontWeight: FontWeight.bold,
                               fontSize: (width > 590 && width < 650)

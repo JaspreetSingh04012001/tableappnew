@@ -26,7 +26,7 @@ class RouteHelper {
   ];
 
   static void openDialog(BuildContext context, Widget child,
-      {bool isDismissible = true}) {
+      {bool isDismissible = true,AlignmentGeometry? alignment}) {
     !ResponsiveHelper.isTab(context)
         ? Get.bottomSheet(
             isDismissible: isDismissible,
@@ -48,7 +48,7 @@ class RouteHelper {
             barrierDismissible: isDismissible,
             builder: (BuildContext context) {
               return Dialog(
-                alignment: Alignment.centerLeft,
+                alignment: alignment,
                 backgroundColor: Colors.transparent,
                 child: child,
               );

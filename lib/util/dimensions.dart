@@ -18,10 +18,10 @@ class Dimensions {
           ? 12
           : 14;
   static double fontSizeLarge = Get.context!.width >= 1300
-      ? 23
+      ? 20
       : ResponsiveHelper.isSmallTab()
-          ? 16
-          : 18;
+          ? 14
+          : 16;
   static double fontSizeExtraLarge = Get.context!.width >= 1300
       ? 22
       : ResponsiveHelper.isSmallTab()
