@@ -50,11 +50,11 @@ class CustomButton extends StatelessWidget {
     return Center(
         child: SizedBox(
             width: width ?? Dimensions.webMaxWidth,
-            child: Padding(
-              padding: margin == null ? const EdgeInsets.all(0) : margin!,
-              child: TextButton(
-                onPressed: onPressed == null ? null : () => onPressed!(),
-                style: flatButtonStyle,
+            child: TextButton(
+              onPressed: onPressed == null ? null : () => onPressed!(),
+              style: flatButtonStyle,
+              child: Padding(
+                padding: margin == null ? const EdgeInsets.all(0) : margin!,
                 child:
                     Row(mainAxisAlignment: MainAxisAlignment.center, children: [
                   icon != null

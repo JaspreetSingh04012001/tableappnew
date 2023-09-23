@@ -90,7 +90,7 @@ class SalesController extends GetxController {
     }
 
     // Print the new date.
-    print("jass$sevenMonthsAgo");
+    print("jassDaee$sevenMonthsAgo");
 
     final DateFormat formatter = DateFormat('dd/MM/yyyy');
     final String formattednow = formatter.format(now).replaceAll("/", '-');
