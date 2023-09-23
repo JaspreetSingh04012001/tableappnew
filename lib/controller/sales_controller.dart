@@ -8,6 +8,7 @@ import '../util/app_constants.dart';
 
 class SalesController extends GetxController {
   final SalesRepo salesRepo;
+  bool loading = true;
   SalesController({required this.salesRepo});
   int? selectedIndex;
   String? from;
@@ -16,6 +17,8 @@ class SalesController extends GetxController {
   var selectedSale;
   List sales = [];
   void getSales() async {
+    loading = true;
+    update();
     DateTime yo = DateTime.now();
     final DateFormat formatter = DateFormat('dd/MM/yyyy');
     final String formatted = formatter.format(yo).replaceAll("/", '-');
@@ -27,14 +30,17 @@ class SalesController extends GetxController {
     print(sharedPreferences.getInt(AppConstants.branch));
     print(from ?? formatted);
     print(to ?? formatted);
-
+    selectedIndex = null;
     if (response.statusCode == 200) {
       sales = [...response.body["orders"]];
+      loading = false;
       update();
     }
   }
 
   today() async {
+    loading = true;
+    update();
     DateTime yo = DateTime.now();
     final DateFormat formatter = DateFormat('dd/MM/yyyy');
     final String formatted = formatter.format(yo).replaceAll("/", '-');
@@ -49,11 +55,14 @@ class SalesController extends GetxController {
 
     if (response.statusCode == 200) {
       sales = [...response.body["orders"]];
+      loading = false;
       update();
     }
   }
 
   week() async {
+    loading = true;
+    update();
     DateTime yo = DateTime.now();
 
     // Subtract one week from the current date.
@@ -72,11 +81,14 @@ class SalesController extends GetxController {
 
     if (response.statusCode == 200) {
       sales = [...response.body["orders"]];
+      loading = false;
       update();
     }
   }
 
   months() async {
+     loading = true;
+    update();
     DateTime now = DateTime.now();
 
     // Subtract seven months from the current date.
@@ -105,6 +117,8 @@ class SalesController extends GetxController {
 
     if (response.statusCode == 200) {
       sales = [...response.body["orders"]];
+       loading = false;
+   
       update();
     }
   }

@@ -10,6 +10,7 @@ import 'package:time_picker_spinner_pop_up/time_picker_spinner_pop_up.dart';
 
 import '../../../../helper/route_helper.dart';
 import '../../../base/animated_dialog.dart';
+import '../../../base/custom_loader.dart';
 import '../../order/widget/emailDialog.dart';
 import '../../order/widget/order_details_view.dart';
 
@@ -133,17 +134,17 @@ class _SalesState extends State<Sales> {
                             // Implement your logic with select dateTime
                           },
                         ),
-                        InkWell(
-                          onTap: () {
+                        IconButton(
+                          icon: Icon(
+                            Icons.search,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              selectedIndex = null;
+                            });
                             salesController.getSales();
                           },
-                          child: IconButton(
-                            icon: Icon(
-                              Icons.search,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            onPressed: () {},
-                          ),
                         ),
                       ],
                     ),
@@ -358,169 +359,178 @@ class _SalesState extends State<Sales> {
                         ? GetBuilder<OrderController>(
                             builder: (orderController) {
                             return Expanded(
-                              child: SingleChildScrollView(
-                                child: Column(
-                                  children: List.generate(
-                                    salesController.sales.length,
-                                    (index) => InkWell(
-                                      onTap: () {
-                                        salesController.selectedIndex = index;
-                                        salesController.selectedSale =
-                                            salesController.sales[index];
-                                        salesController.update();
-                                        orderController.setCurrentOrderId =
-                                            salesController.sales[index]
-                                                    ["order_id"]
-                                                .toString();
-                                        orderController.getCurrentOrder(
-                                          salesController.sales[index]
-                                                  ["order_id"]
-                                              .toString()
-                                              .replaceAll(
-                                                  '${'order'.tr}# ', ''),
-                                        );
-                                      },
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(
-                                            vertical: 2),
-                                        child: Container(
-                                          decoration: BoxDecoration(
-                                              color: (salesController
-                                                              .selectedIndex !=
-                                                          null &&
-                                                      salesController
-                                                              .selectedIndex ==
-                                                          index)
-                                                  ? Theme.of(context)
-                                                      .primaryColor
-                                                  : null,
-                                              boxShadow: const [
-                                                // BoxShadow(
-                                                //     color: Color.fromARGB(
-                                                //         255, 225, 224, 224),
-                                                //     spreadRadius: 1,
-                                                //     blurRadius: 5,
-                                                //     offset: Offset(0, 4))
-                                              ]),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                vertical: 2),
-                                            child: Row(
-                                              children: [
-                                                Expanded(
-                                                  flex: 1,
-                                                  child: Center(
-                                                    child: Text(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      "${salesController.sales[index]["order_id"]}",
-                                                      style: robotoMedium.copyWith(
-                                                          color: (salesController
-                                                                          .selectedIndex !=
-                                                                      null &&
-                                                                  salesController
-                                                                          .selectedIndex ==
-                                                                      index)
-                                                              ? Colors.white
-                                                              : null,
-                                                          fontSize: Dimensions
-                                                              .fontSizeDefault),
-                                                    ),
+                              child: salesController.loading
+                                  ? Center(
+                                      child: CustomLoader(
+                                          color:
+                                              Theme.of(context).primaryColor),
+                                    )
+                                  : SingleChildScrollView(
+                                      child: Column(
+                                        children: List.generate(
+                                          salesController.sales.length,
+                                          (index) => InkWell(
+                                            onTap: () {
+                                              salesController.selectedIndex =
+                                                  index;
+                                              salesController.selectedSale =
+                                                  salesController.sales[index];
+                                              salesController.update();
+                                              orderController
+                                                      .setCurrentOrderId =
+                                                  salesController.sales[index]
+                                                          ["order_id"]
+                                                      .toString();
+                                              orderController.getCurrentOrder(
+                                                salesController.sales[index]
+                                                        ["order_id"]
+                                                    .toString()
+                                                    .replaceAll(
+                                                        '${'order'.tr}# ', ''),
+                                              );
+                                            },
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 2),
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                    color: (salesController
+                                                                    .selectedIndex !=
+                                                                null &&
+                                                            salesController
+                                                                    .selectedIndex ==
+                                                                index)
+                                                        ? Theme.of(context)
+                                                            .primaryColor
+                                                        : null,
+                                                    boxShadow: const [
+                                                      // BoxShadow(
+                                                      //     color: Color.fromARGB(
+                                                      //         255, 225, 224, 224),
+                                                      //     spreadRadius: 1,
+                                                      //     blurRadius: 5,
+                                                      //     offset: Offset(0, 4))
+                                                    ]),
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(vertical: 2),
+                                                  child: Row(
+                                                    children: [
+                                                      Expanded(
+                                                        flex: 1,
+                                                        child: Center(
+                                                          child: Text(
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            "${salesController.sales[index]["order_id"]}",
+                                                            style: robotoMedium.copyWith(
+                                                                color: (salesController.selectedIndex !=
+                                                                            null &&
+                                                                        salesController.selectedIndex ==
+                                                                            index)
+                                                                    ? Colors
+                                                                        .white
+                                                                    : null,
+                                                                fontSize: Dimensions
+                                                                    .fontSizeDefault),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        flex: 1,
+                                                        child: Center(
+                                                          child: Text(
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            "${salesController.sales[index]["payment_status"] ?? ''}",
+                                                            style: robotoMedium.copyWith(
+                                                                color: (salesController.selectedIndex !=
+                                                                            null &&
+                                                                        salesController.selectedIndex ==
+                                                                            index)
+                                                                    ? Colors
+                                                                        .white
+                                                                    : null,
+                                                                fontSize: Dimensions
+                                                                    .fontSizeDefault),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        flex: 1,
+                                                        child: Center(
+                                                          child: Text(
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            "${salesController.sales[index]["order_status"]}",
+                                                            style: robotoMedium.copyWith(
+                                                                color: (salesController.selectedIndex !=
+                                                                            null &&
+                                                                        salesController.selectedIndex ==
+                                                                            index)
+                                                                    ? Colors
+                                                                        .white
+                                                                    : null,
+                                                                fontSize: Dimensions
+                                                                    .fontSizeDefault),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        flex: 1,
+                                                        child: Center(
+                                                          child: Text(
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            "\$ ${salesController.sales[index]["order_amount"]}",
+                                                            style: robotoMedium.copyWith(
+                                                                color: (salesController.selectedIndex !=
+                                                                            null &&
+                                                                        salesController.selectedIndex ==
+                                                                            index)
+                                                                    ? Colors
+                                                                        .white
+                                                                    : null,
+                                                                fontSize: Dimensions
+                                                                    .fontSizeDefault),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Center(
+                                                          child: Text(
+                                                            overflow:
+                                                                TextOverflow
+                                                                    .ellipsis,
+                                                            "${salesController.sales[index]["delivery_date"]} ${salesController.sales[index]["delivery_time"]}",
+                                                            style: robotoMedium.copyWith(
+                                                                color: (salesController.selectedIndex !=
+                                                                            null &&
+                                                                        salesController.selectedIndex ==
+                                                                            index)
+                                                                    ? Colors
+                                                                        .white
+                                                                    : null,
+                                                                fontSize: Dimensions
+                                                                    .fontSizeDefault),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
                                                   ),
                                                 ),
-                                                Expanded(
-                                                  flex: 1,
-                                                  child: Center(
-                                                    child: Text(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      "${salesController.sales[index]["payment_status"] ?? ''}",
-                                                      style: robotoMedium.copyWith(
-                                                          color: (salesController
-                                                                          .selectedIndex !=
-                                                                      null &&
-                                                                  salesController
-                                                                          .selectedIndex ==
-                                                                      index)
-                                                              ? Colors.white
-                                                              : null,
-                                                          fontSize: Dimensions
-                                                              .fontSizeDefault),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  flex: 1,
-                                                  child: Center(
-                                                    child: Text(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      "${salesController.sales[index]["order_status"]}",
-                                                      style: robotoMedium.copyWith(
-                                                          color: (salesController
-                                                                          .selectedIndex !=
-                                                                      null &&
-                                                                  salesController
-                                                                          .selectedIndex ==
-                                                                      index)
-                                                              ? Colors.white
-                                                              : null,
-                                                          fontSize: Dimensions
-                                                              .fontSizeDefault),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  flex: 1,
-                                                  child: Center(
-                                                    child: Text(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      "\$ ${salesController.sales[index]["order_amount"]}",
-                                                      style: robotoMedium.copyWith(
-                                                          color: (salesController
-                                                                          .selectedIndex !=
-                                                                      null &&
-                                                                  salesController
-                                                                          .selectedIndex ==
-                                                                      index)
-                                                              ? Colors.white
-                                                              : null,
-                                                          fontSize: Dimensions
-                                                              .fontSizeDefault),
-                                                    ),
-                                                  ),
-                                                ),
-                                                Expanded(
-                                                  flex: 2,
-                                                  child: Center(
-                                                    child: Text(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      "${salesController.sales[index]["delivery_date"]} ${salesController.sales[index]["delivery_time"]}",
-                                                      style: robotoMedium.copyWith(
-                                                          color: (salesController
-                                                                          .selectedIndex !=
-                                                                      null &&
-                                                                  salesController
-                                                                          .selectedIndex ==
-                                                                      index)
-                                                              ? Colors.white
-                                                              : null,
-                                                          fontSize: Dimensions
-                                                              .fontSizeDefault),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
+                                              ),
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                ),
-                              ),
                             );
                           })
                         : Expanded(

@@ -188,7 +188,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             padding: const EdgeInsets.symmetric(vertical: 10),
                             child: Wrap(
                                 children: List.generate(
-                                    10,
+                                    20,
                                     (index) => InkWell(
                                           onTap: () {
                                             setState(() {
@@ -241,7 +241,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
-                                                vertical: 4, horizontal: 4),
+                                                vertical: 7, horizontal: 7),
                                             child: Container(
                                                 decoration: BoxDecoration(
                                                     border: Border.all(
@@ -254,7 +254,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                         (index == selectedindex)
                                                             ? Theme.of(context)
                                                                 .primaryColor
-                                                            : Colors.white),
+                                                            : null),
                                                 child: Padding(
                                                   padding: const EdgeInsets
                                                           .symmetric(
@@ -270,7 +270,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                                 : null,
                                                             //  color: Colors.white,
                                                             fontSize: Dimensions
-                                                                .fontSizeLarge),
+                                                                .fontSizeExtraLarge),
                                                   ),
                                                 )),
                                           ),
