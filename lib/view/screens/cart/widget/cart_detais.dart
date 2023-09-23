@@ -802,19 +802,6 @@ class _CartDetailsState extends State<CartDetails> {
                                         ResponsiveHelper.isSmallTab() ? 40 : 50,
                                     buttonText: 'place_order'.tr,
                                     onPressed: () {
-                                      // if (splashController.getTableId() == -1) {
-                                      //   showCustomSnackBar(
-                                      //       'please_input_table_number'.tr);
-                                      // } else if (cartController.peopleNumber ==
-                                      //     null) {
-                                      //   showCustomSnackBar(
-                                      //       'please_enter_people_number'.tr);
-                                      // }
-                                      // else
-                                      // if (cartController.customerName == null) {
-                                      //   showCustomSnackBar(
-                                      //       'please enter customer name');
-                                      // } else
                                       if (cartController.cartList.isEmpty) {
                                         showCustomSnackBar(
                                             'please_add_food_to_order'.tr);

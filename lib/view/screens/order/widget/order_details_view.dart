@@ -872,14 +872,14 @@ class OrderDetailsView extends StatelessWidget {
                                                   PriceConverter.convertPrice(
                                                       itemsPrice),
                                             ),
-                                            PriceWithType(
-                                                type: 'discount'.tr,
-                                                amount:
-                                                    '- ${PriceConverter.convertPrice(discount)}'),
-                                            PriceWithType(
-                                                type: 'vat_tax'.tr,
-                                                amount:
-                                                    '+ ${PriceConverter.convertPrice(tax)}'),
+                                            // PriceWithType(
+                                            //     type: 'discount'.tr,
+                                            //     amount:
+                                            //         '- ${PriceConverter.convertPrice(discount)}'),
+                                            // PriceWithType(
+                                            //     type: 'vat_tax'.tr,
+                                            //     amount:
+                                            //         '+ ${PriceConverter.convertPrice(tax)}'),
                                             PriceWithType(
                                                 type: 'addons'.tr,
                                                 amount:

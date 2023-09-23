@@ -217,69 +217,72 @@ class _SettingWidgetState extends State<SettingWidget> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(
-                child: Text(
-                  widget.formSplash ? 'login'.tr : 'logout'.tr,
-                  style: robotoRegular.copyWith(
-                      fontSize: Dimensions.fontSizeLarge),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              SizedBox(height: Dimensions.paddingSizeExtraLarge),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      widget.formSplash
-                          ? ModernTextField(
-                              email: email,
-                              hintText: 'Email',
-                              prefixIcon: Icons.email,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter an email.';
-                                }
-                                if (!value.contains('@')) {
-                                  return 'Please enter a valid email address.';
-                                }
-                                return null;
-                              },
-                            )
-                          : Container(),
-                      widget.formSplash
-                          ? const SizedBox(height: 16.0)
-                          : Container(),
-                      widget.formSplash
-                          ? ModernTextField1(
-                              password: password,
-                              hintText: 'Password',
-                              prefixIcon: Icons.lock,
-                              obscureText: true,
-                              validator: (value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'Please enter a password.';
-                                }
-                                if (value.length < 6) {
-                                  return 'Password must be at least 6 characters long.';
-                                }
-                                if (!isPasswordValid) {
-                                  return 'Incorrect password.';
-                                }
-                                return null;
-                              },
-                            )
-                          : Container()
-                      // const SizedBox(height: 16.0),
-                      // ElevatedButton(
-                      //   onPressed: () async {},
-                      //   child: const Text('Login'),
-                      // ),
-                    ],
+              if (widget.formSplash)
+                Center(
+                  child: Text(
+                    'login'.tr,
+                    style: robotoRegular.copyWith(
+                        fontSize: Dimensions.fontSizeLarge),
+                    textAlign: TextAlign.center,
                   ),
                 ),
-              ),
+              if (widget.formSplash)
+                SizedBox(height: Dimensions.paddingSizeExtraLarge),
+              if (widget.formSplash)
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: [
+                        widget.formSplash
+                            ? ModernTextField(
+                                email: email,
+                                hintText: 'Email',
+                                prefixIcon: Icons.email,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter an email.';
+                                  }
+                                  if (!value.contains('@')) {
+                                    return 'Please enter a valid email address.';
+                                  }
+                                  return null;
+                                },
+                              )
+                            : Container(),
+                        widget.formSplash
+                            ? const SizedBox(height: 16.0)
+                            : Container(),
+                        widget.formSplash
+                            ? ModernTextField1(
+                                password: password,
+                                hintText: 'Password',
+                                prefixIcon: Icons.lock,
+                                obscureText: true,
+                                validator: (value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'Please enter a password.';
+                                  }
+                                  if (value.length < 6) {
+                                    return 'Password must be at least 6 characters long.';
+                                  }
+                                  if (!isPasswordValid) {
+                                    return 'Incorrect password.';
+                                  }
+                                  return null;
+                                },
+                              )
+                            : Container()
+                        // const SizedBox(height: 16.0),
+                        // ElevatedButton(
+                        //   onPressed: () async {},
+                        //   child: const Text('Login'),
+                        // ),
+                      ],
+                    ),
+                  ),
+                ),
               // Container(
               //   height: 40,
               //   padding: EdgeInsets.symmetric(

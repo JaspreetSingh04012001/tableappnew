@@ -109,552 +109,590 @@ class _PaymentScreenState extends State<PaymentScreen> {
     BuildContext context,
     void Function(bool isSuccess, String message, String orderID) callback,
   ) {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          SizedBox(height: Dimensions.paddingSizeExtraLarge),
-          Text(
-            overflow: TextOverflow.ellipsis,
-            'paid_by'.tr,
-            style: robotoRegular,
-          ),
-          FilterButtonWidget(
-              isSmall: Get.width < 390,
-              items: orderController.paymentMethodList,
-              type: orderController.selectedMethod,
-              isBorder: true,
-              onSelected: (method) {
-                if (method == 'card') {
-                  _amountTextController.text = PriceConverter.convertPrice(
-                      orderController.placeOrderBody!.orderAmount!);
-                } else {
-                  _splitCardamountTextController.clear();
-                  _amountTextController.clear();
-                  _changeAmount = 0;
-                }
-                orderController.setSelectedMethod(method);
-              }),
-          if (orderController.selectedMethod == 'card')
-            Image.asset(Images.possImage, height: Get.height * 0.2),
-          SizedBox(
-            height: Dimensions.paddingSizeLarge,
-          ),
-          Text(
-              overflow: TextOverflow.ellipsis,
-              'payment_pending'.tr,
-              style: robotoRegular),
-          SizedBox(
-            height: Dimensions.paddingSizeLarge,
-          ),
-          Padding(
-            padding: ResponsiveHelper.isTab(context)
-                ? EdgeInsets.symmetric(horizontal: Get.width * 0.04)
-                : EdgeInsets.all(Dimensions.paddingSizeDefault),
-            child: Container(
-              padding: EdgeInsets.symmetric(
-                  vertical: Dimensions.paddingSizeDefault,
-                  horizontal: Dimensions.paddingSizeDefault),
-              margin: EdgeInsets.only(bottom: Dimensions.paddingSizeExtraLarge),
-              decoration: BoxDecoration(
-                color: Theme.of(context).canvasColor,
-                borderRadius: BorderRadius.circular(10),
-                boxShadow: [
-                  BoxShadow(
-                    color: Theme.of(context)
-                        .textTheme
-                        .bodyLarge!
-                        .color!
-                        .withOpacity(0.05),
-                    offset: const Offset(0, 2.75),
-                    blurRadius: 6.86,
-                  )
-                ],
-              ),
-              child: Column(
-                children: [
-                  // if (ResponsiveHelper.isTab(context))
-                  // SizedBox(
-                  //   height: Dimensions.paddingSizeExtraLarge,
-                  // ),
-                  if (orderController.selectedMethod == 'cash' ||
-                      orderController.selectedMethod == 'split')
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 10),
-                      child: Wrap(
-                          children: List.generate(
-                              10,
-                              (index) => InkWell(
-                                    onTap: () {
-                                      setState(() {
-                                        // if (selectedindex != null) {
-                                        // selectedindex = null;
-                                        //  _amountTextController.
-                                        // _amountTextController
-                                        //     .text = (double.parse(
-                                        //             _amountTextController
-                                        //                 .text) +
-                                        //         double.parse(
-                                        //             "${(index + 1) * 10}"))
-                                        //     .toString();
-                                        // if (double.parse(
-                                        //         _amountTextController.text) >
-                                        //     Get.find<CartController>()
-                                        //         .totalAmount) {
-                                        //   _changeAmount = (Get.find<
-                                        //                   CartController>()
-                                        //               .totalAmount -
-                                        //           double.parse(
-                                        //               _amountTextController
-                                        //                   .text)) *
-                                        //       -1.0;
-                                        // } else {
-                                        //   _changeAmount = 0;
-                                        // }
-                                        // orderController.update();
-                                        //   } else {
-                                        selectedindex = index;
-                                        _amountTextController.text =
-                                            "${(index + 1) * 5}";
-                                        if (double.parse(
-                                                _amountTextController.text) >
+    return orderController.isLoading
+        ? Center(
+            child: CustomLoader(color: Theme.of(context).primaryColor),
+          )
+        : SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(height: Dimensions.paddingSizeExtraLarge),
+                Text(
+                  overflow: TextOverflow.ellipsis,
+                  'paid_by'.tr,
+                  style: robotoRegular,
+                ),
+                FilterButtonWidget(
+                    isSmall: Get.width < 390,
+                    items: orderController.paymentMethodList,
+                    type: orderController.selectedMethod,
+                    isBorder: true,
+                    onSelected: (method) {
+                      if (method == 'card') {
+                        _amountTextController.text =
+                            PriceConverter.convertPrice(
+                                orderController.placeOrderBody!.orderAmount!);
+                      } else {
+                        _splitCardamountTextController.clear();
+                        _amountTextController.clear();
+                        _changeAmount = 0;
+                      }
+                      orderController.setSelectedMethod(method);
+                    }),
+                if (orderController.selectedMethod == 'card')
+                  Image.asset(Images.possImage, height: Get.height * 0.2),
+                SizedBox(
+                  height: Dimensions.paddingSizeLarge,
+                ),
+                Text(
+                    overflow: TextOverflow.ellipsis,
+                    'payment_pending'.tr,
+                    style: robotoRegular),
+                SizedBox(
+                  height: Dimensions.paddingSizeLarge,
+                ),
+                Padding(
+                  padding: ResponsiveHelper.isTab(context)
+                      ? EdgeInsets.symmetric(horizontal: Get.width * 0.04)
+                      : EdgeInsets.all(Dimensions.paddingSizeDefault),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(
+                        vertical: Dimensions.paddingSizeDefault,
+                        horizontal: Dimensions.paddingSizeDefault),
+                    margin: EdgeInsets.only(
+                        bottom: Dimensions.paddingSizeExtraLarge),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).canvasColor,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Theme.of(context)
+                              .textTheme
+                              .bodyLarge!
+                              .color!
+                              .withOpacity(0.05),
+                          offset: const Offset(0, 2.75),
+                          blurRadius: 6.86,
+                        )
+                      ],
+                    ),
+                    child: Column(
+                      children: [
+                        // if (ResponsiveHelper.isTab(context))
+                        // SizedBox(
+                        //   height: Dimensions.paddingSizeExtraLarge,
+                        // ),
+                        if (orderController.selectedMethod == 'cash' ||
+                            orderController.selectedMethod == 'split')
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            child: Wrap(
+                                children: List.generate(
+                                    10,
+                                    (index) => InkWell(
+                                          onTap: () {
+                                            setState(() {
+                                              // if (selectedindex != null) {
+                                              // selectedindex = null;
+                                              //  _amountTextController.
+                                              // _amountTextController
+                                              //     .text = (double.parse(
+                                              //             _amountTextController
+                                              //                 .text) +
+                                              //         double.parse(
+                                              //             "${(index + 1) * 10}"))
+                                              //     .toString();
+                                              // if (double.parse(
+                                              //         _amountTextController.text) >
+                                              //     Get.find<CartController>()
+                                              //         .totalAmount) {
+                                              //   _changeAmount = (Get.find<
+                                              //                   CartController>()
+                                              //               .totalAmount -
+                                              //           double.parse(
+                                              //               _amountTextController
+                                              //                   .text)) *
+                                              //       -1.0;
+                                              // } else {
+                                              //   _changeAmount = 0;
+                                              // }
+                                              // orderController.update();
+                                              //   } else {
+                                              selectedindex = index;
+                                              _amountTextController.text =
+                                                  "${(index + 1) * 5}";
+                                              if (double.parse(
+                                                      _amountTextController
+                                                          .text) >
+                                                  Get.find<CartController>()
+                                                      .totalAmount) {
+                                                _changeAmount = (Get.find<
+                                                                CartController>()
+                                                            .totalAmount -
+                                                        double.parse(
+                                                            _amountTextController
+                                                                .text)) *
+                                                    -1.0;
+                                              } else {
+                                                _changeAmount = 0;
+                                              }
+                                              orderController.update();
+                                            });
+                                          },
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                vertical: 4, horizontal: 4),
+                                            child: Container(
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: Theme.of(context)
+                                                            .primaryColor),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            4),
+                                                    color:
+                                                        (index == selectedindex)
+                                                            ? Theme.of(context)
+                                                                .primaryColor
+                                                            : Colors.white),
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                          .symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 8),
+                                                  child: Text(
+                                                    "\$${(index + 1) * 5}",
+                                                    style:
+                                                        robotoRegular.copyWith(
+                                                            color: (index ==
+                                                                    selectedindex)
+                                                                ? Colors.white
+                                                                : null,
+                                                            //  color: Colors.white,
+                                                            fontSize: Dimensions
+                                                                .fontSizeLarge),
+                                                  ),
+                                                )),
+                                          ),
+                                        ))),
+                          ),
+                        if (orderController.selectedMethod == 'cash' ||
+                            orderController.selectedMethod == 'card')
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: Dimensions.paddingSizeLarge),
+                            child: Row(
+                              children: [
+                                SizedBox(
+                                    width: 100,
+                                    child: Text(
+                                        overflow: TextOverflow.ellipsis,
+                                        'paid_amount'.tr)),
+                                SizedBox(width: Dimensions.paddingSizeLarge),
+                                Expanded(
+                                  child: SizedBox(
+                                    height: Get.width < 390
+                                        ? 30
+                                        : ResponsiveHelper.isSmallTab()
+                                            ? 40
+                                            : ResponsiveHelper.isTab(context)
+                                                ? 50
+                                                : 40,
+                                    child: IgnorePointer(
+                                      ignoring:
+                                          orderController.selectedMethod !=
+                                              'cash',
+                                      child: CustomTextField(
+                                        borderColor: Theme.of(context)
+                                            .primaryColor
+                                            .withOpacity(0.4),
+                                        hintText: 'enter_amount'.tr,
+                                        controller: _amountTextController,
+                                        inputFormatter: [
+                                          FilteringTextInputFormatter.allow(
+                                              RegExp("[0-9]")),
+                                          LengthLimitingTextInputFormatter(10),
+                                        ],
+                                        hintStyle: robotoRegular.copyWith(
+                                            fontSize: Dimensions.fontSizeSmall),
+                                        onChanged: (value) {
+                                          if (double.parse(value) >
+                                              Get.find<CartController>()
+                                                  .totalAmount) {
+                                            _changeAmount =
+                                                (Get.find<CartController>()
+                                                            .totalAmount -
+                                                        double.parse(value)) *
+                                                    -1.0;
+                                          } else {
+                                            _changeAmount = 0;
+                                          }
+                                          orderController.update();
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        if (orderController.selectedMethod == 'split')
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: Dimensions.paddingSizeLarge),
+                            child: Row(
+                              children: [
+                                const SizedBox(
+                                    width: 100,
+                                    child: Text(
+                                        overflow: TextOverflow.ellipsis,
+                                        "Cash")),
+                                SizedBox(width: Dimensions.paddingSizeLarge),
+                                Expanded(
+                                  child: SizedBox(
+                                    height: Get.width < 390
+                                        ? 30
+                                        : ResponsiveHelper.isSmallTab()
+                                            ? 40
+                                            : ResponsiveHelper.isTab(context)
+                                                ? 50
+                                                : 40,
+                                    child: CustomTextField(
+                                      borderColor: Theme.of(context)
+                                          .primaryColor
+                                          .withOpacity(0.4),
+                                      hintText: 'enter_amount'.tr,
+                                      controller: _amountTextController,
+                                      inputFormatter: [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp("[0-9]")),
+                                        LengthLimitingTextInputFormatter(10),
+                                      ],
+                                      hintStyle: robotoRegular.copyWith(
+                                          fontSize: Dimensions.fontSizeSmall),
+                                      onChanged: (value) {
+                                        if ((double.parse(value) +
+                                                double.parse(
+                                                    _splitCardamountTextController
+                                                        .text)) >
                                             Get.find<CartController>()
                                                 .totalAmount) {
-                                          _changeAmount =
-                                              (Get.find<CartController>()
-                                                          .totalAmount -
+                                          _changeAmount = (Get.find<
+                                                          CartController>()
+                                                      .totalAmount -
+                                                  (double.parse(value) +
                                                       double.parse(
-                                                          _amountTextController
-                                                              .text)) *
-                                                  -1.0;
+                                                          _splitCardamountTextController
+                                                              .text))) *
+                                              -1.0;
                                         } else {
                                           _changeAmount = 0;
                                         }
                                         orderController.update();
-                                      });
-                                    },
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                          vertical: 4, horizontal: 4),
-                                      child: Container(
-                                          decoration: BoxDecoration(
-                                              border: Border.all(
-                                                  color: Theme.of(context)
-                                                      .primaryColor),
-                                              borderRadius:
-                                                  BorderRadius.circular(4),
-                                              color: (index == selectedindex)
-                                                  ? Theme.of(context)
-                                                      .primaryColor
-                                                  : Colors.white),
-                                          child: Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 12, vertical: 8),
-                                            child: Text(
-                                              "\$${(index + 1) * 5}",
-                                              style: robotoRegular.copyWith(
-                                                  color:
-                                                      (index == selectedindex)
-                                                          ? Colors.white
-                                                          : null,
-                                                  //  color: Colors.white,
-                                                  fontSize:
-                                                      Dimensions.fontSizeLarge),
-                                            ),
-                                          )),
+                                      },
                                     ),
-                                  ))),
-                    ),
-                  if (orderController.selectedMethod == 'cash' ||
-                      orderController.selectedMethod == 'card')
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.paddingSizeLarge),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                              width: 100,
-                              child: Text(
-                                  overflow: TextOverflow.ellipsis,
-                                  'paid_amount'.tr)),
-                          SizedBox(width: Dimensions.paddingSizeLarge),
-                          Expanded(
-                            child: SizedBox(
-                              height: Get.width < 390
-                                  ? 30
-                                  : ResponsiveHelper.isSmallTab()
-                                      ? 40
-                                      : ResponsiveHelper.isTab(context)
-                                          ? 50
-                                          : 40,
-                              child: IgnorePointer(
-                                ignoring:
-                                    orderController.selectedMethod != 'cash',
-                                child: CustomTextField(
-                                  borderColor: Theme.of(context)
-                                      .primaryColor
-                                      .withOpacity(0.4),
-                                  hintText: 'enter_amount'.tr,
-                                  controller: _amountTextController,
-                                  inputFormatter: [
-                                    FilteringTextInputFormatter.allow(
-                                        RegExp("[0-9]")),
-                                    LengthLimitingTextInputFormatter(10),
-                                  ],
-                                  hintStyle: robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeSmall),
-                                  onChanged: (value) {
-                                    if (double.parse(value) >
-                                        Get.find<CartController>()
-                                            .totalAmount) {
-                                      _changeAmount =
-                                          (Get.find<CartController>()
-                                                      .totalAmount -
-                                                  double.parse(value)) *
-                                              -1.0;
-                                    } else {
-                                      _changeAmount = 0;
-                                    }
-                                    orderController.update();
-                                  },
+                                  ),
                                 ),
-                              ),
+                              ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  if (orderController.selectedMethod == 'split')
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.paddingSizeLarge),
-                      child: Row(
-                        children: [
-                          const SizedBox(
-                              width: 100,
-                              child: Text(
-                                  overflow: TextOverflow.ellipsis, "Cash")),
-                          SizedBox(width: Dimensions.paddingSizeLarge),
-                          Expanded(
-                            child: SizedBox(
-                              height: Get.width < 390
-                                  ? 30
-                                  : ResponsiveHelper.isSmallTab()
-                                      ? 40
-                                      : ResponsiveHelper.isTab(context)
-                                          ? 50
-                                          : 40,
-                              child: CustomTextField(
-                                borderColor: Theme.of(context)
-                                    .primaryColor
-                                    .withOpacity(0.4),
-                                hintText: 'enter_amount'.tr,
-                                controller: _amountTextController,
-                                inputFormatter: [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp("[0-9]")),
-                                  LengthLimitingTextInputFormatter(10),
-                                ],
-                                hintStyle: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeSmall),
-                                onChanged: (value) {
-                                  if ((double.parse(value) +
-                                          double.parse(
-                                              _splitCardamountTextController
-                                                  .text)) >
-                                      Get.find<CartController>().totalAmount) {
-                                    _changeAmount = (Get.find<CartController>()
-                                                .totalAmount -
-                                            (double.parse(value) +
-                                                double.parse(
-                                                    _splitCardamountTextController
-                                                        .text))) *
-                                        -1.0;
-                                  } else {
-                                    _changeAmount = 0;
-                                  }
-                                  orderController.update();
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  SizedBox(height: Dimensions.paddingSizeLarge),
-                  if (orderController.selectedMethod == 'split')
-                    Padding(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: Dimensions.paddingSizeLarge),
-                      child: Row(
-                        children: [
-                          const SizedBox(
-                              width: 100,
-                              child: Text(
-                                  overflow: TextOverflow.ellipsis, "Card")),
-                          SizedBox(width: Dimensions.paddingSizeLarge),
-                          Expanded(
-                            child: SizedBox(
-                              height: Get.width < 390
-                                  ? 30
-                                  : ResponsiveHelper.isSmallTab()
-                                      ? 40
-                                      : ResponsiveHelper.isTab(context)
-                                          ? 50
-                                          : 40,
-                              child: CustomTextField(
-                                borderColor: Theme.of(context)
-                                    .primaryColor
-                                    .withOpacity(0.4),
-                                hintText: 'enter_amount'.tr,
-                                controller: _splitCardamountTextController,
-                                inputFormatter: [
-                                  FilteringTextInputFormatter.allow(
-                                      RegExp("[0-9]")),
-                                  LengthLimitingTextInputFormatter(10),
-                                ],
-                                hintStyle: robotoRegular.copyWith(
-                                    fontSize: Dimensions.fontSizeSmall),
-                                onChanged: (value) {
-                                  if ((double.parse(value) +
-                                          double.parse(
-                                              _amountTextController.text)) >
-                                      Get.find<CartController>().totalAmount) {
-                                    _changeAmount = (Get.find<CartController>()
-                                                .totalAmount -
-                                            (double.parse(value) +
+                        SizedBox(height: Dimensions.paddingSizeLarge),
+                        if (orderController.selectedMethod == 'split')
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: Dimensions.paddingSizeLarge),
+                            child: Row(
+                              children: [
+                                const SizedBox(
+                                    width: 100,
+                                    child: Text(
+                                        overflow: TextOverflow.ellipsis,
+                                        "Card")),
+                                SizedBox(width: Dimensions.paddingSizeLarge),
+                                Expanded(
+                                  child: SizedBox(
+                                    height: Get.width < 390
+                                        ? 30
+                                        : ResponsiveHelper.isSmallTab()
+                                            ? 40
+                                            : ResponsiveHelper.isTab(context)
+                                                ? 50
+                                                : 40,
+                                    child: CustomTextField(
+                                      borderColor: Theme.of(context)
+                                          .primaryColor
+                                          .withOpacity(0.4),
+                                      hintText: 'enter_amount'.tr,
+                                      controller:
+                                          _splitCardamountTextController,
+                                      inputFormatter: [
+                                        FilteringTextInputFormatter.allow(
+                                            RegExp("[0-9]")),
+                                        LengthLimitingTextInputFormatter(10),
+                                      ],
+                                      hintStyle: robotoRegular.copyWith(
+                                          fontSize: Dimensions.fontSizeSmall),
+                                      onChanged: (value) {
+                                        if ((double.parse(value) +
                                                 double.parse(
                                                     _amountTextController
-                                                        .text))) *
-                                        -1.0;
-                                  } else {
-                                    _changeAmount = 0;
-                                  }
-                                  orderController.update();
-                                },
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  if (!ResponsiveHelper.isTab(context))
-                    SizedBox(
-                      height: Dimensions.paddingSizeDefault,
-                    ),
-                  !ResponsiveHelper.isTab(context)
-                      ? Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: Dimensions.paddingSizeLarge),
-                          child: Row(
-                            children: [
-                              Flexible(
-                                  child: SizedBox(
-                                      width: 100,
-                                      child: Text(
-                                          overflow: TextOverflow.ellipsis,
-                                          'previous_due'.tr))),
-                              SizedBox(width: Dimensions.paddingSizeExtraLarge),
-                              Expanded(
-                                child: Text(
-                                    overflow: TextOverflow.ellipsis,
-                                    PriceConverter.convertPrice(
-                                        orderController.previousDueAmount())),
-                              ),
-                            ],
-                          ),
-                        )
-                      : const SizedBox(),
-                  if (!ResponsiveHelper.isTab(context))
-                    SizedBox(
-                      height: Dimensions.paddingSizeDefault,
-                    ),
-                  !ResponsiveHelper.isTab(context)
-                      ? Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: Dimensions.paddingSizeLarge),
-                          child: Row(
-                            children: [
-                              Flexible(
-                                  child: SizedBox(
-                                      width: 100,
-                                      child: Text(
-                                          overflow: TextOverflow.ellipsis,
-                                          'current_amount'.tr))),
-                              SizedBox(width: Dimensions.paddingSizeExtraLarge),
-                              Expanded(
-                                child: Text(
-                                    overflow: TextOverflow.ellipsis,
-                                    PriceConverter.convertPrice(
-                                        _currentAmount)),
-                              ),
-                            ],
-                          ),
-                        )
-                      : const SizedBox(),
-                  if (!ResponsiveHelper.isTab(context))
-                    SizedBox(
-                      height: Dimensions.paddingSizeDefault,
-                    ),
-                  !ResponsiveHelper.isTab(context)
-                      ? Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: Dimensions.paddingSizeSmall),
-                          child: Row(
-                            children: [
-                              Flexible(
-                                  child: SizedBox(
-                                      width: 100,
-                                      child: Text(
-                                          overflow: TextOverflow.ellipsis,
-                                          'payable_amount'.tr))),
-                              SizedBox(width: Dimensions.paddingSizeExtraLarge),
-                              Expanded(
-                                child: Text(
-                                    overflow: TextOverflow.ellipsis,
-                                    PriceConverter.convertPrice(
-                                        _payableAmount)),
-                              ),
-                            ],
-                          ),
-                        )
-                      : const SizedBox(),
-                  SizedBox(
-                    height: Dimensions.paddingSizeDefault,
-                  ),
-                  orderController.selectedMethod == 'cash' ||
-                          orderController.selectedMethod == 'split'
-                      ? Padding(
-                          padding: EdgeInsets.symmetric(
-                              horizontal: Dimensions.paddingSizeLarge),
-                          child: Row(
-                            children: [
-                              Flexible(
-                                  child: SizedBox(
-                                      width: 100,
-                                      child: Text(
-                                          overflow: TextOverflow.ellipsis,
-                                          'change'.tr))),
-                              SizedBox(width: Dimensions.paddingSizeExtraLarge),
-                              Expanded(
-                                child: Text(
-                                    overflow: TextOverflow.ellipsis,
-                                    PriceConverter.convertPrice(_changeAmount)),
-                              ),
-                            ],
-                          ),
-                        )
-                      : const SizedBox(),
-                  SizedBox(
-                    height: Dimensions.paddingSizeExtraLarge,
-                  ),
-                  orderController.isLoading
-                      ? Center(
-                          child: CustomLoader(
-                              color: Theme.of(context).primaryColor),
-                        )
-                      : Row(
-                          children: [
-                            GetBuilder<PrinterController>(
-                                builder: (printerController) {
-                              return printerController.connected
-                                  ? IconButton(
-                                      onPressed:
-                                          printerController.openDrawerOnClick,
-                                      icon: Icon(
-                                        Icons.electric_bolt_rounded,
-                                        color: Theme.of(context).primaryColor,
-                                      ))
-                                  : Container();
-                            }),
-                            Expanded(
-                              child: CustomButton(
-                                height: ResponsiveHelper.isSmallTab()
-                                    ? 40
-                                    : ResponsiveHelper.isTab(context)
-                                        ? 50
-                                        : 40,
-                                transparent: true,
-                                buttonText: 'pay_after_eating'.tr,
-                                fontSize: Get.width < 390 ? 12 : null,
-                                onPressed: () {
-                                  orderController.placeOrder(
-                                    orderController.placeOrderBody!.copyWith(
-                                      paymentStatus: 'unpaid',
-                                      paymentMethod: '',
-                                      previousDue:
-                                          orderController.previousDueAmount(),
+                                                        .text)) >
+                                            Get.find<CartController>()
+                                                .totalAmount) {
+                                          _changeAmount = (Get.find<
+                                                          CartController>()
+                                                      .totalAmount -
+                                                  (double.parse(value) +
+                                                      double.parse(
+                                                          _amountTextController
+                                                              .text))) *
+                                              -1.0;
+                                        } else {
+                                          _changeAmount = 0;
+                                        }
+                                        orderController.update();
+                                      },
                                     ),
-                                    callback,
-                                    '0',
-                                    0,
-                                  );
-                                },
-                              ),
+                                  ),
+                                ),
+                              ],
                             ),
-                            SizedBox(
-                              width: Dimensions.paddingSizeLarge,
-                            ),
-                            Expanded(
-                              child: CustomButton(
-                                height: ResponsiveHelper.isSmallTab()
-                                    ? 40
-                                    : ResponsiveHelper.isTab(context)
-                                        ? 50
-                                        : 40,
-                                buttonText: 'confirm_payment'.tr,
-                                fontSize: Get.width < 390 ? 12 : null,
-                                onPressed: () {
-                                  if ((orderController.selectedMethod ==
-                                              'cash' ||
-                                          orderController.selectedMethod ==
-                                              'split') &&
-                                      _amountTextController.text.isEmpty) {
-                                    showCustomSnackBar(
-                                        'please_enter_your_amount'.tr);
-                                  } else if (orderController.selectedMethod ==
-                                          'cash' &&
-                                      orderController
-                                              .placeOrderBody!.orderAmount! >
-                                          int.parse(
-                                              _amountTextController.text)) {
-                                    showCustomSnackBar(
-                                        'you_need_pay_more_amount'.tr);
-                                  } else {
-                                    orderController.placeOrder(
-                                      orderController.placeOrderBody!.copyWith(
-                                        paymentStatus: 'paid',
-                                        paymentMethod:
-                                            orderController.selectedMethod,
-                                        card:
-                                            _splitCardamountTextController.text,
-                                        cash: _amountTextController.text,
-                                        previousDue:
-                                            orderController.previousDueAmount(),
-                                      ),
-                                      callback,
-                                      _amountTextController.text,
-                                      _changeAmount,
-                                    );
-                                  }
-                                },
-                              ),
-                            ),
-                          ],
+                          ),
+                        if (!ResponsiveHelper.isTab(context))
+                          SizedBox(
+                            height: Dimensions.paddingSizeDefault,
+                          ),
+                        !ResponsiveHelper.isTab(context)
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: Dimensions.paddingSizeLarge),
+                                child: Row(
+                                  children: [
+                                    Flexible(
+                                        child: SizedBox(
+                                            width: 100,
+                                            child: Text(
+                                                overflow: TextOverflow.ellipsis,
+                                                'previous_due'.tr))),
+                                    SizedBox(
+                                        width:
+                                            Dimensions.paddingSizeExtraLarge),
+                                    Expanded(
+                                      child: Text(
+                                          overflow: TextOverflow.ellipsis,
+                                          PriceConverter.convertPrice(
+                                              orderController
+                                                  .previousDueAmount())),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox(),
+                        if (!ResponsiveHelper.isTab(context))
+                          SizedBox(
+                            height: Dimensions.paddingSizeDefault,
+                          ),
+                        !ResponsiveHelper.isTab(context)
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: Dimensions.paddingSizeLarge),
+                                child: Row(
+                                  children: [
+                                    Flexible(
+                                        child: SizedBox(
+                                            width: 100,
+                                            child: Text(
+                                                overflow: TextOverflow.ellipsis,
+                                                'current_amount'.tr))),
+                                    SizedBox(
+                                        width:
+                                            Dimensions.paddingSizeExtraLarge),
+                                    Expanded(
+                                      child: Text(
+                                          overflow: TextOverflow.ellipsis,
+                                          PriceConverter.convertPrice(
+                                              _currentAmount)),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox(),
+                        if (!ResponsiveHelper.isTab(context))
+                          SizedBox(
+                            height: Dimensions.paddingSizeDefault,
+                          ),
+                        !ResponsiveHelper.isTab(context)
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: Dimensions.paddingSizeSmall),
+                                child: Row(
+                                  children: [
+                                    Flexible(
+                                        child: SizedBox(
+                                            width: 100,
+                                            child: Text(
+                                                overflow: TextOverflow.ellipsis,
+                                                'payable_amount'.tr))),
+                                    SizedBox(
+                                        width:
+                                            Dimensions.paddingSizeExtraLarge),
+                                    Expanded(
+                                      child: Text(
+                                          overflow: TextOverflow.ellipsis,
+                                          PriceConverter.convertPrice(
+                                              _payableAmount)),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox(),
+                        SizedBox(
+                          height: Dimensions.paddingSizeDefault,
                         ),
-                  if (ResponsiveHelper.isTab(context))
-                    SizedBox(
-                      height: Dimensions.paddingSizeExtraLarge,
+                        orderController.selectedMethod == 'cash' ||
+                                orderController.selectedMethod == 'split'
+                            ? Padding(
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: Dimensions.paddingSizeLarge),
+                                child: Row(
+                                  children: [
+                                    Flexible(
+                                        child: SizedBox(
+                                            width: 100,
+                                            child: Text(
+                                                overflow: TextOverflow.ellipsis,
+                                                'change'.tr))),
+                                    SizedBox(
+                                        width:
+                                            Dimensions.paddingSizeExtraLarge),
+                                    Expanded(
+                                      child: Text(
+                                          overflow: TextOverflow.ellipsis,
+                                          PriceConverter.convertPrice(
+                                              _changeAmount)),
+                                    ),
+                                  ],
+                                ),
+                              )
+                            : const SizedBox(),
+                        SizedBox(
+                          height: Dimensions.paddingSizeExtraLarge,
+                        ),
+                        orderController.isLoading
+                            ? Center(
+                                child: CustomLoader(
+                                    color: Theme.of(context).primaryColor),
+                              )
+                            : Row(
+                                children: [
+                                  GetBuilder<PrinterController>(
+                                      builder: (printerController) {
+                                    return printerController.connected
+                                        ? IconButton(
+                                            onPressed: printerController
+                                                .openDrawerOnClick,
+                                            icon: Icon(
+                                              Icons.electric_bolt_rounded,
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                            ))
+                                        : Container();
+                                  }),
+                                  Expanded(
+                                    child: CustomButton(
+                                      height: ResponsiveHelper.isSmallTab()
+                                          ? 40
+                                          : ResponsiveHelper.isTab(context)
+                                              ? 50
+                                              : 40,
+                                      transparent: true,
+                                      buttonText: 'pay_after_eating'.tr,
+                                      fontSize: Get.width < 390 ? 12 : null,
+                                      onPressed: () {
+                                        orderController.placeOrder(
+                                          orderController.placeOrderBody!
+                                              .copyWith(
+                                            paymentStatus: 'unpaid',
+                                            paymentMethod: '',
+                                            previousDue: orderController
+                                                .previousDueAmount(),
+                                          ),
+                                          callback,
+                                          '0',
+                                          0,
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: Dimensions.paddingSizeLarge,
+                                  ),
+                                  Expanded(
+                                    child: CustomButton(
+                                      height: ResponsiveHelper.isSmallTab()
+                                          ? 40
+                                          : ResponsiveHelper.isTab(context)
+                                              ? 50
+                                              : 40,
+                                      buttonText: 'confirm_payment'.tr,
+                                      fontSize: Get.width < 390 ? 12 : null,
+                                      onPressed: () {
+                                        if ((orderController.selectedMethod ==
+                                                    'cash' ||
+                                                orderController
+                                                        .selectedMethod ==
+                                                    'split') &&
+                                            _amountTextController
+                                                .text.isEmpty) {
+                                          showCustomSnackBar(
+                                              'please_enter_your_amount'.tr);
+                                        } else if (orderController
+                                                    .selectedMethod ==
+                                                'cash' &&
+                                            orderController.placeOrderBody!
+                                                    .orderAmount! >
+                                                int.parse(_amountTextController
+                                                    .text)) {
+                                          showCustomSnackBar(
+                                              'you_need_pay_more_amount'.tr);
+                                        } else {
+                                          orderController.placeOrder(
+                                            orderController.placeOrderBody!
+                                                .copyWith(
+                                              paymentStatus: 'paid',
+                                              paymentMethod: orderController
+                                                  .selectedMethod,
+                                              card:
+                                                  _splitCardamountTextController
+                                                      .text,
+                                              cash: _amountTextController.text,
+                                              previousDue: orderController
+                                                  .previousDueAmount(),
+                                            ),
+                                            callback,
+                                            _amountTextController.text,
+                                            _changeAmount,
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                        if (ResponsiveHelper.isTab(context))
+                          SizedBox(
+                            height: Dimensions.paddingSizeExtraLarge,
+                          ),
+                      ],
                     ),
-                ],
-              ),
+                  ),
+                ),
+                SizedBox(
+                  height: MediaQuery.of(context).viewInsets.bottom,
+                ),
+              ],
             ),
-          ),
-          SizedBox(
-            height: MediaQuery.of(context).viewInsets.bottom,
-          ),
-        ],
-      ),
-    );
+          );
   }
 }
 
