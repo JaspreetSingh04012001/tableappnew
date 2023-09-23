@@ -262,7 +262,7 @@ class _TabAppBarState extends State<TabAppBar> {
                                         overflow: TextOverflow.ellipsis,
                                         'Select View for Items',
                                         style: robotoMedium.copyWith(
-                                            fontSize: Dimensions.fontSizeLarge),
+                                            fontSize: Dimensions.fontSizeExtraLarge),
                                       ),
                                       content: const AskViewDialog(),
                                       actionsPadding: EdgeInsets.zero,

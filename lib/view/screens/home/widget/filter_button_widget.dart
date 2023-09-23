@@ -1,4 +1,5 @@
 import 'package:efood_table_booking/controller/localization_controller.dart';
+import 'package:efood_table_booking/controller/order_controller.dart';
 import 'package:efood_table_booking/controller/product_controller.dart';
 import 'package:efood_table_booking/controller/splash_controller.dart';
 import 'package:efood_table_booking/helper/responsive_helper.dart';
@@ -36,7 +37,7 @@ class FilterButtonWidget extends StatelessWidget {
               alignment: Alignment.center,
               child: Container(
                 height: ResponsiveHelper.isSmallTab()
-                    ? 35
+                    ? 40
                     : ResponsiveHelper.isTab(context)
                         ? 50
                         : 40,
@@ -50,85 +51,128 @@ class FilterButtonWidget extends StatelessWidget {
                         border:
                             Border.all(color: Theme.of(context).primaryColor),
                       ),
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: items.length,
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return InkWell(
-                      onTap: () => onSelected(items[index]),
-                      child: Container(
-                        padding: EdgeInsets.symmetric(
-                            horizontal: Dimensions.paddingSizeDefault),
-                        margin: isBorder
-                            ? EdgeInsets.symmetric(
-                                horizontal: Dimensions.paddingSizeExtraSmall)
-                            : EdgeInsets.zero,
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          borderRadius: isBorder
-                              ? const BorderRadius.all(
-                                  Radius.circular(Dimensions.radiusSmall))
-                              : BorderRadius.horizontal(
-                                  left: Radius.circular(
-                                    ltr
-                                        ? index == 0 && items[index] != type
-                                            ? Dimensions.radiusSmall
-                                            : 0
-                                        : index == items.length - 1
-                                            ? Dimensions.radiusSmall
-                                            : 0,
+                child: GetBuilder<OrderController>(builder: (orderController) {
+                  List<String> orderIdList = [];
+                  // orderController.orderList
+                  //     ?.map((order) => orderIdList.add('${'order'.tr}# ${order.id}'))
+                  //     .toList();
+                  return ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: items.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return InkWell(
+                        onTap: () => onSelected(items[index]),
+                        child: Stack(
+                          alignment: Alignment.topLeft,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: Dimensions.paddingSizeDefault),
+                              margin: isBorder
+                                  ? EdgeInsets.symmetric(
+                                      horizontal:
+                                          Dimensions.paddingSizeExtraSmall)
+                                  : EdgeInsets.zero,
+                              alignment: Alignment.center,
+                              decoration: BoxDecoration(
+                                borderRadius: isBorder
+                                    ? const BorderRadius.all(
+                                        Radius.circular(Dimensions.radiusSmall))
+                                    : BorderRadius.horizontal(
+                                        left: Radius.circular(
+                                          ltr
+                                              ? index == 0 &&
+                                                      items[index] != type
+                                                  ? Dimensions.radiusSmall
+                                                  : 0
+                                              : index == items.length - 1
+                                                  ? Dimensions.radiusSmall
+                                                  : 0,
+                                        ),
+                                        right: Radius.circular(
+                                          ltr
+                                              ? index == items.length - 1 &&
+                                                      items[index] != type
+                                                  ? Dimensions.radiusSmall
+                                                  : 0
+                                              : index == 0
+                                                  ? Dimensions.radiusSmall
+                                                  : 0,
+                                        ),
+                                      ),
+                                color: items[index] == type
+                                    ? Theme.of(context).primaryColor
+                                    : Theme.of(context).canvasColor,
+                                // color:
+                                // orderController
+                                //             .orderList?[index].paymentStatus ==
+                                //         "unpaid"
+                                //     ? Colors.red
+                                //     : Theme.of(context).canvasColor,
+                                border: isBorder
+                                    ? Border.all(
+                                        width: 1.3,
+                                        color: Theme.of(context)
+                                            .primaryColor
+                                            .withOpacity(0.4))
+                                    : null,
+                              ),
+                              child: Row(
+                                children: [
+                                  items[index] != items[0] && isVegFilter
+                                      ? Padding(
+                                          padding: EdgeInsets.all(
+                                              Dimensions.paddingSizeExtraSmall),
+                                          child: Image.asset(
+                                            Images.getImageUrl(items[index]),
+                                          ),
+                                        )
+                                      : const SizedBox(),
+                                  Text(
+                                    overflow: TextOverflow.ellipsis,
+                                    items[index].tr,
+                                    style: items[index] == type
+                                        ? robotoMedium.copyWith(
+                                            fontSize: Dimensions.fontSizeLarge,
+                                            color: Colors.white)
+                                        : robotoRegular.copyWith(
+                                            fontSize:
+                                                Dimensions.fontSizeDefault,
+                                            color: Theme.of(context).hintColor),
                                   ),
-                                  right: Radius.circular(
-                                    ltr
-                                        ? index == items.length - 1 &&
-                                                items[index] != type
-                                            ? Dimensions.radiusSmall
-                                            : 0
-                                        : index == 0
-                                            ? Dimensions.radiusSmall
-                                            : 0,
+                                ],
+                              ),
+                            ),
+                            if (orderController
+                                    .orderList?[index].paymentStatus ==
+                                "unpaid")
+                              Padding(
+                                padding: const EdgeInsets.only(left: 5),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(4),
+                                      color: Colors.red),
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 5, vertical: 2),
+                                    child: Text(
+                                      "unpaid",
+                                      style: robotoRegular.copyWith(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: Dimensions.fontSizeDefault,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                          color: items[index] == type
-                              ? Theme.of(context).primaryColor
-                              : Theme.of(context).canvasColor,
-                          border: isBorder
-                              ? Border.all(
-                                  width: 1.3,
-                                  color: Theme.of(context)
-                                      .primaryColor
-                                      .withOpacity(0.4))
-                              : null,
-                        ),
-                        child: Row(
-                          children: [
-                            items[index] != items[0] && isVegFilter
-                                ? Padding(
-                                    padding: EdgeInsets.all(
-                                        Dimensions.paddingSizeExtraSmall),
-                                    child: Image.asset(
-                                      Images.getImageUrl(items[index]),
-                                    ),
-                                  )
-                                : const SizedBox(),
-                            Text(
-                              overflow: TextOverflow.ellipsis,
-                              items[index].tr,
-                              style: items[index] == type
-                                  ? robotoMedium.copyWith(
-                                      fontSize: Dimensions.fontSizeLarge,
-                                      color: Colors.white)
-                                  : robotoRegular.copyWith(
-                                      fontSize: Dimensions.fontSizeDefault,
-                                      color: Theme.of(context).hintColor),
-                            ),
+                              ),
                           ],
                         ),
-                      ),
-                    );
-                  },
-                ),
+                      );
+                    },
+                  );
+                }),
               ));
     });
   }

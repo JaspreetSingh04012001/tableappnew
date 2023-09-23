@@ -890,23 +890,28 @@ class OrderDetailsView extends StatelessWidget {
                                                     PriceConverter.convertPrice(
                                                         total + addOnsPrice),
                                                 isTotal: true),
-                                            PriceWithType(
-                                              type: '${'paid_amount'.tr}${orderController.currentOrderDetails?.order?.paymentMethod != null ?
-                                                  //'(${orderController.currentOrderDetails?.order?.paymentMethod})' : ' (${'un_paid'.tr}) '}',
-                                                  '(${orderController.currentOrderDetails?.order?.paymentMethod})' : ''}',
-                                              amount: PriceConverter
-                                                  .convertPrice(orderController
-                                                              .currentOrderDetails
-                                                              ?.order
-                                                              ?.paymentStatus !=
-                                                          'unpaid'
-                                                      ? orderController
-                                                              .currentOrderDetails
-                                                              ?.order
-                                                              ?.orderAmount ??
-                                                          0
-                                                      : 0),
-                                            ),
+                                            if (orderController
+                                                    .currentOrderDetails
+                                                    ?.order
+                                                    ?.paymentMethod ==
+                                                "card")
+                                              PriceWithType(
+                                                type: '${'paid_amount'.tr}${orderController.currentOrderDetails?.order?.paymentMethod != null ?
+                                                    //'(${orderController.currentOrderDetails?.order?.paymentMethod})' : ' (${'un_paid'.tr}) '}',
+                                                    '(${orderController.currentOrderDetails?.order?.paymentMethod})' : ''}',
+                                                amount: PriceConverter
+                                                    .convertPrice(orderController
+                                                                .currentOrderDetails
+                                                                ?.order
+                                                                ?.paymentStatus !=
+                                                            'unpaid'
+                                                        ? orderController
+                                                                .currentOrderDetails
+                                                                ?.order
+                                                                ?.orderAmount ??
+                                                            0
+                                                        : 0),
+                                              ),
                                             if (orderController
                                                     .currentOrderDetails
                                                     ?.order
@@ -921,6 +926,26 @@ class OrderDetailsView extends StatelessWidget {
                                                                 ?.card ??
                                                             "0") ??
                                                         0),
+                                              ),
+                                            if (orderController
+                                                    .currentOrderDetails
+                                                    ?.order
+                                                    ?.paymentMethod ==
+                                                "cash")
+                                              PriceWithType(
+                                                type: 'Cash',
+                                                amount: PriceConverter.convertPrice(total +
+                                                    (orderController
+                                                            .getOrderSuccessModel()
+                                                            ?.firstWhere((order) =>
+                                                                order.orderId ==
+                                                                orderController
+                                                                    .currentOrderDetails
+                                                                    ?.order
+                                                                    ?.id
+                                                                    .toString())
+                                                            .changeAmount ??
+                                                        0)),
                                               ),
                                             if (orderController
                                                     .currentOrderDetails

@@ -1,4 +1,5 @@
 import 'package:efood_table_booking/controller/order_controller.dart';
+import 'package:efood_table_booking/controller/printer_controller.dart';
 import 'package:efood_table_booking/data/model/response/order_details_model.dart';
 import 'package:efood_table_booking/helper/responsive_helper.dart';
 import 'package:efood_table_booking/util/dimensions.dart';
@@ -43,6 +44,9 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
         Get.find<OrderController>().getCurrentOrder('${list.first.id}').then(
               (value) => Get.find<OrderController>().countDownTimer(),
             );
+        if (widget.fromPlaceOrder) {
+          Get.find<PrinterController>().printTest();
+        }
       } else {
         Get.find<OrderController>().getCurrentOrder(null);
       }
@@ -61,7 +65,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: orderBody(),
+      floatingActionButton: !widget.fromPlaceOrder ? orderBody() : Container(),
       appBar: ResponsiveHelper.isTab(context)
           ? null
           : const CustomAppBar(

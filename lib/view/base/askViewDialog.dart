@@ -60,8 +60,8 @@ class _AskViewDialogState extends State<AskViewDialog> {
               child: Text(
                 overflow: TextOverflow.ellipsis,
                 'Grid View',
-                style:
-                    robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+                style: robotoMedium.copyWith(
+                    fontSize: Dimensions.fontSizeExtraLarge),
               ),
             ),
           ],
@@ -91,8 +91,8 @@ class _AskViewDialogState extends State<AskViewDialog> {
               child: Text(
                 overflow: TextOverflow.ellipsis,
                 'List View',
-                style:
-                    robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+                style: robotoMedium.copyWith(
+                    fontSize: Dimensions.fontSizeExtraLarge),
               ),
             ),
           ],
@@ -102,7 +102,8 @@ class _AskViewDialogState extends State<AskViewDialog> {
             Text(
               overflow: TextOverflow.ellipsis,
               'Images of Categories',
-              style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+              style: robotoMedium.copyWith(
+                  fontSize: Dimensions.fontSizeExtraLarge),
             ),
             Checkbox(
               value: CatImage,
@@ -123,7 +124,8 @@ class _AskViewDialogState extends State<AskViewDialog> {
             Text(
               overflow: TextOverflow.ellipsis,
               'Images of Items',
-              style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+              style: robotoMedium.copyWith(
+                  fontSize: Dimensions.fontSizeExtraLarge),
             ),
             Checkbox(
               value: image,
