@@ -245,6 +245,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                             child: Container(
                                                 decoration: BoxDecoration(
                                                     border: Border.all(
+                                                        width: 1.5,
                                                         color: Theme.of(context)
                                                             .primaryColor),
                                                     borderRadius:
@@ -270,7 +271,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                                 : null,
                                                             //  color: Colors.white,
                                                             fontSize: Dimensions
-                                                                .fontSizeExtraLarge),
+                                                                    .fontSizeExtraLarge +
+                                                                2),
                                                   ),
                                                 )),
                                           ),
@@ -358,6 +360,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                 ? 50
                                                 : 40,
                                     child: CustomTextField(
+                                      inputType: TextInputType.number,
                                       borderColor: Theme.of(context)
                                           .primaryColor
                                           .withOpacity(0.4),

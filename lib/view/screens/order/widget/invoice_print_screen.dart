@@ -58,15 +58,19 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
               const SizedBox(height: 20),
               Text(
                 "You're Printing Using D2home App",
-                style:
-                    robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+                style: robotoMedium.copyWith(
+                    fontSize: Dimensions.fontSizeLarge + 4),
               ),
               //  Text('info: $_info\n '),
               Text(printerController.msj),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text("Type print"),
+                  Text(
+                    "Type print",
+                    style: robotoMedium.copyWith(
+                        fontSize: Dimensions.fontSizeLarge + 4),
+                  ),
                   const SizedBox(width: 10),
                   DropdownButton<String>(
                     value: printerController.optionprinttype,
@@ -84,9 +88,13 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                   const SizedBox(
                     width: 15,
                   ),
-                  const Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Text("Copies"),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Text(
+                      "Copies",
+                      style: robotoMedium.copyWith(
+                          fontSize: Dimensions.fontSizeLarge + 4),
+                    ),
                   ),
                   QuantityButton(
                       isIncrement: true,
@@ -97,7 +105,11 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                       }),
                   Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Text("${printerController.printCount}"),
+                    child: Text(
+                      "${printerController.printCount}",
+                      style: robotoMedium.copyWith(
+                          fontSize: Dimensions.fontSizeLarge + 4),
+                    ),
                   ),
                   QuantityButton(
                       isIncrement: false,
@@ -111,7 +123,11 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                   const SizedBox(
                     width: 15,
                   ),
-                  const Text("Open Drawer"),
+                  Text(
+                    "Open Drawer",
+                    style: robotoMedium.copyWith(
+                        fontSize: Dimensions.fontSizeLarge + 4),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: CupertinoSwitch(
@@ -134,7 +150,11 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                   const SizedBox(
                     width: 25,
                   ),
-                  const Text("Print Front Items Separate"),
+                  Text(
+                    "Print Front Items Separate",
+                    style: robotoMedium.copyWith(
+                        fontSize: Dimensions.fontSizeLarge + 4),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: CupertinoSwitch(
@@ -150,9 +170,13 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                     ),
                   ),
                   const SizedBox(
-                    width: 25,
+                    width: 10,
                   ),
-                  const Text("Print Back Items Separate"),
+                  Text(
+                    "Print Back Items Separate",
+                    style: robotoMedium.copyWith(
+                        fontSize: Dimensions.fontSizeLarge + 4),
+                  ),
                   Padding(
                     padding: const EdgeInsets.all(4.0),
                     child: CupertinoSwitch(
@@ -189,9 +213,13 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                       ),
                     ),
                     const SizedBox(width: 5),
-                    Text(printerController.progress
-                        ? printerController.msjprogress
-                        : "Search Printers"),
+                    Text(
+                      printerController.progress
+                          ? printerController.msjprogress
+                          : "Search Printers",
+                      style: robotoMedium.copyWith(
+                          fontSize: Dimensions.fontSizeLarge + 4),
+                    ),
                   ],
                 ),
               ),
@@ -234,7 +262,11 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                           Navigator.pop(context);
                         }
                       : null,
-                  child: const Text("Save and Print"),
+                  child: Text(
+                    "Save and Print",
+                    style: robotoMedium.copyWith(
+                        fontSize: Dimensions.fontSizeLarge + 4),
+                  ),
                 ),
               const SizedBox(height: 10),
             ],
