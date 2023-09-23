@@ -1047,9 +1047,9 @@ class _CartDetailsState extends State<CartDetails> {
         //   type: 'items_price'.tr,
         //   amount: PriceConverter.convertPrice(itemPrice),
         // ),
-        PriceWithType(
-            type: 'discount'.tr,
-            amount: '- ${PriceConverter.convertPrice(discount)}'),
+        // PriceWithType(
+        //     type: 'discount'.tr,
+        //     amount: '- ${PriceConverter.convertPrice(discount)}'),
         // PriceWithType(
         //     type: 'vat_tax'.tr,
         //     amount: '+ ${PriceConverter.convertPrice(tax)}'),
