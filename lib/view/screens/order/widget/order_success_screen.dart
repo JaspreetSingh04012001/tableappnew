@@ -44,9 +44,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
         Get.find<OrderController>().getCurrentOrder('${list.first.id}').then(
               (value) => Get.find<OrderController>().countDownTimer(),
             );
-        if (widget.fromPlaceOrder) {
-          Get.find<PrinterController>().printTest();
-        }
+        
       } else {
         Get.find<OrderController>().getCurrentOrder(null);
       }
