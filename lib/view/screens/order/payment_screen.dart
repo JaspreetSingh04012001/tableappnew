@@ -77,6 +77,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
             orderController
                 .getCurrentOrder(orderController.orderSuccessModel!.orderId!)
                 .then((value) {
+              Get.find<PrinterController>().printTest();
+
               Get.off(() => const OrderSuccessScreen(fromPlaceOrder: true));
             });
           }

@@ -243,8 +243,9 @@ class PrinterController extends GetxController {
         tax = (tax +
             (orderDetails.taxAmount! * orderDetails.quantity!.toInt()) +
             orderDetails.addonTaxAmount!);
-        date = formatter.format(DateTime.parse(
-            orderController.currentOrderDetails?.order!.createdAt ?? ""));
+        date = orderController.currentOrderDetails?.order!.createdAt
+                ?.replaceAll(".000000z", "") ??
+            "";
       }
     }
 
@@ -557,7 +558,7 @@ class PrinterController extends GetxController {
     }
     if (orderController.currentOrderDetails?.order?.paymentMethod == "cash") {
       bytes += generator.text(
-          "Cash : +${PriceConverter.convertPrice((orderController.getOrderSuccessModel()?.firstWhere((order) => order.orderId == orderController.currentOrderDetails?.order?.id.toString()).changeAmount ?? 0))}");
+          "Cash : +${PriceConverter.convertPrice(orderController.getOrderSuccessModel()!.firstWhere((order) => order.orderId == orderController.currentOrderDetails?.order?.id.toString()).changeAmount! + total + addOnsPrice)}");
     }
     // PriceWithType(
     //   type: 'Cash',
