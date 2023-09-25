@@ -12,6 +12,7 @@ import 'package:efood_table_booking/view/screens/order/widget/emailDialog.dart';
 import 'package:efood_table_booking/view/screens/order/widget/invoice_print_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
 import '../../../../controller/printer_controller.dart';
@@ -27,6 +28,7 @@ class OrderDetailsView extends StatelessWidget {
   int itemCount;
   OrderDetailsView({Key? key, this.itemCount = 0, this.isSales = false})
       : super(key: key);
+  final DateFormat formatter = DateFormat();
   String removeEmptyLines(String input) {
     return input
         .replaceAll(RegExp(r'^\s*$\n', multiLine: true), '')
@@ -404,28 +406,49 @@ class OrderDetailsView extends StatelessWidget {
                         ),
                       ],
                     ),
-                    Text(
-                      overflow: TextOverflow.ellipsis,
-                      orderController
-                              .currentOrderDetails?.order?.customer_name ??
-                          '',
-                      style: robotoRegular.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: Dimensions.fontSizeLarge,
-                        color: Theme.of(context).textTheme.bodyLarge!.color,
+
+                    if (orderController.currentOrderDetails?.order?.createdAt !=
+                        null)
+                      Text(
+                        overflow: TextOverflow.ellipsis,
+                        formatter.format(DateTime.parse(orderController
+                                    .currentOrderDetails?.order!.createdAt ??
+                                "")) ??
+                            '',
+                        style: robotoRegular.copyWith(
+                          // fontWeight: FontWeight.bold,
+                          fontSize: Dimensions.fontSizeDefault,
+                          color: Theme.of(context).textTheme.bodyLarge!.color,
+                        ),
                       ),
-                    ),
-                    Text(
-                      overflow: TextOverflow.ellipsis,
-                      orderController
-                              .currentOrderDetails?.order?.customer_email ??
-                          '',
-                      style: robotoRegular.copyWith(
-                        fontWeight: FontWeight.bold,
-                        fontSize: Dimensions.fontSizeLarge,
-                        color: Theme.of(context).textTheme.bodyLarge!.color,
+                    if (orderController
+                            .currentOrderDetails?.order?.customer_name !=
+                        null)
+                      Text(
+                        overflow: TextOverflow.ellipsis,
+                        orderController
+                                .currentOrderDetails?.order?.customer_name ??
+                            '',
+                        style: robotoRegular.copyWith(
+                          // fontWeight: FontWeight.bold,
+                          fontSize: Dimensions.fontSizeLarge,
+                          color: Theme.of(context).textTheme.bodyLarge!.color,
+                        ),
                       ),
-                    ),
+                    if (orderController
+                            .currentOrderDetails?.order?.customer_email !=
+                        null)
+                      Text(
+                        overflow: TextOverflow.ellipsis,
+                        orderController
+                                .currentOrderDetails?.order?.customer_email ??
+                            '',
+                        style: robotoRegular.copyWith(
+                          //  fontWeight: FontWeight.bold,
+                          fontSize: Dimensions.fontSizeLarge,
+                          color: Theme.of(context).textTheme.bodyLarge!.color,
+                        ),
+                      ),
                     const SizedBox(height: 15),
                     Expanded(
                       child: ListView.builder(

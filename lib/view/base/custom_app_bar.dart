@@ -13,7 +13,6 @@ import 'package:get/get.dart';
 
 import '../../controller/product_controller.dart';
 import '../../controller/theme_controller.dart';
-import '../../util/styles.dart';
 import '../screens/home/widget/category_view.dart';
 import '../screens/home/widget/search_bar_view.dart';
 import '../screens/order/widget/order_success_screen.dart';
@@ -253,22 +252,31 @@ class _TabAppBarState extends State<TabAppBar> {
 
                             //  onTap: () => Get.to(() => const AllOrdersScreen()),
                             onTap: () {
-                              showAnimatedDialog(
-                                  barrierDismissible: true,
-                                  context: context,
-                                  builder: (context) {
-                                    return AlertDialog(
-                                      title: Text(
-                                        overflow: TextOverflow.ellipsis,
-                                        'Select View for Items',
-                                        style: robotoMedium.copyWith(
-                                            fontSize: Dimensions.fontSizeExtraLarge),
-                                      ),
-                                      content: const AskViewDialog(),
-                                      actionsPadding: EdgeInsets.zero,
-                                      actions: const [],
-                                    );
-                                  });
+                              Get.dialog(Dialog(
+                                shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(
+                                        Dimensions.radiusSmall)),
+                                insetPadding: const EdgeInsets.all(20),
+                                child: const AskViewDialog(),
+                              ));
+                              // showAnimatedDialog(
+                              //     barrierDismissible: true,
+                              //     context: context,
+                              //     builder: (context) {
+
+                              //       return AlertDialog(
+
+                              //         title: Text(
+                              //           overflow: TextOverflow.ellipsis,
+                              //           'Select View for Items',
+                              //           style: robotoMedium.copyWith(
+                              //               fontSize: Dimensions.fontSizeExtraLarge),
+                              //         ),
+                              //         content: const AskViewDialog(),
+                              //         actionsPadding: EdgeInsets.zero,
+                              //         actions: const [],
+                              //       );
+                              //     });
                             },
                           ),
                         if (Get.currentRoute.contains("/home"))

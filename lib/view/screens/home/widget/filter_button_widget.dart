@@ -10,15 +10,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class FilterButtonWidget extends StatelessWidget {
+  bool isPayment;
   final String type;
   final List<String> items;
   final bool isBorder;
   final bool isSmall;
   final Function(String value) onSelected;
 
-  const FilterButtonWidget({
+  FilterButtonWidget({
     super.key,
     required this.type,
+    this.isPayment = false,
     required this.onSelected,
     required this.items,
     this.isBorder = false,
@@ -144,29 +146,30 @@ class FilterButtonWidget extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            if (orderController
-                                    .orderList?[index].paymentStatus ==
-                                "unpaid")
-                              Padding(
-                                padding: const EdgeInsets.only(left: 5),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(4),
-                                      color: Colors.red),
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 5, vertical: 2),
-                                    child: Text(
-                                      "unpaid",
-                                      style: robotoRegular.copyWith(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: Dimensions.fontSizeDefault,
-                                        color: Colors.white,
+                            if (isPayment)
+                              if (orderController
+                                      .orderList?[index].paymentStatus ==
+                                  "unpaid")
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 5),
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(4),
+                                        color: Colors.red),
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 5, vertical: 2),
+                                      child: Text(
+                                        "unpaid",
+                                        style: robotoRegular.copyWith(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: Dimensions.fontSizeDefault,
+                                          color: Colors.white,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
                           ],
                         ),
                       );
