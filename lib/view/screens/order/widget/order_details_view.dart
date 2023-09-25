@@ -1137,34 +1137,36 @@ class OrderDetailsView extends StatelessWidget {
                                   "unpaid")
                             const SizedBox(width: 8),
                           Expanded(
-                            child: CustomButton(
-                              height: ResponsiveHelper.isSmallTab() ? 40 : 50,
-                              buttonText: "Print Order",
-                              onPressed: () async {
-                                // Get.dialog(Dialog(
-                                //   shape: RoundedRectangleBorder(
-                                //       borderRadius: BorderRadius.circular(
-                                //           Dimensions.radiusSmall)),
-                                //   insetPadding: const EdgeInsets.all(20),
-                                //   child: const InvoicePrintScreen(),
-                                // ));
-                                bool conexionStatus =
-                                    await PrintBluetoothThermal
-                                        .connectionStatus;
-                                if (conexionStatus) {
-                                  Get.find<PrinterController>().printTest();
-                                } else {
-                                  Get.dialog(Dialog(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            Dimensions.radiusSmall)),
-                                    insetPadding: const EdgeInsets.all(20),
-                                    child: const InvoicePrintScreen(),
-                                  ));
-                                }
+                            child: GetBuilder<PrinterController>(
+                              builder: (printerController) {
+                                return CustomButton(
+                                  height: ResponsiveHelper.isSmallTab() ? 40 : 50,
+                                  buttonText: "Print Order",
+                                  onPressed: () async {
+                                    // Get.dialog(Dialog(
+                                    //   shape: RoundedRectangleBorder(
+                                    //       borderRadius: BorderRadius.circular(
+                                    //           Dimensions.radiusSmall)),
+                                    //   insetPadding: const EdgeInsets.all(20),
+                                    //   child: const InvoicePrintScreen(),
+                                    // ));
+                                   
+                                    if (printerController.connected) {
+                                      printerController.printTest();
+                                    } else {
+                                      Get.dialog(Dialog(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(
+                                                Dimensions.radiusSmall)),
+                                        insetPadding: const EdgeInsets.all(20),
+                                        child: const InvoicePrintScreen(),
+                                      ));
+                                    }
 
-                                //Get.dialog(const InVoicePrintScreen());
-                              },
+                                    //Get.dialog(const InVoicePrintScreen());
+                                  },
+                                );
+                              }
                             ),
                           ),
 
