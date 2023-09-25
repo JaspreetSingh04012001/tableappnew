@@ -96,6 +96,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     FilterButtonWidget(
+                      isPayment: true,
                       type: orderController.currentOrderId == null
                           ? orderIdList.first
                           : orderController.currentOrderId!,

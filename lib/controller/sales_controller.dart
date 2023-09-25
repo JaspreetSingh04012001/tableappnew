@@ -20,8 +20,8 @@ class SalesController extends GetxController {
     loading = true;
     update();
     DateTime yo = DateTime.now();
-    final DateFormat formatter = DateFormat('dd/MM/yyyy');
-    final String formatted = formatter.format(yo).replaceAll("/", '-');
+    final DateFormat formatter = DateFormat('MM/dd/yyyy');
+    final String formatted = formatter.format(yo);
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Response response = await salesRepo.getSales(
         branch_id: sharedPreferences.getInt(AppConstants.branch) ?? 0,
@@ -42,8 +42,8 @@ class SalesController extends GetxController {
     loading = true;
     update();
     DateTime yo = DateTime.now();
-    final DateFormat formatter = DateFormat('dd/MM/yyyy');
-    final String formatted = formatter.format(yo).replaceAll("/", '-');
+    final DateFormat formatter = DateFormat('MM/dd/yyyy');
+    final String formatted = formatter.format(yo);
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Response response = await salesRepo.getSales(
         branch_id: sharedPreferences.getInt(AppConstants.branch) ?? 0,
@@ -68,10 +68,9 @@ class SalesController extends GetxController {
     // Subtract one week from the current date.
     DateTime oneWeekAgo = yo.subtract(const Duration(days: 7));
 
-    final DateFormat formatter = DateFormat('dd/MM/yyyy');
-    final String formattednow = formatter.format(yo).replaceAll("/", '-');
-    final String formattedweek =
-        formatter.format(oneWeekAgo).replaceAll("/", '-');
+    final DateFormat formatter = DateFormat('MM/dd/yyyy');
+    final String formattednow = formatter.format(yo);
+    final String formattedweek = formatter.format(oneWeekAgo);
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Response response = await salesRepo.getSales(
         branch_id: sharedPreferences.getInt(AppConstants.branch) ?? 0,
@@ -87,7 +86,7 @@ class SalesController extends GetxController {
   }
 
   months() async {
-     loading = true;
+    loading = true;
     update();
     DateTime now = DateTime.now();
 
@@ -104,10 +103,9 @@ class SalesController extends GetxController {
     // Print the new date.
     print("jassDaee$sevenMonthsAgo");
 
-    final DateFormat formatter = DateFormat('dd/MM/yyyy');
-    final String formattednow = formatter.format(now).replaceAll("/", '-');
-    final String formattedweek =
-        formatter.format(sevenMonthsAgo).replaceAll("/", '-');
+    final DateFormat formatter = DateFormat('MM/dd/yyyy');
+    final String formattednow = formatter.format(now);
+    final String formattedweek = formatter.format(sevenMonthsAgo);
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Response response = await salesRepo.getSales(
         branch_id: sharedPreferences.getInt(AppConstants.branch) ?? 0,
@@ -117,16 +115,16 @@ class SalesController extends GetxController {
 
     if (response.statusCode == 200) {
       sales = [...response.body["orders"]];
-       loading = false;
-   
+      loading = false;
+
       update();
     }
   }
 
   Future<Response> sendSales(String year, String? quarter) async {
     // DateTime yo = DateTime.now();
-    // final DateFormat formatter = DateFormat('dd/MM/yyyy');
-    // final String formatted = formatter.format(yo).replaceAll("/", '-');
+    // final DateFormat formatter = DateFormat('MM/dd/yyyy');
+    // final String formatted = formatter.format(yo);
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     Response response = await salesRepo.sendSales(
         branch_id: sharedPreferences.getInt(AppConstants.branch) ?? 0,

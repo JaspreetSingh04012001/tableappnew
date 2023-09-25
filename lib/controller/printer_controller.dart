@@ -6,6 +6,7 @@ import 'package:esc_pos_utils/esc_pos_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -13,6 +14,7 @@ import '../data/model/response/config_model.dart';
 import '../data/model/response/order_details_model.dart';
 
 class PrinterController extends GetxController {
+  final DateFormat formatter = DateFormat();
   PrinterController() {
     getDataFromStorages();
   }
@@ -241,7 +243,8 @@ class PrinterController extends GetxController {
         tax = (tax +
             (orderDetails.taxAmount! * orderDetails.quantity!.toInt()) +
             orderDetails.addonTaxAmount!);
-        date = orderDetails.createdAt!.replaceAll("T", " ");
+        date = formatter.format(DateTime.parse(
+            orderController.currentOrderDetails?.order!.createdAt ?? ""));
       }
     }
 
@@ -552,6 +555,25 @@ class PrinterController extends GetxController {
       bytes += generator.text(
           "Payment Method : +${orderController.currentOrderDetails?.order?.paymentMethod}");
     }
+    if (orderController.currentOrderDetails?.order?.paymentMethod == "cash") {
+      bytes += generator.text(
+          "Cash : +${PriceConverter.convertPrice((orderController.getOrderSuccessModel()?.firstWhere((order) => order.orderId == orderController.currentOrderDetails?.order?.id.toString()).changeAmount ?? 0))}");
+    }
+    // PriceWithType(
+    //   type: 'Cash',
+    //   amount: PriceConverter.convertPrice(total +
+    //       (orderController
+    //               .getOrderSuccessModel()
+    //               ?.firstWhere((order) =>
+    //                   order.orderId ==
+    //                   orderController
+    //                       .currentOrderDetails
+    //                       ?.order
+    //                       ?.id
+    //                       .toString())
+    //               .changeAmount ??
+    //           0)),
+    // ),
     if (orderController.currentOrderDetails?.order?.paymentMethod == "split") {
       bytes += generator.text(
           "Cash : +${PriceConverter.convertPrice(double.parse(orderController.currentOrderDetails?.order?.cash ?? "0"))}");

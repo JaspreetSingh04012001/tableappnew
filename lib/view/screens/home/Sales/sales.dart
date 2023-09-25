@@ -218,13 +218,13 @@ class _SalesState extends State<Sales> {
                                 selectedIndex = index;
                               });
                               if (index == 2) {
-                                salesController.months();
+                                salesController.today();
                               }
                               if (index == 1) {
                                 salesController.week();
                               }
                               if (index == 0) {
-                                salesController.today();
+                                salesController.months();
                               }
                             },
                             child: Container(
