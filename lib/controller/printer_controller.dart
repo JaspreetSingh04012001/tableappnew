@@ -244,7 +244,8 @@ class PrinterController extends GetxController {
             (orderDetails.taxAmount! * orderDetails.quantity!.toInt()) +
             orderDetails.addonTaxAmount!);
         date = orderController.currentOrderDetails?.order!.createdAt
-                ?.replaceAll(".000000z", "") ??
+                ?.replaceAll(".000000Z", "")
+                .replaceAll("T", " ") ??
             "";
       }
     }
@@ -438,7 +439,7 @@ class PrinterController extends GetxController {
                 align: PosAlign.center));
 
         Frontbytes += generator.text(
-            "${details.quantity} x ${details.productDetails?.name ?? ''} : ${PriceConverter.convertPrice(details.price! * details.quantity!)}",
+            "${details.quantity} x ${details.productDetails?.name ?? ''}:${PriceConverter.convertPrice(details.price! * details.quantity!)}",
             styles: const PosStyles(
               bold: true,
               height: PosTextSize.size1,
@@ -446,11 +447,11 @@ class PrinterController extends GetxController {
             ));
 
         if (addonsName.isNotEmpty) {
-          Frontbytes += generator.text('${'addons'.tr}: $addonsName',
+          Frontbytes += generator.text('${'addons'.tr}: ${addonsName + ")"}',
               styles: const PosStyles(bold: true, height: PosTextSize.size1));
         }
         if (variationText != '') {
-          Frontbytes += generator.text(variationText,
+          Frontbytes += generator.text(variationText + ")",
               styles: const PosStyles(bold: true, height: PosTextSize.size1));
         }
         if (note != null && note != "null" && note != "") {
@@ -467,7 +468,7 @@ class PrinterController extends GetxController {
                 align: PosAlign.center));
 
         Backbytes += generator.text(
-            "${details.quantity} x ${details.productDetails?.name ?? ''} : ${PriceConverter.convertPrice(details.price! * details.quantity!)}",
+            "${details.quantity} x ${details.productDetails?.name ?? ''}:${PriceConverter.convertPrice(details.price! * details.quantity!)}",
             styles: const PosStyles(
               bold: true,
               height: PosTextSize.size1,
@@ -496,7 +497,7 @@ class PrinterController extends GetxController {
               align: PosAlign.center));
 
       bytes += generator.text(
-          "${details.quantity} x ${details.productDetails?.name ?? ''} : ${PriceConverter.convertPrice(details.price! * details.quantity!)}",
+          "${details.quantity} x ${details.productDetails?.name ?? ''}:${PriceConverter.convertPrice(details.price! * details.quantity!)}",
           styles: const PosStyles(
             bold: true,
             height: PosTextSize.size1,
@@ -504,11 +505,11 @@ class PrinterController extends GetxController {
           ));
 
       if (addonsName.isNotEmpty) {
-        bytes += generator.text('${'addons'.tr}: $addonsName',
+        bytes += generator.text('${'addons'.tr}: $addonsName)',
             styles: const PosStyles(bold: true, height: PosTextSize.size1));
       }
       if (variationText != '') {
-        bytes += generator.text(variationText,
+        bytes += generator.text(variationText + ")",
             styles: const PosStyles(bold: true, height: PosTextSize.size1));
       }
       if (note != null && note != "null" && note != "") {
