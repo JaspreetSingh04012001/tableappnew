@@ -1,5 +1,4 @@
 import 'package:efood_table_booking/controller/order_controller.dart';
-import 'package:efood_table_booking/controller/printer_controller.dart';
 import 'package:efood_table_booking/data/model/response/order_details_model.dart';
 import 'package:efood_table_booking/helper/responsive_helper.dart';
 import 'package:efood_table_booking/util/dimensions.dart';
@@ -12,10 +11,15 @@ import 'package:efood_table_booking/view/base/custom_loader.dart';
 import 'package:efood_table_booking/view/screens/order/widget/order_screen.dart';
 import 'package:efood_table_booking/view/screens/root/no_data_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 
+import '../../../../controller/printer_controller.dart';
+import '../../../../helper/price_converter.dart';
 import '../../../../helper/route_helper.dart';
+import '../../../base/custom_snackbar.dart';
+import '../../../base/custom_text_field.dart';
 import '../../home/widget/filter_button_widget.dart';
 
 class OrderSuccessScreen extends StatefulWidget {
@@ -32,7 +36,11 @@ class OrderSuccessScreen extends StatefulWidget {
 
 class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
   int currentMinute = 0;
-
+  int selectedindex = 0;
+  final double _changeAmount = 0;
+  final TextEditingController _amountTextController = TextEditingController();
+  final TextEditingController _splitCardamountTextController =
+      TextEditingController();
   @override
   void initState() {
     // print('order success call');
@@ -44,7 +52,6 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
         Get.find<OrderController>().getCurrentOrder('${list.first.id}').then(
               (value) => Get.find<OrderController>().countDownTimer(),
             );
-        
       } else {
         Get.find<OrderController>().getCurrentOrder(null);
       }
@@ -162,11 +169,15 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                                   style: robotoRegular.copyWith(
                                       fontSize: Dimensions.fontSizeExtraLarge),
                                 ),
-                          Lottie.asset(
-                            width: 100,
-                            fit: BoxFit.fitWidth,
-                            Images.successAnimation,
-                          ),
+                          if (widget.fromPlaceOrder == true &&
+                              orderController.currentOrderDetails!.order!
+                                      .paymentStatus ==
+                                  "unpaid")
+                            Lottie.asset(
+                              width: 100,
+                              fit: BoxFit.fitWidth,
+                              Images.successAnimation,
+                            ),
                           Text(
                             overflow: TextOverflow.ellipsis,
                             'estimated_serving_time'.tr,
@@ -203,8 +214,510 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                             ],
                           ),
                           SizedBox(
-                            height: Dimensions.paddingSizeExtraLarge,
+                            height: Dimensions.paddingSizeDefault,
                           ),
+                          if (widget.fromPlaceOrder == false &&
+                              orderController.currentOrderDetails!.order!
+                                      .paymentStatus ==
+                                  "unpaid")
+                            Column(
+                              children: [
+                                FilterButtonWidget(
+                                    isSmall: Get.width < 390,
+                                    items: orderController.paymentMethodList,
+                                    type: orderController.selectedMethod,
+                                    isBorder: true,
+                                    onSelected: (method) {
+                                      if (method == 'card') {
+                                        // _amountTextController.text =
+                                        //     PriceConverter.convertPrice(
+                                        //         orderController.placeOrderBody!.orderAmount!);
+                                      } else {
+                                        // _splitCardamountTextController.clear();
+                                        // _amountTextController.clear();
+                                        // _changeAmount = 0;
+                                      }
+                                      orderController.setSelectedMethod(method);
+                                    }),
+                                Padding(
+                                  padding: ResponsiveHelper.isTab(context)
+                                      ? EdgeInsets.symmetric(
+                                          horizontal: Get.width * 0.04)
+                                      : EdgeInsets.all(
+                                          Dimensions.paddingSizeDefault),
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        vertical: Dimensions.paddingSizeDefault,
+                                        horizontal:
+                                            Dimensions.paddingSizeDefault),
+                                    margin: EdgeInsets.only(
+                                        bottom:
+                                            Dimensions.paddingSizeExtraLarge),
+                                    decoration: BoxDecoration(
+                                      color: Theme.of(context).canvasColor,
+                                      borderRadius: BorderRadius.circular(10),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Theme.of(context)
+                                              .textTheme
+                                              .bodyLarge!
+                                              .color!
+                                              .withOpacity(0.05),
+                                          offset: const Offset(0, 2.75),
+                                          blurRadius: 6.86,
+                                        )
+                                      ],
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        // if (ResponsiveHelper.isTab(context))
+                                        // SizedBox(
+                                        //   height: Dimensions.paddingSizeExtraLarge,
+                                        // ),
+                                        if (orderController.selectedMethod ==
+                                                'cash' ||
+                                            orderController.selectedMethod ==
+                                                'split')
+                                          if (orderController.selectedMethod ==
+                                                  'cash' ||
+                                              orderController.selectedMethod ==
+                                                  'card')
+                                            Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: Dimensions
+                                                      .paddingSizeLarge),
+                                              child: Row(
+                                                children: [
+                                                  SizedBox(
+                                                      width: 100,
+                                                      child: Text(
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          'paid_amount'.tr)),
+                                                  SizedBox(
+                                                      width: Dimensions
+                                                          .paddingSizeLarge),
+                                                  Expanded(
+                                                    child: SizedBox(
+                                                      height: Get.width < 390
+                                                          ? 30
+                                                          : ResponsiveHelper
+                                                                  .isSmallTab()
+                                                              ? 40
+                                                              : ResponsiveHelper
+                                                                      .isTab(
+                                                                          context)
+                                                                  ? 50
+                                                                  : 40,
+                                                      child: IgnorePointer(
+                                                        ignoring: orderController
+                                                                .selectedMethod !=
+                                                            'cash',
+                                                        child: CustomTextField(
+                                                          borderColor: Theme.of(
+                                                                  context)
+                                                              .primaryColor
+                                                              .withOpacity(0.4),
+                                                          hintText:
+                                                              'enter_amount'.tr,
+                                                          controller:
+                                                              _amountTextController,
+                                                          inputFormatter: [
+                                                            FilteringTextInputFormatter
+                                                                .allow(RegExp(
+                                                                    "[0-9]")),
+                                                            LengthLimitingTextInputFormatter(
+                                                                10),
+                                                          ],
+                                                          hintStyle: robotoRegular
+                                                              .copyWith(
+                                                                  fontSize:
+                                                                      Dimensions
+                                                                          .fontSizeSmall),
+                                                          onChanged: (value) {
+                                                            // if (double.parse(value) >
+                                                            //     Get.find<CartController>()
+                                                            //         .totalAmount) {
+
+                                                            // } else {
+                                                            //   _changeAmount = 0;
+                                                            // }
+                                                            orderController
+                                                                .update();
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                        if (orderController.selectedMethod ==
+                                            'split')
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: Dimensions
+                                                    .paddingSizeLarge),
+                                            child: Row(
+                                              children: [
+                                                const SizedBox(
+                                                    width: 100,
+                                                    child: Text(
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        "Cash")),
+                                                SizedBox(
+                                                    width: Dimensions
+                                                        .paddingSizeLarge),
+                                                Expanded(
+                                                  child: SizedBox(
+                                                    height: Get.width < 390
+                                                        ? 30
+                                                        : ResponsiveHelper
+                                                                .isSmallTab()
+                                                            ? 40
+                                                            : ResponsiveHelper
+                                                                    .isTab(
+                                                                        context)
+                                                                ? 50
+                                                                : 40,
+                                                    child: CustomTextField(
+                                                      inputType:
+                                                          TextInputType.number,
+                                                      borderColor:
+                                                          Theme.of(context)
+                                                              .primaryColor
+                                                              .withOpacity(0.4),
+                                                      hintText:
+                                                          'enter_amount'.tr,
+                                                      controller:
+                                                          _amountTextController,
+                                                      inputFormatter: [
+                                                        FilteringTextInputFormatter
+                                                            .allow(RegExp(
+                                                                "[0-9]")),
+                                                        LengthLimitingTextInputFormatter(
+                                                            10),
+                                                      ],
+                                                      hintStyle: robotoRegular
+                                                          .copyWith(
+                                                              fontSize: Dimensions
+                                                                  .fontSizeSmall),
+                                                      onChanged: (value) {
+                                                        // if ((double.parse(value) +
+                                                        //         double.parse(
+                                                        //             _splitCardamountTextController
+                                                        //                 .text)) >
+                                                        //     Get.find<CartController>()
+                                                        //         .totalAmount) {
+                                                        //   _changeAmount = (Get.find<
+                                                        //                   CartController>()
+                                                        //               .totalAmount -
+                                                        //           (double.parse(value) +
+                                                        //               double.parse(
+                                                        //                   _splitCardamountTextController
+                                                        //                       .text))) *
+                                                        //       -1.0;
+                                                        // } else {
+                                                        //   _changeAmount = 0;
+                                                        // }
+                                                        orderController
+                                                            .update();
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        SizedBox(
+                                            height:
+                                                Dimensions.paddingSizeLarge),
+                                        if (orderController.selectedMethod ==
+                                            'split')
+                                          Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: Dimensions
+                                                    .paddingSizeLarge),
+                                            child: Row(
+                                              children: [
+                                                const SizedBox(
+                                                    width: 100,
+                                                    child: Text(
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                        "Card")),
+                                                SizedBox(
+                                                    width: Dimensions
+                                                        .paddingSizeLarge),
+                                                Expanded(
+                                                  child: SizedBox(
+                                                    height: Get.width < 390
+                                                        ? 30
+                                                        : ResponsiveHelper
+                                                                .isSmallTab()
+                                                            ? 40
+                                                            : ResponsiveHelper
+                                                                    .isTab(
+                                                                        context)
+                                                                ? 50
+                                                                : 40,
+                                                    child: CustomTextField(
+                                                      borderColor:
+                                                          Theme.of(context)
+                                                              .primaryColor
+                                                              .withOpacity(0.4),
+                                                      hintText:
+                                                          'enter_amount'.tr,
+                                                      controller:
+                                                          _splitCardamountTextController,
+                                                      inputFormatter: [
+                                                        FilteringTextInputFormatter
+                                                            .allow(RegExp(
+                                                                "[0-9]")),
+                                                        LengthLimitingTextInputFormatter(
+                                                            10),
+                                                      ],
+                                                      hintStyle: robotoRegular
+                                                          .copyWith(
+                                                              fontSize: Dimensions
+                                                                  .fontSizeSmall),
+                                                      onChanged: (value) {
+                                                        // if ((double.parse(value) +
+                                                        //         double.parse(
+                                                        //             _amountTextController
+                                                        //                 .text)) >
+                                                        //     Get.find<CartController>()
+                                                        //         .totalAmount) {
+                                                        //   _changeAmount = (Get.find<
+                                                        //                   CartController>()
+                                                        //               .totalAmount -
+                                                        //           (double.parse(value) +
+                                                        //               double.parse(
+                                                        //                   _amountTextController
+                                                        //                       .text))) *
+                                                        //       -1.0;
+                                                        // } else {
+                                                        //   _changeAmount = 0;
+                                                        // }
+                                                        orderController
+                                                            .update();
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+
+                                        !ResponsiveHelper.isTab(context)
+                                            ? Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: Dimensions
+                                                        .paddingSizeLarge),
+                                                child: Row(
+                                                  children: [
+                                                    Flexible(
+                                                        child: SizedBox(
+                                                            width: 100,
+                                                            child: Text(
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                'current_amount'
+                                                                    .tr))),
+                                                    SizedBox(
+                                                        width: Dimensions
+                                                            .paddingSizeExtraLarge),
+                                                    // Expanded(
+                                                    //   child: Text(
+                                                    //       overflow: TextOverflow.ellipsis,
+                                                    //       PriceConverter.convertPrice(
+                                                    //           _currentAmount)),
+                                                    // ),
+                                                  ],
+                                                ),
+                                              )
+                                            : const SizedBox(),
+                                        if (!ResponsiveHelper.isTab(context))
+                                          SizedBox(
+                                            height:
+                                                Dimensions.paddingSizeDefault,
+                                          ),
+                                        !ResponsiveHelper.isTab(context)
+                                            ? Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: Dimensions
+                                                        .paddingSizeSmall),
+                                                child: Row(
+                                                  children: [
+                                                    Flexible(
+                                                        child: SizedBox(
+                                                            width: 100,
+                                                            child: Text(
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                'payable_amount'
+                                                                    .tr))),
+                                                    SizedBox(
+                                                        width: Dimensions
+                                                            .paddingSizeExtraLarge),
+                                                    // Expanded(
+                                                    //   child: Text(
+                                                    //       overflow: TextOverflow.ellipsis,
+                                                    //       PriceConverter.convertPrice(
+                                                    //           _payableAmount)),
+                                                    // ),
+                                                  ],
+                                                ),
+                                              )
+                                            : const SizedBox(),
+                                        SizedBox(
+                                          height: Dimensions.paddingSizeDefault,
+                                        ),
+                                        orderController.selectedMethod ==
+                                                    'cash' ||
+                                                orderController
+                                                        .selectedMethod ==
+                                                    'split'
+                                            ? Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: Dimensions
+                                                        .paddingSizeLarge),
+                                                child: Row(
+                                                  children: [
+                                                    Flexible(
+                                                        child: SizedBox(
+                                                            width: 100,
+                                                            child: Text(
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
+                                                                'change'.tr))),
+                                                    SizedBox(
+                                                        width: Dimensions
+                                                            .paddingSizeExtraLarge),
+                                                    Expanded(
+                                                      child: Text(
+                                                          overflow: TextOverflow
+                                                              .ellipsis,
+                                                          PriceConverter
+                                                              .convertPrice(
+                                                                  _changeAmount)),
+                                                    ),
+                                                  ],
+                                                ),
+                                              )
+                                            : const SizedBox(),
+                                        SizedBox(
+                                          height:
+                                              Dimensions.paddingSizeExtraLarge,
+                                        ),
+                                        orderController.isLoading
+                                            ? Center(
+                                                child: CustomLoader(
+                                                    color: Theme.of(context)
+                                                        .primaryColor),
+                                              )
+                                            : Row(
+                                                children: [
+                                                  GetBuilder<PrinterController>(
+                                                      builder:
+                                                          (printerController) {
+                                                    return printerController
+                                                            .connected
+                                                        ? IconButton(
+                                                            onPressed:
+                                                                printerController
+                                                                    .openDrawerOnClick,
+                                                            icon: Icon(
+                                                              Icons
+                                                                  .electric_bolt_rounded,
+                                                              color: Theme.of(
+                                                                      context)
+                                                                  .primaryColor,
+                                                            ))
+                                                        : Container();
+                                                  }),
+                                                  Expanded(
+                                                    child: CustomButton(
+                                                      height: ResponsiveHelper
+                                                              .isSmallTab()
+                                                          ? 40
+                                                          : ResponsiveHelper
+                                                                  .isTab(
+                                                                      context)
+                                                              ? 50
+                                                              : 40,
+                                                      buttonText:
+                                                          'confirm_payment'.tr,
+                                                      fontSize: Get.width < 390
+                                                          ? 12
+                                                          : null,
+                                                      onPressed: () {
+                                                        if ((orderController
+                                                                        .selectedMethod ==
+                                                                    'cash' ||
+                                                                orderController
+                                                                        .selectedMethod ==
+                                                                    'split') &&
+                                                            _amountTextController
+                                                                .text.isEmpty) {
+                                                          showCustomSnackBar(
+                                                              'please_enter_your_amount'
+                                                                  .tr);
+                                                        } else if (orderController
+                                                                    .selectedMethod ==
+                                                                'cash' &&
+                                                            orderController
+                                                                    .placeOrderBody!
+                                                                    .orderAmount! >
+                                                                int.parse(
+                                                                    _amountTextController
+                                                                        .text)) {
+                                                          showCustomSnackBar(
+                                                              'you_need_pay_more_amount'
+                                                                  .tr);
+                                                        } else {
+                                                          // orderController.placeOrder(
+                                                          //   orderController.placeOrderBody!
+                                                          //       .copyWith(
+                                                          //     paymentStatus: 'paid',
+                                                          //     paymentMethod: orderController
+                                                          //         .selectedMethod,
+                                                          //     card:
+                                                          //         _splitCardamountTextController
+                                                          //             .text,
+                                                          //     cash: _amountTextController.text,
+                                                          //     previousDue: orderController
+                                                          //         .previousDueAmount(),
+                                                          //   ),
+                                                          //   callback,
+                                                          //   _amountTextController.text,
+                                                          //   _changeAmount,
+                                                          // );
+                                                        }
+                                                      },
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                        if (ResponsiveHelper.isTab(context))
+                                          SizedBox(
+                                            height: Dimensions
+                                                .paddingSizeExtraLarge,
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height:
+                                      MediaQuery.of(context).viewInsets.bottom,
+                                ),
+                              ],
+                            ),
                           CustomButton(
                             height: ResponsiveHelper.isSmallTab() ? 40 : 50,
                             width: 300,

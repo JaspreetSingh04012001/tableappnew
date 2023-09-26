@@ -122,7 +122,7 @@ class _CartDetailsState extends State<CartDetails> {
             // double _subTotal = _itemPrice + _tax + _addOns;
             double total = itemPrice -
                 discount +
-                orderController.previousDueAmount() +
+                //  orderController.previousDueAmount() +
                 tax +
                 addOns;
 

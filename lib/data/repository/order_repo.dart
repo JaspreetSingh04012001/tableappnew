@@ -18,8 +18,8 @@ class OrderRepo {
     );
   }
 
-  Future<Response> getOderList(String orderToken) async {
-    return await apiClient.getData('${AppConstants.orderList}$orderToken');
+  Future<Response> getOderList(String orderToken , ) async {
+    return await apiClient.getData('${AppConstants.orderList}${sharedPreferences.getInt(AppConstants.branch) ?? -1}');
   }
 
   //
