@@ -18,8 +18,11 @@ class OrderRepo {
     );
   }
 
-  Future<Response> getOderList(String orderToken , ) async {
-    return await apiClient.getData('${AppConstants.orderList}${sharedPreferences.getInt(AppConstants.branch) ?? -1}');
+  Future<Response> getOderList(
+    String orderToken,
+  ) async {
+    return await apiClient.getData(
+        '${AppConstants.orderList}${sharedPreferences.getInt(AppConstants.branch) ?? -1}');
   }
 
   //
@@ -34,9 +37,15 @@ class OrderRepo {
         {"order_id": order_id, "customer_email": customer_email});
   }
 
-  Future<Response> upDateOrder(int orderId, String paymentStatus) async {
-    return await apiClient.postData(AppConstants.orderUpdate,
-        {"order_id": orderId, "payment_status": paymentStatus});
+  Future<Response> upDateOrder(
+      int orderId, String paymentStatus, List yo) async {
+    return await apiClient.postData(AppConstants.orderUpdate, {
+      "order_id": orderId,
+      "payment_status": paymentStatus,
+      "payment_method": yo[0],
+      "card": yo[1],
+      "cash": yo[2],
+    });
   }
 
   void setOrderID(String orderInfo) {

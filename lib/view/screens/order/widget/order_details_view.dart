@@ -13,7 +13,6 @@ import 'package:efood_table_booking/view/screens/order/widget/invoice_print_scre
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:print_bluetooth_thermal/print_bluetooth_thermal.dart';
 
 import '../../../../controller/printer_controller.dart';
 import '../../../../helper/price_converter.dart';
@@ -957,18 +956,13 @@ class OrderDetailsView extends StatelessWidget {
                                                 "cash")
                                               PriceWithType(
                                                 type: 'Cash',
-                                                amount: PriceConverter.convertPrice(total +
-                                                    (orderController
-                                                            .getOrderSuccessModel()
-                                                            ?.firstWhere((order) =>
-                                                                order.orderId ==
-                                                                orderController
-                                                                    .currentOrderDetails
-                                                                    ?.order
-                                                                    ?.id
-                                                                    .toString())
-                                                            .changeAmount ??
-                                                        0)),
+                                                amount: PriceConverter.convertPrice(
+                                                    double.parse(orderController
+                                                                .currentOrderDetails
+                                                                ?.order
+                                                                ?.cash ??
+                                                            "0") ??
+                                                        0),
                                               ),
                                             if (orderController
                                                     .currentOrderDetails
@@ -985,21 +979,45 @@ class OrderDetailsView extends StatelessWidget {
                                                             "0") ??
                                                         0),
                                               ),
-                                            PriceWithType(
-                                              type: 'change'.tr,
-                                              amount: PriceConverter
-                                                  .convertPrice(orderController
-                                                          .getOrderSuccessModel()
-                                                          ?.firstWhere((order) =>
-                                                              order.orderId ==
-                                                              orderController
-                                                                  .currentOrderDetails
-                                                                  ?.order
-                                                                  ?.id
-                                                                  .toString())
-                                                          .changeAmount ??
-                                                      0),
-                                            ),
+
+                                            if (orderController
+                                                    .currentOrderDetails
+                                                    ?.order
+                                                    ?.paymentMethod ==
+                                                "cash")
+                                              PriceWithType(
+                                                type: 'change'.tr,
+                                                amount: PriceConverter
+                                                    .convertPrice((double.parse(
+                                                            (orderController
+                                                                    .currentOrderDetails
+                                                                    ?.order
+                                                                    ?.cash ??
+                                                                "0")) -
+                                                        total +
+                                                        addOnsPrice)),
+                                              ),
+                                            if (orderController
+                                                    .currentOrderDetails
+                                                    ?.order
+                                                    ?.paymentMethod ==
+                                                "split")
+                                              PriceWithType(
+                                                type: 'change'.tr,
+                                                amount: PriceConverter.convertPrice((double
+                                                        .parse((orderController
+                                                                .currentOrderDetails
+                                                                ?.order
+                                                                ?.cash ??
+                                                            "0")) +
+                                                    double.parse((orderController
+                                                            .currentOrderDetails
+                                                            ?.order
+                                                            ?.card ??
+                                                        "0")) -
+                                                    total +
+                                                    addOnsPrice)),
+                                              ),
                                             SizedBox(
                                               height:
                                                   Dimensions.paddingSizeDefault,
@@ -1138,78 +1156,78 @@ class OrderDetailsView extends StatelessWidget {
                             const SizedBox(width: 8),
                           Expanded(
                             child: GetBuilder<PrinterController>(
-                              builder: (printerController) {
-                                return CustomButton(
-                                  height: ResponsiveHelper.isSmallTab() ? 40 : 50,
-                                  buttonText: "Print Order",
-                                  onPressed: () async {
-                                    // Get.dialog(Dialog(
-                                    //   shape: RoundedRectangleBorder(
-                                    //       borderRadius: BorderRadius.circular(
-                                    //           Dimensions.radiusSmall)),
-                                    //   insetPadding: const EdgeInsets.all(20),
-                                    //   child: const InvoicePrintScreen(),
-                                    // ));
-                                   
-                                    if (printerController.connected) {
-                                      printerController.printTest();
-                                    } else {
-                                      Get.dialog(Dialog(
-                                        shape: RoundedRectangleBorder(
-                                            borderRadius: BorderRadius.circular(
-                                                Dimensions.radiusSmall)),
-                                        insetPadding: const EdgeInsets.all(20),
-                                        child: const InvoicePrintScreen(),
-                                      ));
-                                    }
+                                builder: (printerController) {
+                              return CustomButton(
+                                height: ResponsiveHelper.isSmallTab() ? 40 : 50,
+                                buttonText: "Print Order",
+                                onPressed: () async {
+                                  // Get.dialog(Dialog(
+                                  //   shape: RoundedRectangleBorder(
+                                  //       borderRadius: BorderRadius.circular(
+                                  //           Dimensions.radiusSmall)),
+                                  //   insetPadding: const EdgeInsets.all(20),
+                                  //   child: const InvoicePrintScreen(),
+                                  // ));
 
-                                    //Get.dialog(const InVoicePrintScreen());
-                                  },
-                                );
-                              }
-                            ),
+                                  if (printerController.connected) {
+                                    printerController.printTest();
+                                  } else {
+                                    Get.dialog(Dialog(
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                              Dimensions.radiusSmall)),
+                                      insetPadding: const EdgeInsets.all(20),
+                                      child: const InvoicePrintScreen(),
+                                    ));
+                                  }
+
+                                  //Get.dialog(const InVoicePrintScreen());
+                                },
+                              );
+                            }),
                           ),
 
                           // CustomRoundedButton(onTap: (){}, image: Images.edit_icon, widget: Icon(Icons.delete)),
                         ],
                       ),
                     ),
-                    if (orderController
-                            .currentOrderDetails?.order?.paymentStatus ==
-                        "unpaid")
-                      CustomButton(
-                        height: ResponsiveHelper.isSmallTab() ? 40 : 50,
-                        transparent: true,
-                        buttonText: 'Clear payment',
-                        onPressed: () {
-                          RouteHelper.openDialog(
-                            context,
-                            ConfirmationDialog(
-                              title: 'Payment Recieved ?',
-                              icon: Icons.money_rounded,
-                              description: 'Paymemt received for this order',
-                              onYesPressed: () {
-                                orderController.updateOrderStatus(
-                                    order_id: orderController
-                                            .currentOrderDetails?.order?.id ??
-                                        0,
-                                    payment_status: "paid");
-                                orderController.getCurrentOrder(orderController
-                                        .currentOrderDetails?.order?.id
-                                        .toString() ??
-                                    '');
-                                if (isSales) {
-                                  Get.find<SalesController>().getSales();
-                                }
-                                Get.back();
-                              },
-                              onNoPressed: () => Get.back(),
-                            ),
-                          );
+                    // if (orderController
+                    //         .currentOrderDetails?.order?.paymentStatus ==
+                    //     "unpaid")
+                    //   CustomButton(
+                    //     height: ResponsiveHelper.isSmallTab() ? 40 : 50,
+                    //     transparent: true,
+                    //     buttonText: 'Clear payment',
+                    //     onPressed: () {
+                    //       RouteHelper.openDialog(
+                    //         context,
+                    //         ConfirmationDialog(
+                    //           title: 'Payment Recieved ?',
+                    //           icon: Icons.money_rounded,
+                    //           description: 'Paymemt received for this order',
+                    //           onYesPressed: () {
+                    //             orderController.updateOrderStatus(
+                    //                 order_id: orderController
+                    //                         .currentOrderDetails?.order?.id ??
+                    //                     0,
+                    //                 payment_status: "paid");
+                    //             orderController.getCurrentOrder(orderController
+                    //                     .currentOrderDetails?.order?.id
+                    //                     .toString() ??
+                    //                 '');
+                    //             if (isSales) {
+                    //               Get.find<SalesController>().getSales();
+                    //             }
+                    //             Get.back();
+                    //           },
+                    //           onNoPressed: () => Get.back(),
+                    //         ),
+                    //       );
 
-                          //cartController.clearCartData();
-                        },
-                      ),
+                    //       //cartController.clearCartData();
+                    //     },
+                    //   ),
+
                     if (orderController
                             .currentOrderDetails?.order?.paymentStatus ==
                         "paid")

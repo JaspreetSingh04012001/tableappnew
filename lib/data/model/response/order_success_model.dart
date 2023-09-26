@@ -7,7 +7,7 @@ class OrderSuccessModel {
   String? tableId;
   String? branchId;
 
-  OrderSuccessModel({this.orderId, this.branchTableToken, this.changeAmount, this.tableId, this.branchId});
+ OrderSuccessModel({this.orderId, this.branchTableToken, this.changeAmount, this.tableId, this.branchId});
 
   OrderSuccessModel.fromJson(Map<String, dynamic> json) {
     orderId = '${json['order_id']}';

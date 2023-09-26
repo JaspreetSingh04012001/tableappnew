@@ -95,10 +95,10 @@ class Order {
     orderStatus = json['order_status'];
     totalTaxAmount = int.tryParse('${json['total_tax_amount']}');
     paymentMethod = json['payment_method'];
-    if (json['payment_method'] == 'split') {
-      cash = json['cash'];
-      card = json['card'];
-    }
+
+    cash = json['cash'];
+    card = json['card'];
+
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
     checked = int.tryParse('${json['checked']}');
@@ -153,7 +153,7 @@ class Order {
 
 class Details {
   String? note;
- 
+
   int? id;
   int? productId;
   int? orderId;
@@ -194,7 +194,7 @@ class Details {
 
   Details.fromJson(Map<String, dynamic> json) {
     id = json['id'];
- 
+
     productId = json['product_id'];
     orderId = json['order_id'];
     if (json['price'] != null && json['price'] != 'null') {
@@ -309,7 +309,7 @@ class ProductDetails {
   int? branchId;
   int? popularityCount;
   String? productType;
- String? printType;
+  String? printType;
   ProductDetails({
     this.id,
     this.name,
@@ -337,7 +337,8 @@ class ProductDetails {
 
   ProductDetails.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    name = json['name'];   printType = json['print_type'];
+    name = json['name'];
+    printType = json['print_type'];
     description = json['description'];
     image = json['image'];
     if (json['price'] != null && json['price'] != 'null') {
