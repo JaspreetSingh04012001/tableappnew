@@ -27,6 +27,7 @@ class OrderRepo {
 
   //
   Future<Response> placeOrder(PlaceOrderBody orderBody) async {
+    print("jassPlace ${orderBody.toJson()}");
     return await apiClient.postData(
         AppConstants.placeOrderUri, orderBody.toJson());
   }

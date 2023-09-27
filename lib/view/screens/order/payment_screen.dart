@@ -661,6 +661,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                           showCustomSnackBar(
                                               'you_need_pay_more_amount'.tr);
                                         } else {
+                                          // orderController.placeOrderBody!
+                                          //     .copyWith(
+                                          //   paymentStatus: 'paid',
+                                          //   paymentMethod:
+                                          //       orderController.selectedMethod,
+                                          //   card: _splitCardamountTextController
+                                          //       .text,
+                                          //   cash: _amountTextController.text,
+                                          //   previousDue: orderController
+                                          //       .previousDueAmount(),
+                                          // );
+                                          // //  orderController.update();
+
+                                          print(orderController.placeOrderBody!
+                                              .toJson());
                                           orderController.placeOrder(
                                             orderController.placeOrderBody!
                                                 .copyWith(

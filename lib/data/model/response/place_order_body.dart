@@ -1,5 +1,5 @@
 class PlaceOrderBody {
-  List<Cart>? _cart;
+  final List<Cart>? _cart;
   double? _orderAmount;
 
   List<Cart>? get cart => _cart;
@@ -7,14 +7,14 @@ class PlaceOrderBody {
   String? _card;
   String? _cash;
 
-  String? _orderNote;
-  String? _deliveryTime;
-  String? _deliveryDate;
-  String? _branchId;
-  int? _tableNumber;
-  int? _peopleNumber;
-  String? _customerName;
-  String? _customerEmail;
+  final String? _orderNote;
+  final String? _deliveryTime;
+  final String? _deliveryDate;
+  final String? _branchId;
+  final int? _tableNumber;
+  final int? _peopleNumber;
+  final String? _customerName;
+  final String? _customerEmail;
   String? _paymentStatus;
   String? _branchTableToken;
 
@@ -48,44 +48,43 @@ class PlaceOrderBody {
     }
     if (paymentMethod != null) {
       _paymentMethod = paymentMethod;
-      if (paymentMethod == 'split') {
-        _card = card;
-        _cash = cash;
-      }
+
+      _card = card;
+      _cash = cash;
     }
     if (token != null) {
       _branchTableToken = token;
     }
     if (previousDue != null) {
-      _orderAmount = _orderAmount! - previousDue;
+      _orderAmount = _orderAmount!;
     }
     return this;
   }
 
-  PlaceOrderBody.fromJson(Map<String, dynamic> json) {
-    if (json['cart'] != null) {
-      _cart = [];
-      json['cart'].forEach((v) {
-        _cart?.add(Cart.fromJson(v));
-      });
-    }
-    _orderAmount = json['order_amount'];
-    _paymentMethod = json['payment_method'];
-    if (json['payment_method'] == 'split') {
-      _cash = json['cash'];
-      _card = json['card'];
-    }
-    _orderNote = json['order_note'];
-    _deliveryTime = json['delivery_time'];
-    _deliveryDate = json['delivery_date'];
-    _tableNumber = int.tryParse('${json['table_id']}');
-    _peopleNumber = int.tryParse('${json['number_of_people']}');
-    _branchId = json['branch_id'];
-    _paymentStatus = json['payment_status'];
-    _branchTableToken = json['branch_table_token'];
-    _customerName = json['customer_name'];
-    _customerEmail = json['customer_email'];
-  }
+  // PlaceOrderBody.fromJson(Map<String, dynamic> json) {
+  //   if (json['cart'] != null) {
+  //     _cart = [];
+  //     json['cart'].forEach((v) {
+  //       _cart?.add(Cart.fromJson(v));
+  //     });
+  //   }
+  //   _orderAmount = json['order_amount'];
+  //   _paymentMethod = json['payment_method'];
+
+  //   _cash = json['cash'];
+  //   _card = json['card'];
+
+  //   _orderNote = json['order_note'];
+  //   _deliveryTime = json['delivery_time'];
+  //   _deliveryDate = json['delivery_date'];
+  //   _tableNumber = int.tryParse('${json['table_id']}');
+  //   _peopleNumber = int.tryParse('${json['number_of_people']}');
+  //   _branchId = json['branch_id'];
+  //   _paymentStatus = json['payment_status'];
+  //   _branchTableToken = json['branch_table_token'];
+  //   _customerName = json['customer_name'];
+  //   _customerEmail = json['customer_email'];
+  // }
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -95,10 +94,10 @@ class PlaceOrderBody {
 
     data['order_amount'] = _orderAmount;
     data['payment_method'] = _paymentMethod;
-    if (data['payment_method'] == 'split') {
-      data['card'] = _card;
-      data['cash'] = _cash;
-    }
+
+    data['card'] = _card;
+    data['cash'] = _cash;
+
     data['order_note'] = _orderNote;
     data['delivery_time'] = _deliveryTime;
     data['delivery_date'] = _deliveryDate;

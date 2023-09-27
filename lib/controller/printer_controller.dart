@@ -15,8 +15,12 @@ import '../data/model/response/order_details_model.dart';
 
 class PrinterController extends GetxController {
   final DateFormat formatter = DateFormat();
-  PrinterController() {
+
+  @override
+  void onInit() {
     getDataFromStorages();
+    // TODO: implement onInit
+    super.onInit();
   }
 
   String removeEmptyLines(String input) {
@@ -447,11 +451,11 @@ class PrinterController extends GetxController {
             ));
 
         if (addonsName.isNotEmpty) {
-          Frontbytes += generator.text('${'addons'.tr}: ${addonsName + ")"}',
+          Frontbytes += generator.text('${'addons'.tr}: ${"$addonsName)"}',
               styles: const PosStyles(bold: true, height: PosTextSize.size1));
         }
         if (variationText != '') {
-          Frontbytes += generator.text(variationText + ")",
+          Frontbytes += generator.text("$variationText)",
               styles: const PosStyles(bold: true, height: PosTextSize.size1));
         }
         if (note != null && note != "null" && note != "") {
@@ -509,7 +513,7 @@ class PrinterController extends GetxController {
             styles: const PosStyles(bold: true, height: PosTextSize.size1));
       }
       if (variationText != '') {
-        bytes += generator.text(variationText + ")",
+        bytes += generator.text("$variationText)",
             styles: const PosStyles(bold: true, height: PosTextSize.size1));
       }
       if (note != null && note != "null" && note != "") {
