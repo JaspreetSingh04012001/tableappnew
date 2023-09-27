@@ -569,7 +569,7 @@ class PrinterController extends GetxController {
     //     generator.text("${'vat_tax'.tr} : \$${widget.order!.totalTaxAmount!}");
     if (orderController.currentOrderDetails?.order?.paymentMethod != null) {
       bytes += generator.text(
-          "Payment Method : +${orderController.currentOrderDetails?.order?.paymentMethod}");
+          "Payment Method : +${orderController.currentOrderDetails?.order?.paymentMethod ?? "hold"}");
     }
     bytes += generator.text(
         "Payment Method : +${orderController.currentOrderDetails?.order?.paymentStatus}");
