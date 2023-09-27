@@ -573,7 +573,7 @@ class PrinterController extends GetxController {
     }
     if (orderController.currentOrderDetails?.order?.paymentMethod == "cash") {
       bytes += generator.text(
-          "Cash : +${PriceConverter.convertPrice(orderController.getOrderSuccessModel()!.firstWhere((order) => order.orderId == orderController.currentOrderDetails?.order?.id.toString()).changeAmount! + total + addOnsPrice)}");
+          "Cash : +${PriceConverter.convertPrice(double.parse(orderController.currentOrderDetails?.order?.cash ?? "0"))}");
     }
     // PriceWithType(
     //   type: 'Cash',
@@ -599,10 +599,22 @@ class PrinterController extends GetxController {
           "Card : +${PriceConverter.convertPrice(double.parse(orderController.currentOrderDetails?.order?.card ?? "0"))}");
     }
 
-    bytes += generator.text(
-        styles: const PosStyles(
-            height: PosTextSize.size1, width: PosTextSize.size1, bold: true),
-        "${'change'.tr} : ${PriceConverter.convertPrice(orderController.getOrderSuccessModel()?.firstWhere((order) => order.orderId == orderController.currentOrderDetails?.order?.id.toString()).changeAmount ?? 0)}");
+    if (orderController.currentOrderDetails?.order?.paymentMethod == "card") {
+      bytes += generator.text(
+          "Card : +${PriceConverter.convertPrice(double.parse(orderController.currentOrderDetails?.order?.card ?? "0"))}");
+    }
+    if (orderController.currentOrderDetails?.order?.paymentMethod == "split") {
+      bytes += generator.text(
+          styles: const PosStyles(
+              height: PosTextSize.size1, width: PosTextSize.size1, bold: true),
+          "${'change'.tr} : ${PriceConverter.convertPrice(((double.parse(orderController.currentOrderDetails?.order?.card ?? "0") + double.parse(orderController.currentOrderDetails?.order?.card ?? "0")) - total))}");
+    }
+    if (orderController.currentOrderDetails?.order?.paymentMethod == "cash") {
+      bytes += generator.text(
+          styles: const PosStyles(
+              height: PosTextSize.size1, width: PosTextSize.size1, bold: true),
+          "${'change'.tr} : ${PriceConverter.convertPrice((double.parse(orderController.currentOrderDetails?.order?.card ?? "0") - total))}");
+    }
     bytes += generator.drawer();
     bytes += generator.drawer(pin: PosDrawer.pin5);
     bytes += generator.feed(2);
