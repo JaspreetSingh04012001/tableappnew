@@ -697,63 +697,113 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                                                                 focusshow =
                                                                     false;
                                                               });
-                                                              orderController
-                                                                  .updateOrderStatus(
-                                                                      order_id:
-                                                                          orderController.currentOrderDetails?.order?.id ??
-                                                                              0,
-                                                                      payment_status:
-                                                                          "paid",
-                                                                      yo: [
+                                                              if (orderController
+                                                                      .selectedMethod ==
+                                                                  "card") {
+                                                                orderController
+                                                                    .updateOrderStatus(
+                                                                        order_id:
+                                                                            orderController.currentOrderDetails?.order?.id ??
+                                                                                0,
+                                                                        payment_status:
+                                                                            "paid",
+                                                                        yo: [
+                                                                          orderController
+                                                                              .selectedMethod,
+                                                                          total,
+                                                                          _amountTextController.text.isEmpty
+                                                                              ? null
+                                                                              : int.parse(_amountTextController.text)
+                                                                        ])
+                                                                    .whenComplete(
+                                                                        () =>
+                                                                            null)
+                                                                    .then(
+                                                                        (value) {
+                                                                      if (value
+                                                                              .statusCode ==
+                                                                          200) {
+                                                                        print(value.body["order"]
+                                                                            [
+                                                                            "id"]);
                                                                         orderController
-                                                                            .selectedMethod,
-                                                                        _splitCardamountTextController.text.isEmpty
-                                                                            ? null
-                                                                            : int.parse(_splitCardamountTextController.text),
-                                                                        _amountTextController.text.isEmpty
-                                                                            ? null
-                                                                            : int.parse(_amountTextController.text)
-                                                                      ])
-                                                                  .whenComplete(
-                                                                      () =>
-                                                                          null)
-                                                                  .then(
-                                                                      (value) {
-                                                                    if (value
-                                                                            .statusCode ==
-                                                                        200) {
-                                                                      print(value
-                                                                              .body["order"]
-                                                                          [
-                                                                          "id"]);
-                                                                      orderController
-                                                                          .getCurrentOrder(value
-                                                                              .body["order"]["id"]
-                                                                              .toString())
-                                                                          .then((value) async {
-                                                                        if (printerController
-                                                                            .connected) {
-                                                                          printerController.printTest(
-                                                                              byWaitor: true);
-                                                                        } else {
-                                                                          // Get.dialog(
-                                                                          //     Dialog(
-                                                                          //   shape:
-                                                                          //       RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
-                                                                          //   insetPadding:
-                                                                          //       const EdgeInsets.all(20),
-                                                                          //   child:
-                                                                          //       const InvoicePrintScreen(),
-                                                                          // ));
-                                                                        }
-                                                                      });
-                                                                      // orderController
-                                                                      //     .getOrderList();
-                                                                      Get.off(() =>
-                                                                          const OrderSuccessScreen(
-                                                                              fromPlaceOrder: false));
-                                                                    }
-                                                                  });
+                                                                            .getCurrentOrder(value.body["order"]["id"].toString())
+                                                                            .then((value) async {
+                                                                          if (printerController
+                                                                              .connected) {
+                                                                            printerController.printTest(byWaitor: true);
+                                                                          } else {
+                                                                            // Get.dialog(
+                                                                            //     Dialog(
+                                                                            //   shape:
+                                                                            //       RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
+                                                                            //   insetPadding:
+                                                                            //       const EdgeInsets.all(20),
+                                                                            //   child:
+                                                                            //       const InvoicePrintScreen(),
+                                                                            // ));
+                                                                          }
+                                                                        });
+                                                                        // orderController
+                                                                        //     .getOrderList();
+                                                                        Get.off(() =>
+                                                                            const OrderSuccessScreen(fromPlaceOrder: false));
+                                                                      }
+                                                                    });
+                                                              } else {
+                                                                orderController
+                                                                    .updateOrderStatus(
+                                                                        order_id:
+                                                                            orderController.currentOrderDetails?.order?.id ??
+                                                                                0,
+                                                                        payment_status:
+                                                                            "paid",
+                                                                        yo: [
+                                                                          orderController
+                                                                              .selectedMethod,
+                                                                          _splitCardamountTextController.text.isEmpty
+                                                                              ? null
+                                                                              : int.parse(_splitCardamountTextController.text),
+                                                                          _amountTextController.text.isEmpty
+                                                                              ? null
+                                                                              : int.parse(_amountTextController.text)
+                                                                        ])
+                                                                    .whenComplete(
+                                                                        () =>
+                                                                            null)
+                                                                    .then(
+                                                                        (value) {
+                                                                      if (value
+                                                                              .statusCode ==
+                                                                          200) {
+                                                                        print(value.body["order"]
+                                                                            [
+                                                                            "id"]);
+                                                                        orderController
+                                                                            .getCurrentOrder(value.body["order"]["id"].toString())
+                                                                            .then((value) async {
+                                                                          if (printerController
+                                                                              .connected) {
+                                                                            printerController.printTest(byWaitor: true);
+                                                                          } else {
+                                                                            // Get.dialog(
+                                                                            //     Dialog(
+                                                                            //   shape:
+                                                                            //       RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
+                                                                            //   insetPadding:
+                                                                            //       const EdgeInsets.all(20),
+                                                                            //   child:
+                                                                            //       const InvoicePrintScreen(),
+                                                                            // ));
+                                                                          }
+                                                                        });
+                                                                        // orderController
+                                                                        //     .getOrderList();
+                                                                        Get.off(() =>
+                                                                            const OrderSuccessScreen(fromPlaceOrder: false));
+                                                                      }
+                                                                    });
+                                                              }
                                                               // orderController
                                                               //     .getCurrentOrder(
                                                               //         orderController

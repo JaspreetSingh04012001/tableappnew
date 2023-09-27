@@ -676,23 +676,44 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
                                           // print(orderController.placeOrderBody!
                                           //     .toJson());
-                                          orderController.placeOrder(
-                                            orderController.placeOrderBody!
-                                                .copyWith(
-                                              paymentStatus: 'paid',
-                                              paymentMethod: orderController
-                                                  .selectedMethod,
-                                              card:
-                                                  _splitCardamountTextController
-                                                      .text,
-                                              cash: _amountTextController.text,
-                                              previousDue: orderController
-                                                  .previousDueAmount(),
-                                            ),
-                                            callback,
-                                            _amountTextController.text,
-                                            _changeAmount,
-                                          );
+                                          if (orderController.selectedMethod ==
+                                              'card') {
+                                            orderController.placeOrder(
+                                              orderController.placeOrderBody!
+                                                  .copyWith(
+                                                paymentStatus: 'paid',
+                                                paymentMethod: orderController
+                                                    .selectedMethod,
+                                                card: _amountTextController.text
+                                                    .replaceAll("\$", ""),
+                                                // cash: _amountTextController.text,
+                                                previousDue: orderController
+                                                    .previousDueAmount(),
+                                              ),
+                                              callback,
+                                              _amountTextController.text,
+                                              _changeAmount,
+                                            );
+                                          } else {
+                                            orderController.placeOrder(
+                                              orderController.placeOrderBody!
+                                                  .copyWith(
+                                                paymentStatus: 'paid',
+                                                paymentMethod: orderController
+                                                    .selectedMethod,
+                                                card:
+                                                    _splitCardamountTextController
+                                                        .text,
+                                                cash:
+                                                    _amountTextController.text,
+                                                previousDue: orderController
+                                                    .previousDueAmount(),
+                                              ),
+                                              callback,
+                                              _amountTextController.text,
+                                              _changeAmount,
+                                            );
+                                          }
                                         }
                                       },
                                     ),
