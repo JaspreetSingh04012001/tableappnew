@@ -39,13 +39,13 @@ class OrderRepo {
   }
 
   Future<Response> upDateOrder(
-      int orderId, String paymentStatus, List yo) async {
+      int orderId, String paymentStatus, List? yo) async {
     return await apiClient.postData(AppConstants.orderUpdate, {
       "order_id": orderId,
       "payment_status": paymentStatus,
-      "payment_method": yo[0],
-      "card": yo[1],
-      "cash": yo[2],
+      if (yo != null) "payment_method": yo[0],
+      if (yo != null) "card": yo[1],
+      if (yo != null) "cash": yo[2],
     });
   }
 

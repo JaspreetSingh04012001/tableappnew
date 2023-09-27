@@ -28,277 +28,14 @@ class OrderDetailsView extends StatelessWidget {
   OrderDetailsView({Key? key, this.itemCount = 0, this.isSales = false})
       : super(key: key);
   final DateFormat formatter = DateFormat();
-  String removeEmptyLines(String input) {
-    print("JassVar$input");
-    return input;
-    // .replaceAll(RegExp(r'^\s*$\n', multiLine: true), '')
-    // .split('\n')
-    // .map((line) => line.trimLeft())
-    // .join('\n');
-  }
-
-//   Future<List<int>> testTicket() async {
-//     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-//     List<int> bytes = [];
-//     // Using default profile
-//     final profile = await CapabilityProfile.load();
-//     final generator = Generator(PaperSize.mm58, profile);
-//     bytes += generator.drawer(pin: PosDrawer.pin2);
-//     bytes += generator.drawer();
-
-//     //bytes += generator.setGlobalFont(PosFontType.fontA);
-//     bytes += generator.reset();
-
-//     OrderController orderController = Get.find<OrderController>();
-//     SplashController splashController = Get.find<SplashController>();
-
-// //orderController.currentOrderDetails.details;
-//     double itemsPrice = 0;
-//     double discount = 0;
-//     double tax = 0;
-//     double addOnsPrice = 0;
-//     late String date;
-//     String? name;
-//     //SharedPreferences sharedPref//erences = await SharedPreferences.getInstance();
-//     // sharedPreferences.setString("branchName", value.name.toString());
-//     name = sharedPreferences.getString("branchName");
-
-//     splashController.configModel?.branch?.forEach((Branch value) async {
-//       if (splashController.selectedBranchId == value.id) {
-//         name = value.name;
-//         //splashController.updateBranchId(value.id);
-//       }
-//     });
-//     List<Details> orderDetails =
-//         orderController.currentOrderDetails?.details ?? [];
-//     if (orderController.currentOrderDetails?.details != null) {
-//       for (Details orderDetails in orderDetails) {
-//         itemCount += orderDetails.quantity!.toInt();
-//         itemsPrice =
-//             itemsPrice + (orderDetails.price! * orderDetails.quantity!.toInt());
-//         discount = discount +
-//             (orderDetails.discountOnProduct! * orderDetails.quantity!.toInt());
-//         tax = (tax +
-//             (orderDetails.taxAmount! * orderDetails.quantity!.toInt()) +
-//             orderDetails.addonTaxAmount!);
-//         date = orderDetails.createdAt!.replaceAll("T", " ");
-//       }
-//     }
-
-//     double total = itemsPrice - discount + tax;
-
-//     // widget.order;
-//     // widget.orderDetails;
-//     // var date =
-//     //     DateConverter.dateTimeStringToMonthAndTime(widget.order!.createdAt!);
-
-//     // bytes += generator.text("EFood",
-//     //     styles: const PosStyles(
-//     //         bold: true,
-//     //         align: PosAlign.center,
-//     //         height: PosTextSize.size3,
-//     //         width: PosTextSize.size3));
-
-//     bytes += generator.text(name ?? " ",
-//         styles: const PosStyles(
-//             bold: true,
-//             align: PosAlign.center,
-//             height: PosTextSize.size2,
-//             width: PosTextSize.size2));
-//     bytes += generator.text('order_summary'.tr,
-//         styles: const PosStyles(
-//             bold: true,
-//             align: PosAlign.center,
-//             height: PosTextSize.size2,
-//             width: PosTextSize.size2));
-//     bytes += generator.text(
-//         '${'order'.tr}# ${orderController.currentOrderDetails?.order?.id}',
-//         styles: const PosStyles(
-//             bold: true, align: PosAlign.center, height: PosTextSize.size1));
-//     bytes += generator.text(date,
-//         styles: const PosStyles(
-//             bold: true, align: PosAlign.center, height: PosTextSize.size1));
-//     // bytes += generator.text(
-//     //     '${'table'.tr} ${Get.find<SplashController>().getTable(
-//     //           orderController.currentOrderDetails?.order?.tableId,
-//     //           branchId: orderController.currentOrderDetails?.order?.branchId,
-//     //         )?.number} |',
-//     //     styles: const PosStyles(
-//     //         bold: true, align: PosAlign.center, height: PosTextSize.size1));
-//     // bytes += generator.text(
-//     //     '${orderController.currentOrderDetails?.order?.numberOfPeople ?? 'add'.tr} ${'people'.tr}',
-//     //     styles: const PosStyles(
-//     //         bold: true, align: PosAlign.center, height: PosTextSize.size1));
-//     bytes += generator.text(
-//         orderController.currentOrderDetails?.order?.customer_name ?? '',
-//         styles: const PosStyles(
-//             bold: true, align: PosAlign.center, height: PosTextSize.size1));
-//     bytes += generator.text("Qty x Item info = Price");
-//     bytes += generator.hr(ch: "-");
-
-//     orderController.currentOrderDetails?.details?.forEach((details) {
-//       String variationText = '';
-//       int a = 0;
-//       String addonsName = '';
-//       bool takeAway = false;
-
-//       List<AddOns> addons = details.productDetails == null
-//           ? []
-//           : details.productDetails!.addOns == null
-//               ? []
-//               : details.productDetails!.addOns!;
-//       List<int> addQty = details.addOnQtys ?? [];
-//       List<int> ids = details.addOnIds ?? [];
-//       if (ids.length == details.addOnPrices?.length &&
-//           ids.length == details.addOnQtys?.length) {
-//         for (int i = 0; i < ids.length; i++) {
-//           addOnsPrice =
-//               addOnsPrice + (details.addOnPrices![i] * details.addOnQtys![i]);
-//         }
-//       }
-//       try {
-//         for (AddOns addOn in addons) {
-//           if (ids.contains(addOn.id)) {
-//             addonsName = addonsName + ('${addOn.name} (${(addQty[a])}), ');
-//             a++;
-//           }
-//         }
-//       } catch (e) {
-//         debugPrint('order details view -$e');
-//       }
-//       if (details.variations != null && details.variations!.isNotEmpty) {
-//         for (Variation variation in details.variations!) {
-//           variationText +=
-//               '${variationText.isNotEmpty ? ', ' : ''}${variation.name} (';
-//           for (VariationValue value in variation.variationValues!) {
-//             variationText +=
-//                 '${variationText.endsWith('(') ? '' : ', '}${value.level}';
-//           }
-//           variationText += ')';
-//         }
-//       } else if (details.oldVariations != null &&
-//           details.oldVariations!.isNotEmpty) {
-//         List<String> variationTypes = details.oldVariations![0].type != null
-//             ? details.oldVariations![0].type!.split('-')
-//             : [];
-
-//         if (variationTypes.length ==
-//             details.productDetails?.choiceOptions?.length) {
-//           int index = 0;
-//           details.productDetails?.choiceOptions?.forEach((choice) {
-//             // choice.
-//             variationText =
-//                 '$variationText${(index == 0) ? '' : ',  '}${choice.title} - ${variationTypes[index]}';
-//             index = index + 1;
-//           });
-//         } else {
-//           variationText = details.oldVariations?[0].type ?? '';
-//         }
-//       }
-//       if (variationText.contains("Order Type (Take away)")) {
-//         takeAway = true;
-//       }
-//       print("Jass $variationText");
-//       variationText = variationText
-//           .replaceAll("Choose ()", "")
-//           .replaceAll("optiona (", "")
-//           .replaceAll("Order Type (Dine in)", "")
-//           .replaceAll("Order Type (Take away)", "")
-//           .replaceAll("Choose (", "\n")
-//           .replaceAll("Choose One (", "\n")
-//           .replaceAll(")", "")
-//           .replaceAll(",", "\n");
-//       variationText = removeEmptyLines(variationText);
-//       // variationText.
-
-//       bytes += generator.text(takeAway ? "** Take away **" : "* Eat In *",
-//           styles: const PosStyles(
-//               bold: true,
-//               height: PosTextSize.size1,
-//               width: PosTextSize.size2,
-//               align: PosAlign.center));
-
-//       bytes += generator.text(
-//           "${details.quantity} x ${details.productDetails?.name ?? ''} : ${PriceConverter.convertPrice(details.price! * details.quantity!)}",
-//           styles: const PosStyles(
-//             bold: true,
-//             height: PosTextSize.size1,
-//             width: PosTextSize.size2,
-//           ));
-
-//       if (addonsName.isNotEmpty) {
-//         bytes += generator.text('${'addons'.tr}: $addonsName',
-//             styles: const PosStyles(bold: true, height: PosTextSize.size1));
-//       }
-//       if (variationText != '') {
-//         bytes += generator.text(variationText,
-//             styles: const PosStyles(bold: true, height: PosTextSize.size1));
-//       }
-//       bytes += generator.hr(ch: "-");
-//     });
-
-//     orderController.currentOrderDetails?.order?.orderNote != null
-//         ? bytes += generator.text(
-//             'Note : ${orderController.currentOrderDetails?.order?.orderNote ?? ''}',
-//             styles: const PosStyles(
-//                 height: PosTextSize.size1,
-//                 width: PosTextSize.size2,
-//                 bold: true))
-//         : null;
-//     bytes += generator.text("${'Item Count'} : $itemCount",
-//         styles: const PosStyles(
-//             height: PosTextSize.size1, width: PosTextSize.size2));
-//     bytes += generator.text(
-//         "${'item_price'.tr} : ${PriceConverter.convertPrice(itemsPrice)}");
-//     // bytes += generator
-//     //     .text("${'discount'.tr} : -${PriceConverter.convertPrice(discount)}");
-
-//     // bytes += generator
-//     //     .text("${'vat_tax'.tr} : +${PriceConverter.convertPrice(tax)}");
-//     bytes += generator
-//         .text("${'add_ons'.tr} : +${PriceConverter.convertPrice(addOnsPrice)}");
-//     bytes += generator.text(
-//         "${'total'.tr} : ${PriceConverter.convertPrice(total + addOnsPrice)}",
-//         styles: const PosStyles(
-//             height: PosTextSize.size2, width: PosTextSize.size2));
-
-//     bytes += generator.text(
-//         styles: const PosStyles(
-//             height: PosTextSize.size1, width: PosTextSize.size1, bold: true),
-//         "${'${'paid_amount'.tr}${orderController.currentOrderDetails?.order?.paymentMethod != null ?
-//             //'(${orderController.currentOrderDetails?.order?.paymentMethod})' : ' (${'un_paid'.tr}) '}',
-//             '(${orderController.currentOrderDetails?.order?.paymentMethod})' : ''}'} : ${PriceConverter.convertPrice(orderController.currentOrderDetails?.order?.paymentStatus != 'unpaid' ? orderController.currentOrderDetails?.order?.orderAmount ?? 0 : 0)}");
-//     // bytes +=
-//     //     generator.text("${'vat_tax'.tr} : \$${widget.order!.totalTaxAmount!}");
-//     bytes += generator.text(
-//         styles: const PosStyles(
-//             height: PosTextSize.size1, width: PosTextSize.size1, bold: true),
-//         "${'change'.tr} : ${PriceConverter.convertPrice(orderController.getOrderSuccessModel()?.firstWhere((order) => order.orderId == orderController.currentOrderDetails?.order?.id.toString()).changeAmount ?? 0)}");
-//     bytes += generator.drawer();
-//     bytes += generator.drawer(pin: PosDrawer.pin5);
-//     bytes += generator.feed(2);
-//     bytes += generator.cut();
-//     return bytes;
-//   }
-
-//   Future<void> printTest() async {
-//     SharedPreferences pref = await SharedPreferences.getInstance();
-//     int printCount = 1;
-//     // if(pref.getInt("printCount") == null){
-//     printCount = pref.getInt("printCount") ?? 1;
-//     // }
-//     //pref.getInt("printCount");
-//     bool conexionStatus = await PrintBluetoothThermal.connectionStatus;
-//     //print("connection status: $conexionStatus");
-//     if (conexionStatus) {
-//       List<int> ticket = await testTicket();
-//       for (int i = 0; i < printCount; i++) {
-//         PrintBluetoothThermal.writeBytes(ticket);
-//       }
-//     } else {
-//       //no conectado, reconecte
-//     }
-//   }
+  // String removeEmptyLines(String input) {
+  //   print("JassVar$input");
+  //   return input;
+  //   // .replaceAll(RegExp(r'^\s*$\n', multiLine: true), '')
+  //   // .split('\n')
+  //   // .map((line) => line.trimLeft())
+  //   // .join('\n');
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -515,11 +252,11 @@ class OrderDetailsView extends StatelessWidget {
                               for (Variation variation
                                   in orderDetails.variations!) {
                                 variationText +=
-                                    '${variationText.isNotEmpty ? ', ' : ''}${variation.name} (';
+                                    '${variationText.isNotEmpty ? ',' : ''}${variation.name} (';
                                 for (VariationValue value
                                     in variation.variationValues!) {
-                                  variationText +=
-                                      '${variationText.endsWith('(') ? '' : ', '}${value.level}';
+                                  variationText += '${value.level}';
+                                  //   '${variationText.endsWith('(') ? '' : ', '}${value.level}';
                                 }
                                 variationText += ')';
                               }
@@ -539,7 +276,7 @@ class OrderDetailsView extends StatelessWidget {
                                 orderDetails.productDetails?.choiceOptions
                                     ?.forEach((choice) {
                                   variationText =
-                                      '$variationText${(index == 0) ? '' : ',  '}${choice.title} - ${variationTypes[index]}';
+                                      '$variationText${(index == 0) ? '' : ''}${choice.title} - ${variationTypes[index]}';
                                   index = index + 1;
                                 });
                               } else {
@@ -552,13 +289,15 @@ class OrderDetailsView extends StatelessWidget {
                               takeAway = true;
                             }
                             variationText = variationText
-                                .replaceAll("Choose ()", "")
-                                .replaceAll("optiona (", "")
-                                .replaceAll("Optiona (", "")
+                                // .replaceAll("Choose ()", "")
+                                // .replaceAll("optiona (", "")
+                                //  .replaceAll(", ", "")
                                 .replaceAll("Order Type (Dine in)", "")
                                 .replaceAll("Order Type (Take away)", "")
-                                .replaceAll("Choose (", "\n")
-                                .replaceAll(")", "");
+                                .replaceAll(",", "\n")
+                                .trimLeft();
+                            // .replaceAll("Choose (", "\n")
+                            // .replaceAll(")", "");
                             // orderController.
                             //orderDetails.pr
                             return Column(
@@ -659,19 +398,7 @@ class OrderDetailsView extends StatelessWidget {
                                                   //   height: Dimensions
                                                   //       .paddingSizeExtraSmall,
                                                   // ),
-                                                  if (variationText != '')
-                                                    Text(
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        variationText,
-                                                        style: robotoRegular
-                                                            .copyWith(
-                                                          fontSize: Dimensions
-                                                              .fontSizeDefault,
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .hintColor,
-                                                        )),
+
                                                   // Text(
                                                   //     textAlign: TextAlign.left,
                                                   //     overflow:
@@ -684,35 +411,6 @@ class OrderDetailsView extends StatelessWidget {
                                                   //       color: Theme.of(context)
                                                   //           .primaryColor,
                                                   //     )),
-                                                  if (orderController
-                                                              .currentOrderDetails!
-                                                              .details![index]
-                                                              .note !=
-                                                          null &&
-                                                      orderController
-                                                              .currentOrderDetails!
-                                                              .details![index]
-                                                              .note !=
-                                                          "null" &&
-                                                      orderController
-                                                              .currentOrderDetails!
-                                                              .details![index]
-                                                              .note !=
-                                                          "")
-                                                    Text(
-                                                        textAlign:
-                                                            TextAlign.left,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        'Note: ${orderController.currentOrderDetails!.details![index].note}',
-                                                        style: robotoRegular
-                                                            .copyWith(
-                                                          fontSize: Dimensions
-                                                              .fontSizeLarge,
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .primaryColor,
-                                                        ))
                                                 ],
                                               )),
                                           Expanded(
@@ -775,6 +473,40 @@ class OrderDetailsView extends StatelessWidget {
                                               )),
                                         ],
                                       ),
+                                      if (variationText != '')
+                                        Align(
+                                          alignment: Alignment.centerLeft,
+                                          child: Text(
+                                              textAlign: TextAlign.left,
+                                              maxLines: 10,
+                                              overflow: TextOverflow.ellipsis,
+                                              variationText,
+                                              style: robotoRegular.copyWith(
+                                                fontSize:
+                                                    Dimensions.fontSizeDefault,
+                                                color:
+                                                    Theme.of(context).hintColor,
+                                              )),
+                                        ),
+                                      if (orderController.currentOrderDetails!
+                                                  .details![index].note !=
+                                              null &&
+                                          orderController.currentOrderDetails!
+                                                  .details![index].note !=
+                                              "null" &&
+                                          orderController.currentOrderDetails!
+                                                  .details![index].note !=
+                                              "")
+                                        Text(
+                                            textAlign: TextAlign.left,
+                                            overflow: TextOverflow.ellipsis,
+                                            'Note: ${orderController.currentOrderDetails!.details![index].note}',
+                                            style: robotoRegular.copyWith(
+                                              fontSize:
+                                                  Dimensions.fontSizeLarge,
+                                              color: Theme.of(context)
+                                                  .primaryColor,
+                                            ))
                                     ],
                                   ),
                                 ),

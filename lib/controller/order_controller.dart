@@ -64,10 +64,10 @@ class OrderController extends GetxController implements GetxService {
     update();
   }
 
- Future<Response> updateOrderStatus(
+  Future<Response> updateOrderStatus(
       {required int order_id, required String payment_status, List? yo}) async {
     Response response =
-        await orderRepo.upDateOrder(order_id, payment_status, yo ?? []);
+        await orderRepo.upDateOrder(order_id, payment_status, yo);
     return response;
   }
 

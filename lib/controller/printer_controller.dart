@@ -392,10 +392,10 @@ class PrinterController extends GetxController {
       if (details.variations != null && details.variations!.isNotEmpty) {
         for (Variation variation in details.variations!) {
           variationText +=
-              '${variationText.isNotEmpty ? ', ' : ''}${variation.name} (';
+              '${variationText.isNotEmpty ? ',' : ''}${variation.name} (';
           for (VariationValue value in variation.variationValues!) {
-            variationText +=
-                '${variationText.endsWith('(') ? '' : ', '}${value.level}';
+            variationText += '${value.level}';
+            //   '${variationText.endsWith('(') ? '' : ', '}${value.level}';
           }
           variationText += ')';
         }
@@ -423,14 +423,18 @@ class PrinterController extends GetxController {
       }
       print("Jass $variationText");
       variationText = variationText
-          .replaceAll("Choose ()", "")
-          .replaceAll("optiona (", "")
           .replaceAll("Order Type (Dine in)", "")
           .replaceAll("Order Type (Take away)", "")
-          .replaceAll("Choose (", "\n")
-          .replaceAll("Choose One (", "\n")
-          .replaceAll(")", "")
-          .replaceAll(",", "\n");
+          .replaceAll(",", "\n")
+          .trimLeft();
+      // .replaceAll("Choose ()", "")
+      // .replaceAll("optiona (", "")
+      // .replaceAll("Order Type (Dine in)", "")
+      // .replaceAll("Order Type (Take away)", "")
+      // .replaceAll("Choose (", "\n")
+      // .replaceAll("Choose One (", "\n")
+      // .replaceAll(")", "")
+      // .replaceAll(",", "\n");
       variationText = removeEmptyLines(variationText);
       // variationText.
       if (details.productDetails?.printType == "front") {

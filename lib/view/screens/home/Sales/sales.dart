@@ -440,22 +440,46 @@ class _SalesState extends State<Sales> {
                                                       ),
                                                       Expanded(
                                                         flex: 1,
-                                                        child: Center(
-                                                          child: Text(
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            "${salesController.sales[index]["payment_status"] ?? ''}",
-                                                            style: robotoMedium.copyWith(
-                                                                color: (salesController.selectedIndex !=
-                                                                            null &&
-                                                                        salesController.selectedIndex ==
-                                                                            index)
-                                                                    ? Colors
-                                                                        .white
-                                                                    : null,
-                                                                fontSize: Dimensions
-                                                                    .fontSizeDefault),
+                                                        child: Container(
+                                                          color: salesController
+                                                                              .sales[
+                                                                          index]
+                                                                      [
+                                                                      "payment_status"] ==
+                                                                  "refund"
+                                                              ? Colors
+                                                                  .indigo[900]
+                                                              : null,
+                                                          child: Center(
+                                                            child: salesController
+                                                                            .sales[index]
+                                                                        [
+                                                                        "payment_status"] ==
+                                                                    "refund"
+                                                                ? Text(
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    "${salesController.sales[index]["payment_status"] ?? ''}",
+                                                                    style: robotoMedium.copyWith(
+                                                                        color: Colors
+                                                                            .white,
+                                                                        fontSize:
+                                                                            Dimensions.fontSizeDefault),
+                                                                  )
+                                                                : Text(
+                                                                    overflow:
+                                                                        TextOverflow
+                                                                            .ellipsis,
+                                                                    "${salesController.sales[index]["payment_status"] ?? ''}",
+                                                                    style: robotoMedium.copyWith(
+                                                                        color: (salesController.selectedIndex != null && salesController.selectedIndex == index)
+                                                                            ? Colors
+                                                                                .white
+                                                                            : null,
+                                                                        fontSize:
+                                                                            Dimensions.fontSizeDefault),
+                                                                  ),
                                                           ),
                                                         ),
                                                       ),
