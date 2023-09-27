@@ -29,11 +29,12 @@ class OrderDetailsView extends StatelessWidget {
       : super(key: key);
   final DateFormat formatter = DateFormat();
   String removeEmptyLines(String input) {
-    return input
-        .replaceAll(RegExp(r'^\s*$\n', multiLine: true), '')
-        .split('\n')
-        .map((line) => line.trimLeft())
-        .join('\n');
+    print("JassVar$input");
+    return input;
+    // .replaceAll(RegExp(r'^\s*$\n', multiLine: true), '')
+    // .split('\n')
+    // .map((line) => line.trimLeft())
+    // .join('\n');
   }
 
 //   Future<List<int>> testTicket() async {
