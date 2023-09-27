@@ -571,6 +571,8 @@ class PrinterController extends GetxController {
       bytes += generator.text(
           "Payment Method : +${orderController.currentOrderDetails?.order?.paymentMethod}");
     }
+    bytes += generator.text(
+        "Payment Method : +${orderController.currentOrderDetails?.order?.paymentStatus}");
     if (orderController.currentOrderDetails?.order?.paymentMethod == "cash") {
       bytes += generator.text(
           "Cash : +${PriceConverter.convertPrice(double.parse(orderController.currentOrderDetails?.order?.cash ?? "0"))}");
