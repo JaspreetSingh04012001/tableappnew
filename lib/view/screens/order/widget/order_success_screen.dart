@@ -19,6 +19,7 @@ import '../../../../controller/printer_controller.dart';
 import '../../../../helper/route_helper.dart';
 import '../../../base/custom_text_field.dart';
 import '../../home/widget/filter_button_widget.dart';
+import 'invoice_print_screen.dart';
 
 class OrderSuccessScreen extends StatefulWidget {
   final bool fromPlaceOrder;
@@ -45,16 +46,15 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
     // print('order success call');
     // Get.find<OrderController>().getOrderSuccessModel();
     // Get.find<OrderController>().setCurrentOrderId = null;
-
-    Get.find<OrderController>().getOrderList().then((List<Order>? list) {
-      if (list != null && list.isNotEmpty) {
-        Get.find<OrderController>().getCurrentOrder('${list.first.id}').then(
-              (value) => Get.find<OrderController>().countDownTimer(),
-            );
-      } else {
-        //  Get.find<OrderController>().getCurrentOrder(null);
-      }
-    });
+    if (widget.fromPlaceOrder == false) {
+      Get.find<OrderController>().getOrderList().then((List<Order>? list) {
+        if (list != null && list.isNotEmpty) {
+          Get.find<OrderController>().getCurrentOrder('${list.first.id}').then(
+                (value) => Get.find<OrderController>().countDownTimer(),
+              );
+        }
+      });
+    }
 
     super.initState();
   }
@@ -69,7 +69,8 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: !widget.fromPlaceOrder ? orderBody() : Container(),
+      floatingActionButton:
+          widget.fromPlaceOrder == false ? orderBody() : Container(),
       appBar: ResponsiveHelper.isTab(context)
           ? null
           : const CustomAppBar(
@@ -618,13 +619,11 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                                                       color: Theme.of(context)
                                                           .primaryColor),
                                                 )
-                                              : Row(
-                                                  children: [
-                                                    GetBuilder<
-                                                            PrinterController>(
-                                                        builder:
-                                                            (printerController) {
-                                                      return printerController
+                                              : GetBuilder<PrinterController>(
+                                                  builder: (printerController) {
+                                                  return Row(
+                                                    children: [
+                                                      printerController
                                                               .connected
                                                           ? IconButton(
                                                               onPressed:
@@ -637,148 +636,154 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                                                                         context)
                                                                     .primaryColor,
                                                               ))
-                                                          : Container();
-                                                    }),
-                                                    Expanded(
-                                                      child: CustomButton(
-                                                        height: ResponsiveHelper
-                                                                .isSmallTab()
-                                                            ? 40
-                                                            : ResponsiveHelper
-                                                                    .isTab(
-                                                                        context)
-                                                                ? 50
-                                                                : 40,
-                                                        buttonText:
-                                                            'confirm_payment'
-                                                                .tr,
-                                                        fontSize:
-                                                            Get.width < 390
-                                                                ? 12
-                                                                : null,
-                                                        onPressed: () {
-                                                          if ((orderController
-                                                                          .selectedMethod ==
-                                                                      'cash' ||
-                                                                  orderController
-                                                                          .selectedMethod ==
-                                                                      'split') &&
-                                                              _amountTextController
-                                                                  .text.isEmpty) {
-                                                            // showCustomSnackBar(
-                                                            //     'please_enter_your_amount'
-                                                            //         .tr);
-                                                          } else if (orderController
-                                                                      .selectedMethod ==
-                                                                  'cash' &&
-                                                              total >
-                                                                  int.parse(
-                                                                      _amountTextController
-                                                                          .text)) {
-                                                            // showCustomSnackBar(
-                                                            //     'you_need_pay_more_amount'
-                                                            //         .tr);
-                                                          } else if (orderController
-                                                                      .selectedMethod ==
-                                                                  'split' &&
-                                                              _amountTextController
-                                                                  .text
-                                                                  .isEmpty &&
-                                                              _splitCardamountTextController
-                                                                  .text
-                                                                  .isEmpty) {
-                                                          } else if (orderController
-                                                                      .selectedMethod ==
-                                                                  'split' &&
-                                                              total >
-                                                                  (double.parse(
-                                                                          _amountTextController.text ??
-                                                                              "0") +
-                                                                      double.parse(
-                                                                          _splitCardamountTextController.text ??
-                                                                              "0"))) {
-                                                          } else {
-                                                            setState(() {
-                                                              focusshow = false;
-                                                            });
-                                                            orderController
-                                                                .updateOrderStatus(
-                                                                    order_id: orderController
-                                                                            .currentOrderDetails
-                                                                            ?.order
-                                                                            ?.id ??
-                                                                        0,
-                                                                    payment_status:
-                                                                        "paid",
-                                                                    yo: [
+                                                          : Container(),
+                                                      Expanded(
+                                                        child: CustomButton(
+                                                          height: ResponsiveHelper
+                                                                  .isSmallTab()
+                                                              ? 40
+                                                              : ResponsiveHelper
+                                                                      .isTab(
+                                                                          context)
+                                                                  ? 50
+                                                                  : 40,
+                                                          buttonText:
+                                                              'confirm_payment'
+                                                                  .tr,
+                                                          fontSize:
+                                                              Get.width < 390
+                                                                  ? 12
+                                                                  : null,
+                                                          onPressed: () {
+                                                            if ((orderController
+                                                                            .selectedMethod ==
+                                                                        'cash' ||
+                                                                    orderController
+                                                                            .selectedMethod ==
+                                                                        'split') &&
+                                                                _amountTextController
+                                                                    .text.isEmpty) {
+                                                              // showCustomSnackBar(
+                                                              //     'please_enter_your_amount'
+                                                              //         .tr);
+                                                            } else if (orderController
+                                                                        .selectedMethod ==
+                                                                    'cash' &&
+                                                                total >
+                                                                    int.parse(
+                                                                        _amountTextController
+                                                                            .text)) {
+                                                              // showCustomSnackBar(
+                                                              //     'you_need_pay_more_amount'
+                                                              //         .tr);
+                                                            } else if (orderController
+                                                                        .selectedMethod ==
+                                                                    'split' &&
+                                                                _amountTextController
+                                                                    .text
+                                                                    .isEmpty &&
+                                                                _splitCardamountTextController
+                                                                    .text
+                                                                    .isEmpty) {
+                                                            } else if (orderController
+                                                                        .selectedMethod ==
+                                                                    'split' &&
+                                                                total >
+                                                                    (double.parse(_amountTextController.text ??
+                                                                            "0") +
+                                                                        double.parse(_splitCardamountTextController.text ??
+                                                                            "0"))) {
+                                                            } else {
+                                                              setState(() {
+                                                                focusshow =
+                                                                    false;
+                                                              });
+                                                              orderController
+                                                                  .updateOrderStatus(
+                                                                      order_id:
+                                                                          orderController.currentOrderDetails?.order?.id ??
+                                                                              0,
+                                                                      payment_status:
+                                                                          "paid",
+                                                                      yo: [
+                                                                        orderController
+                                                                            .selectedMethod,
+                                                                        _splitCardamountTextController.text.isEmpty
+                                                                            ? null
+                                                                            : int.parse(_splitCardamountTextController.text),
+                                                                        _amountTextController.text.isEmpty
+                                                                            ? null
+                                                                            : int.parse(_amountTextController.text)
+                                                                      ])
+                                                                  .whenComplete(
+                                                                      () =>
+                                                                          null)
+                                                                  .then(
+                                                                      (value) {
+                                                                    if (value
+                                                                            .statusCode ==
+                                                                        200) {
+                                                                      print(value
+                                                                              .body["order"]
+                                                                          [
+                                                                          "id"]);
                                                                       orderController
-                                                                          .selectedMethod,
-                                                                      _splitCardamountTextController
-                                                                              .text
-                                                                              .isEmpty
-                                                                          ? null
-                                                                          : int.parse(
-                                                                              _splitCardamountTextController.text),
-                                                                      _amountTextController
-                                                                              .text
-                                                                              .isEmpty
-                                                                          ? null
-                                                                          : int.parse(
-                                                                              _amountTextController.text)
-                                                                    ])
-                                                                .whenComplete(
-                                                                    () => null)
-                                                                .then((value) {
-                                                                  if (value
-                                                                          .statusCode ==
-                                                                      200) {
-                                                                    orderController
-                                                                        .getCurrentOrder(value
-                                                                            .body["order"][
-                                                                                "id"]
-                                                                            .toString())
-                                                                        .then(
-                                                                            (value) {
-                                                                      Get.find<
-                                                                              PrinterController>()
-                                                                          .printTest();
-                                                                    });
-                                                                    orderController
-                                                                        .getOrderList();
-                                                                    Get.off(() =>
-                                                                        const OrderSuccessScreen(
-                                                                            fromPlaceOrder:
-                                                                                true));
-                                                                  }
-                                                                });
-                                                            // orderController
-                                                            //     .getCurrentOrder(
-                                                            //         orderController
-                                                            //             .currentOrderId);
+                                                                          .getCurrentOrder(value
+                                                                              .body["order"]["id"]
+                                                                              .toString())
+                                                                          .then((value) async {
+                                                                        if (printerController
+                                                                            .connected) {
+                                                                          printerController.printTest(
+                                                                              byWaitor: true);
+                                                                        } else {
+                                                                          Get.dialog(
+                                                                              Dialog(
+                                                                            shape:
+                                                                                RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
+                                                                            insetPadding:
+                                                                                const EdgeInsets.all(20),
+                                                                            child:
+                                                                                const InvoicePrintScreen(),
+                                                                          ));
+                                                                        }
+                                                                      });
+                                                                      // orderController
+                                                                      //     .getOrderList();
+                                                                      Get.off(() =>
+                                                                          const OrderSuccessScreen(
+                                                                              fromPlaceOrder: false));
+                                                                    }
+                                                                  });
+                                                              // orderController
+                                                              //     .getCurrentOrder(
+                                                              //         orderController
+                                                              //             .currentOrderId);
 
-                                                            // orderController.placeOrder(
-                                                            //   orderController.placeOrderBody!
-                                                            //       .copyWith(
-                                                            //     paymentStatus: 'paid',
-                                                            //     paymentMethod: orderController
-                                                            //         .selectedMethod,
-                                                            //     card:
-                                                            //         _splitCardamountTextController
-                                                            //             .text,
-                                                            //     cash: _amountTextController.text,
-                                                            //     previousDue: orderController
-                                                            //         .previousDueAmount(),
-                                                            //   ),
-                                                            //   callback,
-                                                            //   _amountTextController.text,
-                                                            //   _changeAmount,
-                                                            // );
-                                                          }
-                                                        },
+                                                              // orderController.placeOrder(
+                                                              //   orderController.placeOrderBody!
+                                                              //       .copyWith(
+                                                              //     paymentStatus: 'paid',
+                                                              //     paymentMethod: orderController
+                                                              //         .selectedMethod,
+                                                              //     card:
+                                                              //         _splitCardamountTextController
+                                                              //             .text,
+                                                              //     cash: _amountTextController.text,
+                                                              //     previousDue: orderController
+                                                              //         .previousDueAmount(),
+                                                              //   ),
+                                                              //   callback,
+                                                              //   _amountTextController.text,
+                                                              //   _changeAmount,
+                                                              // );
+                                                            }
+                                                          },
+                                                        ),
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
+                                                    ],
+                                                  );
+                                                }),
                                           if (ResponsiveHelper.isTab(context))
                                             SizedBox(
                                               height: Dimensions

@@ -182,7 +182,8 @@ class PrinterController extends GetxController {
     print("status disconnect $status");
   }
 
-  Future<void> printTest() async {
+  Future<void> printTest({bool byWaitor = false}) async {
+    if (byWaitor) {}
     print("jassPrintingWaitor");
     SharedPreferences pref = await SharedPreferences.getInstance();
 
@@ -203,7 +204,7 @@ class PrinterController extends GetxController {
     }
   }
 
-  Future<List<int>> testTicket() async {
+  Future<List<int>> testTicket({bool byWaitor = false}) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     List<int> bytes = [];
     List<int> Frontbytes = [];
@@ -271,7 +272,7 @@ class PrinterController extends GetxController {
     //         align: PosAlign.center,
     //         height: PosTextSize.size3,
     //         width: PosTextSize.size3));
-
+    print('${'order'.tr}# ${orderController.currentOrderDetails?.order?.id}');
     bytes += generator.text(name ?? " ",
         styles: const PosStyles(
             bold: true,
