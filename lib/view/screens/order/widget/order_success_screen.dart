@@ -67,23 +67,26 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      floatingActionButton: !widget.fromPlaceOrder ? orderBody() : Container(),
-      appBar: ResponsiveHelper.isTab(context)
-          ? null
-          : const CustomAppBar(
-              isBackButtonExist: false,
-              onBackPressed: null,
-              showCart: true,
-            ),
-      body: !ResponsiveHelper.isTab(context)
-          ? _body(context)
-          : BodyTemplate(
-              body: Flexible(child: _body(context)),
-              isOrderDetails: true,
-            ),
-    );
+    return GetBuilder<PrinterController>(builder: (PrinterController) {
+      return Scaffold(
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        floatingActionButton:
+            !widget.fromPlaceOrder ? orderBody() : Container(),
+        appBar: ResponsiveHelper.isTab(context)
+            ? null
+            : const CustomAppBar(
+                isBackButtonExist: false,
+                onBackPressed: null,
+                showCart: true,
+              ),
+        body: !ResponsiveHelper.isTab(context)
+            ? _body(context)
+            : BodyTemplate(
+                body: Flexible(child: _body(context)),
+                isOrderDetails: true,
+              ),
+      );
+    });
   }
 
   GetBuilder<OrderController> orderBody() {

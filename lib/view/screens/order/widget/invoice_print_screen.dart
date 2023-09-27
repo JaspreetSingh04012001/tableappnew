@@ -20,14 +20,19 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
   @override
   void initState() {
     super.initState();
-    Get.find<PrinterController>().initPlatformState();
-    // initPlatformState();
-    Get.find<PrinterController>().getBluetoots();
+    if (Get.find<PrinterController>().connected) {
+    } else {
+      Get.find<PrinterController>().initPlatformState();
+      // initPlatformState();
+      // Get.find<PrinterController>().getBluetoots();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<PrinterController>(builder: (printerController) {
+    return GetBuilder<PrinterController>(initState: (state) {
+      print("PrinterController fuck");
+    }, builder: (printerController) {
       return Scaffold(
         appBar: AppBar(
           leading: Container(),
@@ -225,30 +230,39 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
               ),
               const SizedBox(height: 10),
               Expanded(
-                child: printerController.items.isNotEmpty
-                    ? ListView.builder(
-                        itemCount: printerController.items.isNotEmpty
-                            ? printerController.items.length
-                            : 0,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            onTap: () {
-                              String mac =
-                                  printerController.items[index].macAdress;
-                              printerController.connect(mac);
-                            },
-                            title: Text(
-                                'Name: ${printerController.items[index].name}'),
-                            subtitle: Text(
-                                "macAddress: ${printerController.items[index].macAdress}"),
-                          );
-                        },
-                      )
-                    : Container(
+                child: printerController.progress
+                    ? Container(
                         alignment: Alignment.center,
                         child: CircularProgressIndicator(
                           color: Theme.of(context).primaryColor,
-                        )),
+                        ))
+                    : printerController.items.isNotEmpty
+                        ? ListView.builder(
+                            itemCount: printerController.items.isNotEmpty
+                                ? printerController.items.length
+                                : 0,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                onTap: () {
+                                  String mac =
+                                      printerController.items[index].macAdress;
+                                  printerController.connect(mac);
+                                },
+                                title: Text(
+                                    'Name: ${printerController.items[index].name}'),
+                                subtitle: Text(
+                                    "macAddress: ${printerController.items[index].macAdress}"),
+                              );
+                            },
+                          )
+                        : Container(
+                            alignment: Alignment.center,
+                            child: Text(
+                              "Search Printers",
+                              style: robotoMedium.copyWith(
+                                  fontSize: Dimensions.fontSizeLarge + 4),
+                            ),
+                          ),
               ),
               if (printerController.connected)
                 ElevatedButton(

@@ -18,6 +18,7 @@ class PrinterController extends GetxController {
 
   @override
   void onInit() {
+    print("PrinterController initiated");
     getDataFromStorages();
     // TODO: implement onInit
     super.onInit();
@@ -90,7 +91,7 @@ class PrinterController extends GetxController {
 
   Future<void> initPlatformState() async {
     String platformVersion;
-
+    print("PrinterController initPlatformState");
     try {
       platformVersion = await PrintBluetoothThermal.platformVersion;
       print("patformversion: $platformVersion");
@@ -129,6 +130,7 @@ class PrinterController extends GetxController {
   }
 
   Future<void> getBluetoots() async {
+    print("PrinterController getBluetoots");
     progress = true;
     msjprogress = "Wait";
     items = [];
@@ -157,6 +159,7 @@ class PrinterController extends GetxController {
   }
 
   Future<void> connect(String mac) async {
+    print("PrinterController connecting");
     progress = true;
     msjprogress = "Connecting...";
     connected = false;
