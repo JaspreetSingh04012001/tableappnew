@@ -19,7 +19,6 @@ import '../../../../controller/printer_controller.dart';
 import '../../../../helper/route_helper.dart';
 import '../../../base/custom_text_field.dart';
 import '../../home/widget/filter_button_widget.dart';
-import 'invoice_print_screen.dart';
 
 class OrderSuccessScreen extends StatefulWidget {
   final bool fromPlaceOrder;
@@ -737,15 +736,15 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                                                                           printerController.printTest(
                                                                               byWaitor: true);
                                                                         } else {
-                                                                          Get.dialog(
-                                                                              Dialog(
-                                                                            shape:
-                                                                                RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
-                                                                            insetPadding:
-                                                                                const EdgeInsets.all(20),
-                                                                            child:
-                                                                                const InvoicePrintScreen(),
-                                                                          ));
+                                                                          // Get.dialog(
+                                                                          //     Dialog(
+                                                                          //   shape:
+                                                                          //       RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
+                                                                          //   insetPadding:
+                                                                          //       const EdgeInsets.all(20),
+                                                                          //   child:
+                                                                          //       const InvoicePrintScreen(),
+                                                                          // ));
                                                                         }
                                                                       });
                                                                       // orderController
