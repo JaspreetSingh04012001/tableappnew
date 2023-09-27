@@ -183,6 +183,7 @@ class PrinterController extends GetxController {
   }
 
   Future<void> printTest() async {
+    print("jassPrintingWaitor");
     SharedPreferences pref = await SharedPreferences.getInstance();
 
     printCount;
@@ -429,6 +430,7 @@ class PrinterController extends GetxController {
           .replaceAll("Order Type (Dine in)", "")
           .replaceAll("Order Type (Take away)", "")
           .replaceAll(",", "\n")
+          .replaceAll("))", ")")
           .trimLeft();
       // .replaceAll("Choose ()", "")
       // .replaceAll("optiona (", "")

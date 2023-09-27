@@ -674,8 +674,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                           // );
                                           // //  orderController.update();
 
-                                          print(orderController.placeOrderBody!
-                                              .toJson());
+                                          // print(orderController.placeOrderBody!
+                                          //     .toJson());
                                           orderController.placeOrder(
                                             orderController.placeOrderBody!
                                                 .copyWith(

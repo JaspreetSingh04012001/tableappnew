@@ -50,7 +50,10 @@ Future<Map<String, Map<String, String>>> init() async {
   Get.lazyPut(() => CartController(cartRepo: Get.find()));
   Get.lazyPut(() => PromotionalController());
   Get.lazyPut(() => SalesController(salesRepo: Get.find()), fenix: true);
-  Get.lazyPut(() => PrinterController( ), fenix: true);
+  Get.put(
+    PrinterController(),
+    permanent: true,
+  );
   Get.lazyPut(() => OrderController(orderRepo: Get.find()));
 
   // Retrieving localized data

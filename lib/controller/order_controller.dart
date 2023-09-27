@@ -143,33 +143,28 @@ class OrderController extends GetxController implements GetxService {
     return list;
   }
 
-  Future<List<Order>?> getOrderList() async {
+  Future<List<Order>?> getOrderList({bool yo = false}) async {
     getOrderSuccessModel();
     _orderList = null;
-    if (_orderSuccessModel?.orderId != '-1') {
-      _isLoading = true;
-      Response response = await orderRepo.getOderList(
-        _orderSuccessModel!.branchTableToken!,
-      );
-      if (response.statusCode == 200) {
-        try {
-          _orderList = OrderList(
-                  order: OrderList.fromJson(response.body)
-                      .order
-                      ?.reversed
-                      .toList())
-              .order;
-        } catch (e) {
-          _orderList = [];
-        }
-      } else {
-        ApiChecker.checkApi(response);
+
+    _isLoading = true;
+    Response response = await orderRepo.getOderList(
+      "sc",
+    );
+    if (response.statusCode == 200) {
+      try {
+        _orderList = OrderList(
+                order:
+                    OrderList.fromJson(response.body).order?.reversed.toList())
+            .order;
+      } catch (e) {
+        _orderList = [];
       }
-      _isLoading = false;
-      update();
     } else {
-      _orderList = [];
+      ApiChecker.checkApi(response);
     }
+    _isLoading = false;
+    update();
 
     return _orderList;
   }
@@ -193,16 +188,17 @@ class OrderController extends GetxController implements GetxService {
 
     update();
 
-    if (_orderSuccessModel?.orderId != '-1' && orderId != null) {
+    if (orderId != null) {
       Response response = await orderRepo.getOrderDetails(
         orderId,
         _orderSuccessModel!.branchTableToken!,
       );
 
       if (response.statusCode == 200) {
-        print("byJass");
-        print(response.body);
+        // print("byJass");
+        // print(response.body);
         _currentOrderDetails = OrderDetails.fromJson(response.body);
+        update();
       } else {
         ApiChecker.checkApi(response);
       }
@@ -215,8 +211,13 @@ class OrderController extends GetxController implements GetxService {
   Future<void> countDownTimer() async {
     DateTime orderTime;
     if (Get.find<SplashController>().configModel?.timeFormat == '12') {
+      // print(
+      //     '${_currentOrderDetails?.order?.deliveryDate} ${_currentOrderDetails?.order?.deliveryTime}');
+
       orderTime = DateFormat("yyyy-MM-dd HH:mm").parse(
           '${_currentOrderDetails?.order?.deliveryDate} ${_currentOrderDetails?.order?.deliveryTime}');
+      // orderTime = DateFormat("yyyy-MM-dd HH:mm").parse(
+      //     '${_currentOrderDetails?.order?.deliveryDate} ${_currentOrderDetails?.order?.deliveryTime}');
     } else {
       orderTime = DateFormat("yyyy-MM-dd HH:mm").parse(
           '${_currentOrderDetails?.order?.deliveryDate} ${_currentOrderDetails?.order?.deliveryTime}');

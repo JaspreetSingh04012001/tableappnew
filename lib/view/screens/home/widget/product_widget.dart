@@ -30,7 +30,7 @@ class _ProductWidgetState extends State<ProductWidget> {
   @override
   Widget build(BuildContext context) {
     final double width = MediaQuery.of(context).size.width;
-    print('size ----> $width');
+   // print('size ----> $width');
 
     return GetBuilder<CartController>(builder: (cartController) {
       return GetBuilder<ProductController>(builder: (productController) {

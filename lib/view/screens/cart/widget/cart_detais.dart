@@ -387,8 +387,8 @@ class _CartDetailsState extends State<CartDetails> {
                                         //     .variationValues![i]
                                         //     .level
                                         //     .toString();
-                                        print(
-                                            "${variationList[index].variationValues![i].level ?? ""}jass");
+                                        // print(
+                                        //     "${variationList[index].variationValues![i].level ?? ""}jass");
                                         if (variationList[index]
                                                 .variationValues![i]
                                                 .level!

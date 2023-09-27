@@ -25,7 +25,7 @@ class ProductRepo {
 
   Future<Response> getCategoryList() async {
     String params = '?branch_id=${Get.find<SplashController>().getBranchId()}';
-    print("fuck ${AppConstants.categoryUri}$params");
+    //print("fuck ${AppConstants.categoryUri}$params");
     return await apiClient.getData(AppConstants.categoryUri + params);
   }
 

@@ -44,7 +44,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
   void initState() {
     // print('order success call');
     // Get.find<OrderController>().getOrderSuccessModel();
-    Get.find<OrderController>().setCurrentOrderId = null;
+    // Get.find<OrderController>().setCurrentOrderId = null;
 
     Get.find<OrderController>().getOrderList().then((List<Order>? list) {
       if (list != null && list.isNotEmpty) {
@@ -52,7 +52,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
               (value) => Get.find<OrderController>().countDownTimer(),
             );
       } else {
-        Get.find<OrderController>().getCurrentOrder(null);
+        //  Get.find<OrderController>().getCurrentOrder(null);
       }
     });
 
@@ -67,26 +67,23 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<PrinterController>(builder: (PrinterController) {
-      return Scaffold(
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton:
-            !widget.fromPlaceOrder ? orderBody() : Container(),
-        appBar: ResponsiveHelper.isTab(context)
-            ? null
-            : const CustomAppBar(
-                isBackButtonExist: false,
-                onBackPressed: null,
-                showCart: true,
-              ),
-        body: !ResponsiveHelper.isTab(context)
-            ? _body(context)
-            : BodyTemplate(
-                body: Flexible(child: _body(context)),
-                isOrderDetails: true,
-              ),
-      );
-    });
+    return Scaffold(
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: !widget.fromPlaceOrder ? orderBody() : Container(),
+      appBar: ResponsiveHelper.isTab(context)
+          ? null
+          : const CustomAppBar(
+              isBackButtonExist: false,
+              onBackPressed: null,
+              showCart: true,
+            ),
+      body: !ResponsiveHelper.isTab(context)
+          ? _body(context)
+          : BodyTemplate(
+              body: Flexible(child: _body(context)),
+              isOrderDetails: true,
+            ),
+    );
   }
 
   GetBuilder<OrderController> orderBody() {
@@ -523,8 +520,8 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                                                                 fontSize: Dimensions
                                                                     .fontSizeSmall),
                                                         onChanged: (value) {
-                                                          print(
-                                                              total.toString());
+                                                          // print(
+                                                          //     total.toString());
                                                           // if ((double.parse(value) +
                                                           //         double.parse(
                                                           //             _amountTextController

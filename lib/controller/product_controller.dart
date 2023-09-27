@@ -10,8 +10,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductController extends GetxController implements GetxService {
   final ProductRepo productRepo;
+
   ProductController({required this.productRepo}) {
     getNsave();
+    
   }
   bool image = false;
   bool CatImage = false;
@@ -20,12 +22,11 @@ class ProductController extends GetxController implements GetxService {
 
   getNsave() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
-   
-      image = sharedPreferences.getBool("image") ?? false;
-      CatImage = sharedPreferences.getBool("CatImage") ?? true;
-      listView = sharedPreferences.getBool("listView") ?? false;
-      gridView = sharedPreferences.getBool("gridView") ?? true;
-    
+
+    image = sharedPreferences.getBool("image") ?? false;
+    CatImage = sharedPreferences.getBool("CatImage") ?? true;
+    listView = sharedPreferences.getBool("listView") ?? false;
+    gridView = sharedPreferences.getBool("gridView") ?? true;
 
     update();
   }
