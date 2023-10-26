@@ -34,7 +34,7 @@ Future<Map<String, Map<String, String>>> init() async {
   Get.lazyPut(
       () => SplashRepo(sharedPreferences: Get.find(), apiClient: Get.find()));
   Get.lazyPut(() => LanguageRepo());
-  Get.lazyPut(() => ProductRepo(apiClient: Get.find()));
+  Get.lazyPut(() => ProductRepo(sharedPreferences: Get.find(),apiClient: Get.find()));
   Get.lazyPut(() => SalesRepo(apiClient: Get.find()), fenix: true);
   Get.lazyPut(() => CartRepo(sharedPreferences: Get.find()));
   Get.lazyPut(

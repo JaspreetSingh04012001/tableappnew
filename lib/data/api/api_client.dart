@@ -44,6 +44,7 @@ class ApiClient extends GetxService {
           .get(
             Uri.parse(appBaseUrl! + uri),
             headers: headers ?? _mainHeaders,
+            
           )
           .timeout(Duration(seconds: timeoutInSeconds));
       Response response = handleResponse(response0);
