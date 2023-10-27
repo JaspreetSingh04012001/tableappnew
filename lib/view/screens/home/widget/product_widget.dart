@@ -2,7 +2,6 @@ import 'package:efood_table_booking/controller/cart_controller.dart';
 import 'package:efood_table_booking/controller/product_controller.dart';
 import 'package:efood_table_booking/controller/splash_controller.dart';
 import 'package:efood_table_booking/data/model/response/product.dart';
-import 'package:efood_table_booking/data/model/response/product_model.dart';
 import 'package:efood_table_booking/helper/price_converter.dart';
 import 'package:efood_table_booking/helper/route_helper.dart';
 import 'package:efood_table_booking/util/dimensions.dart';
@@ -151,8 +150,8 @@ class _ProductWidgetState extends State<ProductWidget> {
                             style: robotoRegular.copyWith(
                               fontWeight: FontWeight.bold,
                               fontSize: (width > 590 && width < 650)
-                                  ? Dimensions.paddingSizeSmall + 1
-                                  : Dimensions.paddingSizeDefault + 1,
+                                  ? Dimensions.fontSizeDefault + 1
+                                  : Dimensions.fontSizeLarge + 1,
                               color: cartIndex != -1
                                   ? Colors.white
                                   : Theme.of(context)
