@@ -1,4 +1,5 @@
 import 'package:efood_table_booking/controller/splash_controller.dart';
+import 'package:efood_table_booking/data/model/response/product.dart';
 import 'package:efood_table_booking/data/model/response/product_model.dart';
 import 'package:efood_table_booking/view/base/custom_app_bar.dart';
 import 'package:flutter/material.dart';

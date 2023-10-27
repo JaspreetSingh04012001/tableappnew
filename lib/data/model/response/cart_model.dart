@@ -1,3 +1,4 @@
+import 'package:efood_table_booking/data/model/response/product.dart';
 import 'package:efood_table_booking/data/model/response/product_model.dart';
 
 class CartModel {

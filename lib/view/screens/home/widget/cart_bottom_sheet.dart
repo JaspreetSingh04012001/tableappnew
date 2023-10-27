@@ -4,6 +4,7 @@ import 'package:efood_table_booking/controller/splash_controller.dart';
 import 'package:efood_table_booking/data/model/response/cart_model.dart'
     as cart;
 import 'package:efood_table_booking/data/model/response/cart_model.dart';
+import 'package:efood_table_booking/data/model/response/product.dart';
 import 'package:efood_table_booking/data/model/response/product_model.dart';
 import 'package:efood_table_booking/helper/date_converter.dart';
 import 'package:efood_table_booking/helper/price_converter.dart';

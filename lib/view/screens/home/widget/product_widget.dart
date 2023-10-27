@@ -1,6 +1,7 @@
 import 'package:efood_table_booking/controller/cart_controller.dart';
 import 'package:efood_table_booking/controller/product_controller.dart';
 import 'package:efood_table_booking/controller/splash_controller.dart';
+import 'package:efood_table_booking/data/model/response/product.dart';
 import 'package:efood_table_booking/data/model/response/product_model.dart';
 import 'package:efood_table_booking/helper/price_converter.dart';
 import 'package:efood_table_booking/helper/route_helper.dart';

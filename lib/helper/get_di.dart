@@ -12,6 +12,8 @@ import 'package:efood_table_booking/controller/splash_controller.dart';
 import 'package:efood_table_booking/controller/theme_controller.dart';
 import 'package:efood_table_booking/data/api/api_client.dart';
 import 'package:efood_table_booking/data/model/response/language_model.dart';
+import 'package:efood_table_booking/data/model/response/product.dart';
+import 'package:efood_table_booking/data/model/response/product_model.dart';
 import 'package:efood_table_booking/data/repository/cart_repo.dart';
 import 'package:efood_table_booking/data/repository/language_repo.dart';
 import 'package:efood_table_booking/data/repository/order_repo.dart';
@@ -21,10 +23,20 @@ import 'package:efood_table_booking/data/repository/splash_repo.dart';
 import 'package:efood_table_booking/util/app_constants.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<Map<String, Map<String, String>>> init() async {
   // Core
+  await Hive.initFlutter();
+  Hive.registerAdapter(ProductAdapter());
+  Hive.registerAdapter(AddOnAdapter());
+  Hive.registerAdapter(CategoryIdAdapter());
+  Hive.registerAdapter(ChoiceOptionAdapter());
+  Hive.registerAdapter(VariationAdapter());
+  Hive.registerAdapter(VariationValueAdapter());
+  Hive.registerAdapter(BranchProductAdapter());
+
   final sharedPreferences = await SharedPreferences.getInstance();
   Get.lazyPut(() => sharedPreferences);
   Get.lazyPut(() => ApiClient(
@@ -34,7 +46,8 @@ Future<Map<String, Map<String, String>>> init() async {
   Get.lazyPut(
       () => SplashRepo(sharedPreferences: Get.find(), apiClient: Get.find()));
   Get.lazyPut(() => LanguageRepo());
-  Get.lazyPut(() => ProductRepo(sharedPreferences: Get.find(),apiClient: Get.find()));
+  Get.lazyPut(
+      () => ProductRepo(sharedPreferences: Get.find(), apiClient: Get.find()));
   Get.lazyPut(() => SalesRepo(apiClient: Get.find()), fenix: true);
   Get.lazyPut(() => CartRepo(sharedPreferences: Get.find()));
   Get.lazyPut(

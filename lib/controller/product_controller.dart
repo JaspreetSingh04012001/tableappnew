@@ -2,10 +2,12 @@ import 'package:efood_table_booking/controller/cart_controller.dart';
 import 'package:efood_table_booking/data/api/api_checker.dart';
 import 'package:efood_table_booking/data/model/response/cart_model.dart';
 import 'package:efood_table_booking/data/model/response/category_model.dart';
+import 'package:efood_table_booking/data/model/response/product.dart';
 import 'package:efood_table_booking/data/model/response/product_model.dart';
 import 'package:efood_table_booking/data/repository/product_repo.dart';
 import 'package:efood_table_booking/view/base/custom_snackbar.dart';
 import 'package:get/get.dart';
+import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class ProductController extends GetxController implements GetxService {
@@ -13,7 +15,6 @@ class ProductController extends GetxController implements GetxService {
 
   ProductController({required this.productRepo}) {
     getNsave();
-    
   }
   bool image = false;
   bool CatImage = false;
@@ -27,6 +28,7 @@ class ProductController extends GetxController implements GetxService {
     CatImage = sharedPreferences.getBool("CatImage") ?? true;
     listView = sharedPreferences.getBool("listView") ?? false;
     gridView = sharedPreferences.getBool("gridView") ?? true;
+    await Hive.openBox<Product>('productSBox');
 
     update();
   }
@@ -55,7 +57,7 @@ class ProductController extends GetxController implements GetxService {
   String? _selectedCategory;
   bool _isSearch = true;
   int? _totalSize;
-  List<int> _offsetList = [];
+  final List<int> _offsetList = [];
   List<Product>? _filterList;
   bool searchIs = false;
   List<List<bool>> _selectedVariations = [];
@@ -100,19 +102,43 @@ class ProductController extends GetxController implements GetxService {
     _isLoading = true;
     searchIs = false;
 
-    if (reload || offset == 1) {
-      _productList = null;
-      _pageViewCurrentIndex = 0;
-      _offsetList = [];
-      productOffset = 1;
-    }
-    if (notify) {
-      update();
-    }
-    if (_productList == null || reload || !_offsetList.contains(offset)) {
-      _offsetList = [];
-      _offsetList.add(offset);
-      searchIs = searchPattern != null;
+    // if (reload) {
+    //   _productList = null;
+    //   _pageViewCurrentIndex = 0;
+    //   _offsetList = [];
+    //   productOffset = 1;
+    // }
+    // if (notify) {
+    //   update();
+    // }
+
+    // _offsetList = [];
+    // _offsetList.add(offset);
+    if (Hive.box<Product>('productSBox').isNotEmpty) {
+      _productList = Hive.box<Product>('productSBox').values.toList();
+      if (categoryId != null) {
+        _productList = _productList?.where((element) {
+          bool x = false;
+          element.categoryIds?.forEach((element1) {
+            if (element1.id == categoryId) {
+              x = true;
+            }
+          });
+          return x;
+        }).toList();
+      }
+      if (searchPattern != null) {
+        print(searchPattern);
+        _productList = _productList?.where((element) {
+          bool x = false;
+
+          if (element.name!.contains(searchPattern.capitalizeFirst ?? "loda")) {
+            x = true;
+          }
+          return x;
+        }).toList();
+      }
+    } else {
       Response response = await productRepo.getProductList(
           offset, productType, searchPattern, categoryId);
       if (response.statusCode == 200) {
@@ -120,13 +146,29 @@ class ProductController extends GetxController implements GetxService {
           _productList = [];
         }
         _productList?.addAll(ProductModel.fromJson(response.body).products!);
+        Hive.box<Product>('productSBox')
+            .addAll(ProductModel.fromJson(response.body).products!);
         _totalSize = ProductModel.fromJson(response.body).totalSize;
       } else {
         ApiChecker.checkApi(response);
       }
-      _isLoading = false;
-      update();
     }
+    searchIs = searchPattern != null;
+
+    _isLoading = false;
+    update();
+  }
+
+  void f(String searchPattern) {
+    _productList = _productList?.where((element) {
+      bool x = false;
+
+      if (element.name!.contains(searchPattern.capitalizeFirst ?? "loda")) {
+        x = true;
+      }
+      return x;
+    }).toList();
+    update();
   }
 
   void initData(Product product, CartModel? cart) {

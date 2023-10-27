@@ -4,6 +4,7 @@ import 'package:efood_table_booking/controller/product_controller.dart';
 import 'package:efood_table_booking/controller/promotional_controller.dart';
 import 'package:efood_table_booking/controller/splash_controller.dart';
 import 'package:efood_table_booking/data/model/response/config_model.dart';
+import 'package:efood_table_booking/data/model/response/product.dart';
 import 'package:efood_table_booking/helper/responsive_helper.dart';
 import 'package:efood_table_booking/helper/route_helper.dart';
 import 'package:efood_table_booking/util/app_constants.dart';
@@ -14,6 +15,7 @@ import 'package:efood_table_booking/view/screens/promotional_page/promotional_pa
 import 'package:efood_table_booking/view/screens/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -531,6 +533,15 @@ class _SettingWidgetState extends State<SettingWidget> {
                       },
                     )
                   : Container(),
+              if (!widget.formSplash)
+                CustomButton(
+                    onPressed: () async {
+                      Hive.box<Product>('productSBox').clear();
+                      Get.offAll(const SplashScreen());
+                    },
+                    height: 40,
+                    width: 200,
+                    buttonText: "Re Catch Menu"),
               if (!widget.formSplash)
                 CustomButton(
                     onPressed: () async {

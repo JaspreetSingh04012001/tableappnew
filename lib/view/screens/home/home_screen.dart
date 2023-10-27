@@ -60,27 +60,27 @@ class _HomeScreenState extends State<HomeScreen> {
       }
     });
 
-    _scrollController.addListener(() {
-      if (_scrollController.position.pixels ==
-          _scrollController.position.maxScrollExtent) {
-        int totalSize = (productController.totalSize! / 10).ceil();
+    // _scrollController.addListener(() {
+    //   if (_scrollController.position.pixels ==
+    //       _scrollController.position.maxScrollExtent) {
+    //     int totalSize = (productController.totalSize! / 10).ceil();
 
-        if (productController.productOffset < totalSize) {
-          productController.productOffset++;
+    //     if (productController.productOffset < totalSize) {
+    //       productController.productOffset++;
 
-          productController.getProductList(
-            false,
-            true,
-            offset: productController.productOffset,
-            productType: selectedProductType,
-            categoryId: productController.selectedCategory,
-            searchPattern: searchController.text.trim().isEmpty
-                ? null
-                : searchController.text,
-          );
-        }
-      }
-    });
+    //       productController.getProductList(
+    //         false,
+    //         true,
+    //         offset: productController.productOffset,
+    //         productType: selectedProductType,
+    //         categoryId: productController.selectedCategory,
+    //         searchPattern: searchController.text.trim().isEmpty
+    //             ? null
+    //             : searchController.text,
+    //       );
+    //     }
+    //   }
+    // });
 
     super.initState();
   }
