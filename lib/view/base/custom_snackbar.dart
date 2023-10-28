@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 void showCustomSnackBar(String message,
     {bool isError = true, bool isToast = false}) {
   if (!ResponsiveHelper.isTab(Get.context) && isToast) {
+    print("mmvkmvdlv");
     Fluttertoast.showToast(
         msg: message,
         toastLength: Toast.LENGTH_SHORT,
@@ -20,6 +21,9 @@ void showCustomSnackBar(String message,
     ScaffoldMessenger.of(Get.context!)
       ..hideCurrentSnackBar()
       ..showSnackBar(SnackBar(
+          duration: isError
+              ? const Duration(seconds: 1)
+              : const Duration(milliseconds: 150),
           key: UniqueKey(),
           content: Text(
             overflow: TextOverflow.ellipsis,
