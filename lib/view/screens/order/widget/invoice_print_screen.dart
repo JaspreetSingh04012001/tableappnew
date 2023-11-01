@@ -2,13 +2,15 @@ import 'package:efood_table_booking/controller/printer_controller.dart';
 import 'package:efood_table_booking/view/screens/home/widget/quantity_button.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 
 import '../../../../util/dimensions.dart';
 import '../../../../util/styles.dart';
 
 class InvoicePrintScreen extends StatefulWidget {
-  const InvoicePrintScreen({Key? key}) : super(key: key);
+  bool ismobile;
+  InvoicePrintScreen({Key? key, this.ismobile = false}) : super(key: key);
 
   @override
   _InvoicePrintScreenState createState() => _InvoicePrintScreenState();
@@ -68,136 +70,277 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
               ),
               //  Text('info: $_info\n '),
               Text(printerController.msj),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "Type print",
-                    style: robotoMedium.copyWith(
-                        fontSize: Dimensions.fontSizeLarge + 4),
-                  ),
-                  const SizedBox(width: 10),
-                  DropdownButton<String>(
-                    value: printerController.optionprinttype,
-                    items: printerController.options.map((String option) {
-                      return DropdownMenuItem<String>(
-                        value: option,
-                        child: Text(option),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      printerController.optionprinttype = newValue!;
-                      printerController.update();
-                    },
-                  ),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Copies",
-                      style: robotoMedium.copyWith(
-                          fontSize: Dimensions.fontSizeLarge + 4),
-                    ),
-                  ),
-                  QuantityButton(
-                      isIncrement: true,
-                      onTap: () {
-                        printerController.printCount =
-                            printerController.printCount + 1;
-                        printerController.update();
-                      }),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "${printerController.printCount}",
-                      style: robotoMedium.copyWith(
-                          fontSize: Dimensions.fontSizeLarge + 4),
-                    ),
-                  ),
-                  QuantityButton(
-                      isIncrement: false,
-                      onTap: () {
-                        if (printerController.printCount > 1) {
-                          printerController.printCount =
-                              printerController.printCount - 1;
-                          printerController.update();
-                        }
-                      }),
-                  const SizedBox(
-                    width: 15,
-                  ),
-                  Text(
-                    "Open Drawer",
-                    style: robotoMedium.copyWith(
-                        fontSize: Dimensions.fontSizeLarge + 4),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: CupertinoSwitch(
-                      // This bool value toggles the switch.
-                      value: printerController.openDrawer,
-                      activeColor: Theme.of(context).primaryColor,
-                      onChanged: (bool value) {
-                        // This is called when the user toggles the switch.
+              widget.ismobile
+                  ? Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "Type print",
+                              style: robotoMedium.copyWith(
+                                  fontSize: Dimensions.fontSizeLarge + 4),
+                            ),
+                            const Gap(15),
+                            DropdownButton<String>(
+                              value: printerController.optionprinttype,
+                              items: printerController.options
+                                  .map((String option) {
+                                return DropdownMenuItem<String>(
+                                  value: option,
+                                  child: Text(option),
+                                );
+                              }).toList(),
+                              onChanged: (String? newValue) {
+                                printerController.optionprinttype = newValue!;
+                                printerController.update();
+                              },
+                            ),
+                          ],
+                        ),
+                        const Gap(5),
+                        Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "Copies",
+                                style: robotoMedium.copyWith(
+                                    fontSize: Dimensions.fontSizeLarge + 4),
+                              ),
+                            ),
+                            QuantityButton(
+                                isIncrement: true,
+                                onTap: () {
+                                  printerController.printCount =
+                                      printerController.printCount + 1;
+                                  printerController.update();
+                                }),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                "${printerController.printCount}",
+                                style: robotoMedium.copyWith(
+                                    fontSize: Dimensions.fontSizeLarge + 4),
+                              ),
+                            ),
+                            QuantityButton(
+                                isIncrement: false,
+                                onTap: () {
+                                  if (printerController.printCount > 1) {
+                                    printerController.printCount =
+                                        printerController.printCount - 1;
+                                    printerController.update();
+                                  }
+                                }),
+                            const SizedBox(
+                              width: 15,
+                            ),
+                            Text(
+                              "Open Drawer",
+                              style: robotoMedium.copyWith(
+                                  fontSize: Dimensions.fontSizeLarge + 4),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: CupertinoSwitch(
+                                // This bool value toggles the switch.
+                                value: printerController.openDrawer,
+                                activeColor: Theme.of(context).primaryColor,
+                                onChanged: (bool value) {
+                                  // This is called when the user toggles the switch.
 
-                        printerController.openDrawer = value;
-                        printerController.update();
-                      },
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const SizedBox(
-                    width: 25,
-                  ),
-                  Text(
-                    "Print Front Items Separate",
-                    style: robotoMedium.copyWith(
-                        fontSize: Dimensions.fontSizeLarge + 4),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: CupertinoSwitch(
-                      // This bool value toggles the switch.
-                      value: printerController.seperateByFront,
-                      activeColor: Theme.of(context).primaryColor,
-                      onChanged: (bool value) {
-                        // This is called when the user toggles the switch.
+                                  printerController.openDrawer = value;
+                                  printerController.update();
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          "Type print",
+                          style: robotoMedium.copyWith(
+                              fontSize: Dimensions.fontSizeLarge + 4),
+                        ),
+                        const SizedBox(width: 10),
+                        DropdownButton<String>(
+                          value: printerController.optionprinttype,
+                          items: printerController.options.map((String option) {
+                            return DropdownMenuItem<String>(
+                              value: option,
+                              child: Text(option),
+                            );
+                          }).toList(),
+                          onChanged: (String? newValue) {
+                            printerController.optionprinttype = newValue!;
+                            printerController.update();
+                          },
+                        ),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "Copies",
+                            style: robotoMedium.copyWith(
+                                fontSize: Dimensions.fontSizeLarge + 4),
+                          ),
+                        ),
+                        QuantityButton(
+                            isIncrement: true,
+                            onTap: () {
+                              printerController.printCount =
+                                  printerController.printCount + 1;
+                              printerController.update();
+                            }),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Text(
+                            "${printerController.printCount}",
+                            style: robotoMedium.copyWith(
+                                fontSize: Dimensions.fontSizeLarge + 4),
+                          ),
+                        ),
+                        QuantityButton(
+                            isIncrement: false,
+                            onTap: () {
+                              if (printerController.printCount > 1) {
+                                printerController.printCount =
+                                    printerController.printCount - 1;
+                                printerController.update();
+                              }
+                            }),
+                        const SizedBox(
+                          width: 15,
+                        ),
+                        Text(
+                          "Open Drawer",
+                          style: robotoMedium.copyWith(
+                              fontSize: Dimensions.fontSizeLarge + 4),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: CupertinoSwitch(
+                            // This bool value toggles the switch.
+                            value: printerController.openDrawer,
+                            activeColor: Theme.of(context).primaryColor,
+                            onChanged: (bool value) {
+                              // This is called when the user toggles the switch.
 
-                        printerController.seperateByFront = value;
-                        printerController.update();
-                      },
+                              printerController.openDrawer = value;
+                              printerController.update();
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Text(
-                    "Print Back Items Separate",
-                    style: robotoMedium.copyWith(
-                        fontSize: Dimensions.fontSizeLarge + 4),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(4.0),
-                    child: CupertinoSwitch(
-                      // This bool value toggles the switch.
-                      value: printerController.seperateByBack,
-                      activeColor: Theme.of(context).primaryColor,
-                      onChanged: (bool value) {
-                        // This is called when the user toggles the switch.
 
-                        printerController.seperateByBack = value;
-                        printerController.update();
-                      },
+              widget.ismobile
+                  ? Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "Print Front Items Separate",
+                              style: robotoMedium.copyWith(
+                                  fontSize: Dimensions.fontSizeLarge + 4),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: CupertinoSwitch(
+                                // This bool value toggles the switch.
+                                value: printerController.seperateByFront,
+                                activeColor: Theme.of(context).primaryColor,
+                                onChanged: (bool value) {
+                                  // This is called when the user toggles the switch.
+
+                                  printerController.seperateByFront = value;
+                                  printerController.update();
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "Print Back Items Separate",
+                              style: robotoMedium.copyWith(
+                                  fontSize: Dimensions.fontSizeLarge + 4),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(4.0),
+                              child: CupertinoSwitch(
+                                // This bool value toggles the switch.
+                                value: printerController.seperateByBack,
+                                activeColor: Theme.of(context).primaryColor,
+                                onChanged: (bool value) {
+                                  // This is called when the user toggles the switch.
+
+                                  printerController.seperateByBack = value;
+                                  printerController.update();
+                                },
+                              ),
+                            )
+                          ],
+                        )
+                      ],
+                    )
+                  : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const SizedBox(
+                          width: 25,
+                        ),
+                        Text(
+                          "Print Front Items Separate",
+                          style: robotoMedium.copyWith(
+                              fontSize: Dimensions.fontSizeLarge + 4),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: CupertinoSwitch(
+                            // This bool value toggles the switch.
+                            value: printerController.seperateByFront,
+                            activeColor: Theme.of(context).primaryColor,
+                            onChanged: (bool value) {
+                              // This is called when the user toggles the switch.
+
+                              printerController.seperateByFront = value;
+                              printerController.update();
+                            },
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Text(
+                          "Print Back Items Separate",
+                          style: robotoMedium.copyWith(
+                              fontSize: Dimensions.fontSizeLarge + 4),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: CupertinoSwitch(
+                            // This bool value toggles the switch.
+                            value: printerController.seperateByBack,
+                            activeColor: Theme.of(context).primaryColor,
+                            onChanged: (bool value) {
+                              // This is called when the user toggles the switch.
+
+                              printerController.seperateByBack = value;
+                              printerController.update();
+                            },
+                          ),
+                        )
+                      ],
                     ),
-                  )
-                ],
-              ),
               ElevatedButton(
                 style: ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll(

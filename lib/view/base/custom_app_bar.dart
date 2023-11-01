@@ -238,7 +238,7 @@ class _TabAppBarState extends State<TabAppBar> {
                                         borderRadius: BorderRadius.circular(
                                             Dimensions.radiusSmall)),
                                     insetPadding: const EdgeInsets.all(20),
-                                    child: const InvoicePrintScreen(),
+                                    child: InvoicePrintScreen(),
                                   ));
                                   //   Get.to(const InvoicePrintScreen());
                                 });
@@ -287,7 +287,7 @@ class _TabAppBarState extends State<TabAppBar> {
                           CustomRoundedButton(
                             image: Images.accounting,
                             //  onTap: () => Get.to(() => const AllOrdersScreen()),
-                            onTap: () => Get.to(() => const Sales()),
+                            onTap: () => Get.to(() =>  Sales()),
                           ),
                       ],
                     ),

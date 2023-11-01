@@ -15,7 +15,8 @@ import '../../order/widget/emailDialog.dart';
 import '../../order/widget/order_details_view.dart';
 
 class Sales extends StatefulWidget {
-  const Sales({Key? key}) : super(key: key);
+  bool isMobile;
+  Sales({Key? key, this.isMobile = false}) : super(key: key);
 
   @override
   _SalesState createState() => _SalesState();
@@ -66,7 +67,7 @@ class _SalesState extends State<Sales> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(widget.isMobile ? 4 : 8.0),
                           child: Text(
                             "Start :",
                             style: robotoMedium.copyWith(
@@ -97,11 +98,12 @@ class _SalesState extends State<Sales> {
                             salesController.from = formatted;
                           },
                         ),
-                        const SizedBox(
-                          width: 10,
+                        SizedBox(
+                          width: widget.isMobile ? 5 : 10,
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(right: 8),
+                          padding:
+                              EdgeInsets.only(right: widget.isMobile ? 4 : 8),
                           child: Text(
                             "End :",
                             style: robotoMedium.copyWith(
@@ -388,6 +390,10 @@ class _SalesState extends State<Sales> {
                                                     .replaceAll(
                                                         '${'order'.tr}# ', ''),
                                               );
+                                              if (widget.isMobile) {
+                                                Get.to(OrderDetailsView(
+                                                    isSales: true));
+                                              }
                                             },
                                             child: Padding(
                                               padding:
@@ -570,7 +576,8 @@ class _SalesState extends State<Sales> {
                   ],
                 ),
               ),
-              if (salesController.selectedSale != null)
+              if (salesController.selectedSale != null &&
+                  widget.isMobile == false)
                 Expanded(
                     flex: 3,
                     child: Padding(

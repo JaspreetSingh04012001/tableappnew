@@ -28,7 +28,7 @@ class ProductController extends GetxController implements GetxService {
     CatImage = sharedPreferences.getBool("CatImage") ?? true;
     listView = sharedPreferences.getBool("listView") ?? false;
     gridView = sharedPreferences.getBool("gridView") ?? true;
-    await Hive.openBox<Product>('productSBox');
+
 
     update();
   }
@@ -101,7 +101,7 @@ class ProductController extends GetxController implements GetxService {
       int offset = 1}) async {
     _isLoading = true;
     searchIs = false;
-
+    print("jai ho");
     // if (reload) {
     //   _productList = null;
     //   _pageViewCurrentIndex = 0;
@@ -142,9 +142,7 @@ class ProductController extends GetxController implements GetxService {
       Response response = await productRepo.getProductList(
           offset, productType, searchPattern, categoryId);
       if (response.statusCode == 200) {
-        if (reload || offset == 1) {
-          _productList = [];
-        }
+        _productList = [];
         _productList?.addAll(ProductModel.fromJson(response.body).products!);
         Hive.box<Product>('productSBox')
             .addAll(ProductModel.fromJson(response.body).products!);

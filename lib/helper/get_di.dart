@@ -29,6 +29,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 Future<Map<String, Map<String, String>>> init() async {
   // Core
   await Hive.initFlutter();
+
   Hive.registerAdapter(ProductAdapter());
   Hive.registerAdapter(AddOnAdapter());
   Hive.registerAdapter(CategoryIdAdapter());
@@ -36,7 +37,7 @@ Future<Map<String, Map<String, String>>> init() async {
   Hive.registerAdapter(VariationAdapter());
   Hive.registerAdapter(VariationValueAdapter());
   Hive.registerAdapter(BranchProductAdapter());
-
+  await Hive.openBox<Product>('productSBox');
   final sharedPreferences = await SharedPreferences.getInstance();
   Get.lazyPut(() => sharedPreferences);
   Get.lazyPut(() => ApiClient(

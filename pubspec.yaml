@@ -41,6 +41,7 @@ dependencies:
   hive: ^2.2.3
   hive_flutter:
   hive_generator: ^2.0.1
+  simple_speed_dial: ^0.1.7
  
 dev_dependencies:
   flutter_lints: ^2.0.1
