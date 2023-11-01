@@ -452,6 +452,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       productController.productList?.length,
                                   gridDelegate:
                                       SliverGridDelegateWithFixedCrossAxisCount(
+                                    childAspectRatio:
+                                        productController.listView ? 3 : 1,
                                     crossAxisCount: isBig ? 3 : 2,
                                     crossAxisSpacing:
                                         Dimensions.paddingSizeDefault,
