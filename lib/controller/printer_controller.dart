@@ -195,7 +195,17 @@ class PrinterController extends GetxController {
     bool conexionStatus = await PrintBluetoothThermal.connectionStatus;
     //print("connection status: $conexionStatus");
     if (conexionStatus) {
-      List<int> ticket = await testTicket();
+      final profile = await CapabilityProfile.load();
+      final generator = Generator(
+          optionprinttype == "58 mm" ? PaperSize.mm58 : PaperSize.mm80,
+          profile);
+
+      List<int> ticket = generator.reset() +
+          generator.drawer() +
+          await testTicket(
+              generator: generator,
+              splashController: Get.find<SplashController>(),
+              orderController: Get.find<OrderController>());
       for (int i = 0; i < printCount; i++) {
         PrintBluetoothThermal.writeBytes(ticket);
       }
@@ -204,23 +214,22 @@ class PrinterController extends GetxController {
     }
   }
 
-  Future<List<int>> testTicket({bool byWaitor = false}) async {
+  Future<List<int>> testTicket(
+      {bool byWaitor = false,
+      required Generator generator,
+      required OrderController orderController,
+      required SplashController splashController}) async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     List<int> bytes = [];
     List<int> Frontbytes = [];
     List<int> Backbytes = [];
-    // Using default profile
-    final profile = await CapabilityProfile.load();
-    final generator = Generator(
-        optionprinttype == "58 mm" ? PaperSize.mm58 : PaperSize.mm80, profile);
-    bytes += generator.drawer(pin: PosDrawer.pin2);
-    bytes += generator.drawer();
+
+    // final generator = Generator(
+    //     optionprinttype == "58 mm" ? PaperSize.mm58 : PaperSize.mm80, profile);
+    // bytes += generator.drawer(pin: PosDrawer.pin2);
+    // bytes += generator.drawer();
 
     //bytes += generator.setGlobalFont(PosFontType.fontA);
-    bytes += generator.reset();
-
-    OrderController orderController = Get.find<OrderController>();
-    SplashController splashController = Get.find<SplashController>();
 
 //orderController.currentOrderDetails.details;
     double itemsPrice = 0;
@@ -315,6 +324,7 @@ class PrinterController extends GetxController {
     bytes += generator.hr(ch: "-");
 
     Frontbytes += generator.hr(ch: "-");
+    Frontbytes += generator.cut();
     Frontbytes += generator.text('order_summary'.tr,
         styles: const PosStyles(
             bold: true,
@@ -338,7 +348,7 @@ class PrinterController extends GetxController {
     Frontbytes += generator.hr(ch: "-");
     Frontbytes += generator.text("Qty x Item info = Price");
     Frontbytes += generator.hr(ch: "-");
-
+    Backbytes += generator.cut();
     Backbytes += generator.hr(ch: "-");
     Backbytes += generator.text('order_summary'.tr,
         styles: const PosStyles(
@@ -346,7 +356,7 @@ class PrinterController extends GetxController {
             align: PosAlign.center,
             height: PosTextSize.size2,
             width: PosTextSize.size2));
-    Backbytes += generator.text("Front Items",
+    Backbytes += generator.text("Back Items",
         styles: const PosStyles(
             bold: true,
             align: PosAlign.center,
@@ -433,16 +443,9 @@ class PrinterController extends GetxController {
           .replaceAll(",", "\n")
           .replaceAll("))", ")")
           .trimLeft();
-      // .replaceAll("Choose ()", "")
-      // .replaceAll("optiona (", "")
-      // .replaceAll("Order Type (Dine in)", "")
-      // .replaceAll("Order Type (Take away)", "")
-      // .replaceAll("Choose (", "\n")
-      // .replaceAll("Choose One (", "\n")
-      // .replaceAll(")", "")
-      // .replaceAll(",", "\n");
+
       variationText = removeEmptyLines(variationText);
-      // variationText.
+
       if (details.productDetails?.printType == "front") {
         Frontbytes += generator.text(
             takeAway ? "** Take away **" : "* Eat In *",
@@ -615,10 +618,9 @@ class PrinterController extends GetxController {
       bytes += generator.text(
           styles: const PosStyles(
               height: PosTextSize.size1, width: PosTextSize.size1, bold: true),
-          "${'change'.tr} : ${PriceConverter.convertPrice((double.parse(orderController.currentOrderDetails?.order?.card ?? "0") - total))}");
+          "${'change'.tr} : ${PriceConverter.convertPrice((double.parse(orderController.currentOrderDetails?.order?.cash ?? "0") - total))}");
     }
-    bytes += generator.drawer();
-    bytes += generator.drawer(pin: PosDrawer.pin5);
+
     bytes += generator.feed(2);
     bytes += generator.cut();
     if (seperateByFront) {
