@@ -547,6 +547,7 @@ class _SettingWidgetState extends State<SettingWidget> {
                     onPressed: () async {
                       SharedPreferences pref =
                           await SharedPreferences.getInstance();
+                      Hive.box<Product>('productSBox').clear();
                       pref.clear();
                       Get.offAll(const SplashScreen());
                     },
