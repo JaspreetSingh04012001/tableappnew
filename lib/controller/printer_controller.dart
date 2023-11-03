@@ -324,7 +324,7 @@ class PrinterController extends GetxController {
     bytes += generator.hr(ch: "-");
 
     Frontbytes += generator.hr(ch: "-");
-    Frontbytes += generator.cut();
+
     Frontbytes += generator.text('order_summary'.tr,
         styles: const PosStyles(
             bold: true,
@@ -348,7 +348,7 @@ class PrinterController extends GetxController {
     Frontbytes += generator.hr(ch: "-");
     Frontbytes += generator.text("Qty x Item info = Price");
     Frontbytes += generator.hr(ch: "-");
-    Backbytes += generator.cut();
+
     Backbytes += generator.hr(ch: "-");
     Backbytes += generator.text('order_summary'.tr,
         styles: const PosStyles(
@@ -622,13 +622,16 @@ class PrinterController extends GetxController {
     }
 
     bytes += generator.feed(2);
-    bytes += generator.cut();
+
     if (seperateByFront) {
+      bytes += generator.cut();
       bytes += Frontbytes;
     }
     if (seperateByBack) {
+      bytes += generator.cut();
       bytes += Backbytes;
     }
+    bytes += generator.cut();
     return bytes;
   }
 }
