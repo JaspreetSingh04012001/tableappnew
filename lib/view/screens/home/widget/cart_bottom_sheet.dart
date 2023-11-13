@@ -313,7 +313,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                       (index) => Padding(
                                                             padding:
                                                                 const EdgeInsets
-                                                                        .symmetric(
+                                                                    .symmetric(
                                                                     horizontal:
                                                                         2),
                                                             child: Column(
@@ -325,31 +325,44 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                         .start,
                                                                 children: [
                                                                   SizedBox(
-                                                                    width: 150,
-                                                                    child: Row(
-                                                                        mainAxisAlignment:
-                                                                            MainAxisAlignment
-                                                                                .center,
-                                                                        crossAxisAlignment:
-                                                                            CrossAxisAlignment.center,
-                                                                        children: [
-                                                                          Text(
-                                                                            overflow:
-                                                                                TextOverflow.ellipsis,
-                                                                            variationList[index].name ??
-                                                                                '',
-                                                                            style:
-                                                                                robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
-                                                                          ),
-                                                                          if (variationList[index].isRequired ??
-                                                                              false)
-                                                                            Text(
-                                                                              overflow: TextOverflow.ellipsis,
-                                                                              ' (${'required'.tr})',
-                                                                              style: robotoMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeSmall),
-                                                                            ),
-                                                                        ]),
-                                                                  ),
+                                                                      width:
+                                                                          150,
+                                                                      child: Text.rich(
+                                                                          maxLines: 2,
+                                                                          overflow: TextOverflow.ellipsis,
+                                                                          TextSpan(text: variationList[index].name ?? "", style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge), children: <InlineSpan>[
+                                                                            if (variationList[index].isRequired ??
+                                                                                false)
+                                                                              TextSpan(
+                                                                                text: ' (${'required'.tr})',
+                                                                                style: robotoMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeSmall),
+                                                                              )
+                                                                          ]))
+                                                                      // Row(
+
+                                                                      //     mainAxisAlignment:
+                                                                      //         MainAxisAlignment
+                                                                      //             .center,
+                                                                      //     crossAxisAlignment:
+                                                                      //         CrossAxisAlignment.center,
+                                                                      //     children: [
+                                                                      //       Text(
+                                                                      //         overflow:
+                                                                      //             TextOverflow.ellipsis,
+                                                                      //         variationList[index].name ??
+                                                                      //             '',
+                                                                      //         style:
+                                                                      //             robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+                                                                      //       ),
+                                                                      //       if (variationList[index].isRequired ??
+                                                                      //           false)
+                                                                      //         Text(
+                                                                      //           overflow: TextOverflow.ellipsis,
+                                                                      //           ' (${'required'.tr})',
+                                                                      //           style: robotoMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeSmall),
+                                                                      //         ),
+                                                                      //     ]),
+                                                                      ),
 
                                                                   Row(
                                                                       mainAxisSize:
