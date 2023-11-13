@@ -17,91 +17,87 @@ class SearchBarView extends StatefulWidget {
 
 class _SearchBarViewState extends State<SearchBarView> {
   @override
-  @override
   Widget build(BuildContext context) {
-    return GetBuilder<ProductController>(builder: (productController) {
-      return Container(
-        decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(Radius.circular(4))),
-        // padding: EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge),
-        height: ResponsiveHelper.isSmallTab()
-            ? 35
-            : ResponsiveHelper.isTab(context)
-                ? 50
-                : 40,
-        child: SearchField(
-            controller: widget.controller,
-            hint: 'search'.tr,
-            iconPressed: () {
-              if (productController.isSearch) {
-                if (widget.controller.value.text.isEmpty) {
-                  showCustomSnackBar('please_enter_food_name'.tr,
-                      isToast: true);
-                } else {
-                  // productController.filterFormattedProduct(true, widget.controller.text, From.search);
-                  productController.getProductList(
-                    true,
-                    true,
-                    categoryId: productController.selectedCategory,
-                    productType: widget.type,
-                    searchPattern: widget.controller.text.trim().isEmpty
-                        ? null
-                        : widget.controller.text,
-                  );
-                  //productController.searchProduct(widget.controller.text, widget.type);
-                }
+    return Container(
+      decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(4))),
+      // padding: EdgeInsets.symmetric(horizontal: Dimensions.paddingSizeLarge),
+      height: ResponsiveHelper.isSmallTab()
+          ? 35
+          : ResponsiveHelper.isTab(context)
+              ? 50
+              : 40,
+      child: SearchField(
+          controller: widget.controller,
+          hint: 'search'.tr,
+          iconPressed: () {
+            if (Get.find<ProductController>().isSearch) {
+              if (widget.controller.value.text.isEmpty) {
+                showCustomSnackBar('please_enter_food_name'.tr, isToast: true);
               } else {
-                if (productController.searchIs) {
-                  productController.getProductList(
-                    true,
-                    true,
-                    categoryId: productController.selectedCategory,
-                    productType: widget.type,
-                    searchPattern: widget.controller.text.trim().isEmpty
-                        ? null
-                        : widget.controller.text,
-                  );
-                }
-                widget.controller.clear();
-                FocusScope.of(context).unfocus();
+                // Get.find<ProductController>().filterFormattedProduct(true, widget.controller.text, From.search);
+                Get.find<ProductController>().getProductList(
+                  true,
+                  true,
+                  categoryId: Get.find<ProductController>().selectedCategory,
+                  productType: widget.type,
+                  searchPattern: widget.controller.text.trim().isEmpty
+                      ? null
+                      : widget.controller.text,
+                );
+                //Get.find<ProductController>().searchProduct(widget.controller.text, widget.type);
               }
-            },
-            onChanged: (String pattern) {
-              // productController.f(pattern);
-              // productController.getProductList(
-              //   true,
-              //   true,
-              //   categoryId: productController.selectedCategory,
-              //   productType: widget.type,
-              //   searchPattern: pattern.isEmpty ? null : pattern,
-              // );
-              // if(pattern.trim().isEmpty) {
-              //   FocusScope.of(context).unfocus();
-              // }
-            },
-            onSubmit: (String pattern) {
-              if (pattern.trim().isNotEmpty) {
-                // productController.filterFormattedProduct(true, widget.controller.text, From.search);
-                // productController.searchProduct(widget.controller.text, widget.type);
-
-                productController.getProductList(
+            } else {
+              if (Get.find<ProductController>().searchIs) {
+                Get.find<ProductController>().getProductList(
                   true,
                   true,
-                  categoryId: productController.selectedCategory,
+                  categoryId: Get.find<ProductController>().selectedCategory,
                   productType: widget.type,
                   searchPattern: widget.controller.text.trim().isEmpty
                       ? null
                       : widget.controller.text,
                 );
               }
-            },
-            suffixIcon:
-                //productController.isSearch ?
-                Icons.search
-            //: Icons.cancel,
-            ),
-      );
-    });
+              widget.controller.clear();
+              FocusScope.of(context).unfocus();
+            }
+          },
+          onChanged: (String pattern) {
+            Get.find<ProductController>().f(pattern);
+            // Get.find<ProductController>().getProductList(
+            //   true,
+            //   true,
+            //   categoryId: Get.find<ProductController>().selectedCategory,
+            //   productType: widget.type,
+            //   searchPattern: pattern.isEmpty ? null : pattern,
+            // );
+            // if(pattern.trim().isEmpty) {
+            //   FocusScope.of(context).unfocus();
+            // }
+          },
+          onSubmit: (String pattern) {
+            if (pattern.trim().isNotEmpty) {
+              // Get.find<ProductController>().filterFormattedProduct(true, widget.controller.text, From.search);
+              // Get.find<ProductController>().searchProduct(widget.controller.text, widget.type);
+
+              Get.find<ProductController>().getProductList(
+                true,
+                true,
+                categoryId: Get.find<ProductController>().selectedCategory,
+                productType: widget.type,
+                searchPattern: widget.controller.text.trim().isEmpty
+                    ? null
+                    : widget.controller.text,
+              );
+            }
+          },
+          suffixIcon:
+              //Get.find<ProductController>().isSearch ?
+              Icons.search
+          //: Icons.cancel,
+          ),
+    );
   }
 }

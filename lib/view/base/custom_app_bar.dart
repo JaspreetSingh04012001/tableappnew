@@ -147,158 +147,156 @@ class _TabAppBarState extends State<TabAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<ProductController>(builder: (productController) {
-      return SafeArea(
-        child: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Theme.of(context).cardColor.withOpacity(0.1),
-                      offset: const Offset(0, 6),
-                      blurRadius: 12,
-                      spreadRadius: -3,
-                    ),
-                  ]),
-              child: Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 0),
-                    child: CustomImage(
-                      image:
-                          '${Get.find<SplashController>().configModel?.baseUrls?.restaurantImageUrl}/${Get.find<SplashController>().configModel?.restaurantLogo}',
-                      height: 50,
-                      placeholder: Images.logo,
-                    ),
+    return SafeArea(
+      child: Column(
+        children: [
+          Container(
+            decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(context).cardColor.withOpacity(0.1),
+                    offset: const Offset(0, 6),
+                    blurRadius: 12,
+                    spreadRadius: -3,
                   ),
-                  if (Get.currentRoute.contains("/home"))
-                    Expanded(
-                      child: SearchBarView(
-                          controller: TextEditingController(), type: null),
-                    ),
-                  if (Get.currentRoute.contains("/home"))
-                    Row(
-                      children: [
-                        SizedBox(
-                          width: Dimensions.paddingSizeLarge,
-                        ),
-                        CustomRoundedButton(
-                          image: Images.themeIcon,
-                          onTap: () =>
-                              Get.find<ThemeController>().toggleTheme(),
-                        ),
-                        SizedBox(
-                          width: Dimensions.paddingSizeLarge,
-                        ),
-                        CustomRoundedButton(
-                            image: Images.settingIcon,
-                            onTap: () {
-                              showAnimatedDialog(
-                                context: context,
-                                barrierDismissible: true,
-                                builder: (BuildContext context) {
-                                  return const Dialog(
-                                    backgroundColor: Colors.transparent,
-                                    child: SettingWidget(formSplash: false),
-                                  );
-                                },
-                                animationType:
-                                    DialogTransitionType.slideFromBottomFade,
-                              );
-                            }),
-                        if (Get.currentRoute.contains("/home"))
-                          SizedBox(
-                            width: Dimensions.paddingSizeLarge,
-                          ),
-                        if (Get.currentRoute.contains("/home"))
-                          CustomRoundedButton(
-                            image: Images.order,
-                            //  onTap: () => Get.to(() => const AllOrdersScreen()),
-                            onTap: () =>
-                                Get.to(() => const OrderSuccessScreen()),
-                          ),
-                        if (Get.currentRoute.contains("/home"))
-                          SizedBox(
-                            width: Dimensions.paddingSizeLarge,
-                          ),
-                        if (Get.currentRoute.contains("/home"))
-                          GetBuilder<PrinterController>(
-                              builder: (printerController) {
-                            return CustomRoundedButton(
-                                image: Images.order,
-                                widget: Icon(
-                                  Icons.print_rounded,
-                                  color: Theme.of(context).primaryColor,
-                                ),
-                                onTap: () {
-                                  Get.dialog(Dialog(
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(
-                                            Dimensions.radiusSmall)),
-                                    insetPadding: const EdgeInsets.all(20),
-                                    child: InvoicePrintScreen(),
-                                  ));
-                                  //   Get.to(const InvoicePrintScreen());
-                                });
+                ]),
+            child: Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 0),
+                  child: CustomImage(
+                    image:
+                        '${Get.find<SplashController>().configModel?.baseUrls?.restaurantImageUrl}/${Get.find<SplashController>().configModel?.restaurantLogo}',
+                    height: 50,
+                    placeholder: Images.logo,
+                  ),
+                ),
+                if (Get.currentRoute.contains("/home"))
+                  Expanded(
+                    child: SearchBarView(
+                        controller: TextEditingController(), type: null),
+                  ),
+                if (Get.currentRoute.contains("/home"))
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: Dimensions.paddingSizeLarge,
+                      ),
+                      CustomRoundedButton(
+                        image: Images.themeIcon,
+                        onTap: () => Get.find<ThemeController>().toggleTheme(),
+                      ),
+                      SizedBox(
+                        width: Dimensions.paddingSizeLarge,
+                      ),
+                      CustomRoundedButton(
+                          image: Images.settingIcon,
+                          onTap: () {
+                            showAnimatedDialog(
+                              context: context,
+                              barrierDismissible: true,
+                              builder: (BuildContext context) {
+                                return const Dialog(
+                                  backgroundColor: Colors.transparent,
+                                  child: SettingWidget(formSplash: false),
+                                );
+                              },
+                              animationType:
+                                  DialogTransitionType.slideFromBottomFade,
+                            );
                           }),
+                      if (Get.currentRoute.contains("/home"))
                         SizedBox(
                           width: Dimensions.paddingSizeLarge,
                         ),
-                        if (Get.currentRoute.contains("/home"))
-                          CustomRoundedButton(
-                            image: "assets/image/eye.png",
+                      if (Get.currentRoute.contains("/home"))
+                        CustomRoundedButton(
+                          image: Images.order,
+                          //  onTap: () => Get.to(() => const AllOrdersScreen()),
+                          onTap: () => Get.to(() => const OrderSuccessScreen()),
+                        ),
+                      if (Get.currentRoute.contains("/home"))
+                        SizedBox(
+                          width: Dimensions.paddingSizeLarge,
+                        ),
+                      if (Get.currentRoute.contains("/home"))
+                        GetBuilder<PrinterController>(
+                            builder: (printerController) {
+                          return CustomRoundedButton(
+                              image: Images.order,
+                              widget: Icon(
+                                Icons.print_rounded,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              onTap: () {
+                                Get.dialog(Dialog(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(
+                                          Dimensions.radiusSmall)),
+                                  insetPadding: const EdgeInsets.all(20),
+                                  child: InvoicePrintScreen(),
+                                ));
+                                //   Get.to(const InvoicePrintScreen());
+                              });
+                        }),
+                      SizedBox(
+                        width: Dimensions.paddingSizeLarge,
+                      ),
+                      if (Get.currentRoute.contains("/home"))
+                        CustomRoundedButton(
+                          image: "assets/image/eye.png",
 
-                            //  onTap: () => Get.to(() => const AllOrdersScreen()),
-                            onTap: () {
-                              Get.dialog(Dialog(
-                                shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(
-                                        Dimensions.radiusSmall)),
-                                insetPadding: const EdgeInsets.all(20),
-                                child: const AskViewDialog(),
-                              ));
-                              // showAnimatedDialog(
-                              //     barrierDismissible: true,
-                              //     context: context,
-                              //     builder: (context) {
+                          //  onTap: () => Get.to(() => const AllOrdersScreen()),
+                          onTap: () {
+                            Get.dialog(Dialog(
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(
+                                      Dimensions.radiusSmall)),
+                              insetPadding: const EdgeInsets.all(20),
+                              child: const AskViewDialog(),
+                            ));
+                            // showAnimatedDialog(
+                            //     barrierDismissible: true,
+                            //     context: context,
+                            //     builder: (context) {
 
-                              //       return AlertDialog(
+                            //       return AlertDialog(
 
-                              //         title: Text(
-                              //           overflow: TextOverflow.ellipsis,
-                              //           'Select View for Items',
-                              //           style: robotoMedium.copyWith(
-                              //               fontSize: Dimensions.fontSizeExtraLarge),
-                              //         ),
-                              //         content: const AskViewDialog(),
-                              //         actionsPadding: EdgeInsets.zero,
-                              //         actions: const [],
-                              //       );
-                              //     });
-                            },
-                          ),
-                        if (Get.currentRoute.contains("/home"))
-                          SizedBox(
-                            width: Dimensions.paddingSizeLarge,
-                          ),
-                        if (Get.currentRoute.contains("/home"))
-                          CustomRoundedButton(
-                            image: Images.accounting,
-                            //  onTap: () => Get.to(() => const AllOrdersScreen()),
-                            onTap: () => Get.to(() =>  Sales()),
-                          ),
-                      ],
-                    ),
-                  SizedBox(width: Dimensions.paddingSizeLarge),
+                            //         title: Text(
+                            //           overflow: TextOverflow.ellipsis,
+                            //           'Select View for Items',
+                            //           style: robotoMedium.copyWith(
+                            //               fontSize: Dimensions.fontSizeExtraLarge),
+                            //         ),
+                            //         content: const AskViewDialog(),
+                            //         actionsPadding: EdgeInsets.zero,
+                            //         actions: const [],
+                            //       );
+                            //     });
+                          },
+                        ),
+                      if (Get.currentRoute.contains("/home"))
+                        SizedBox(
+                          width: Dimensions.paddingSizeLarge,
+                        ),
+                      if (Get.currentRoute.contains("/home"))
+                        CustomRoundedButton(
+                          image: Images.accounting,
+                          //  onTap: () => Get.to(() => const AllOrdersScreen()),
+                          onTap: () => Get.to(() => Sales()),
+                        ),
+                    ],
+                  ),
+                SizedBox(width: Dimensions.paddingSizeLarge),
 
-                  // Flexible(child: Container(height: ResponsiveHelper.isSmallTab() ? 50 : 70, color: Theme.of(context).primaryColor, ))
-                ],
-              ),
+                // Flexible(child: Container(height: ResponsiveHelper.isSmallTab() ? 50 : 70, color: Theme.of(context).primaryColor, ))
+              ],
             ),
-            if (Get.currentRoute.contains("/home"))
-              SizedBox(
+          ),
+          if (Get.currentRoute.contains("/home"))
+            GetBuilder<ProductController>(builder: (productController) {
+              return SizedBox(
                   height: productController.CatImage ? 95 : 25,
                   child: CategoryView(onSelected: (id) {
                     if (productController.selectedCategory == id) {
@@ -315,11 +313,11 @@ class _TabAppBarState extends State<TabAppBar> {
                           ? null
                           : searchController.text,
                     );
-                  })),
-          ],
-        ),
-      );
-    });
+                  }));
+            }),
+        ],
+      ),
+    );
   }
 
   @override

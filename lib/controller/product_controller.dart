@@ -29,7 +29,6 @@ class ProductController extends GetxController implements GetxService {
     listView = sharedPreferences.getBool("listView") ?? false;
     gridView = sharedPreferences.getBool("gridView") ?? true;
 
-
     update();
   }
 
@@ -52,6 +51,7 @@ class ProductController extends GetxController implements GetxService {
   final List<String> _productTypeList = ['all', 'non_veg', 'veg'];
   String _selectedProductType = 'all';
   List<Product>? _productList;
+  List<Product>? tempList;
   int _pageViewCurrentIndex = 0;
   List<CategoryModel>? _categoryList;
   String? _selectedCategory;
@@ -101,7 +101,7 @@ class ProductController extends GetxController implements GetxService {
       int offset = 1}) async {
     _isLoading = true;
     searchIs = false;
-    print("jai ho");
+
     // if (reload) {
     //   _productList = null;
     //   _pageViewCurrentIndex = 0;
@@ -116,6 +116,7 @@ class ProductController extends GetxController implements GetxService {
     // _offsetList.add(offset);
     if (Hive.box<Product>('productSBox').isNotEmpty) {
       _productList = Hive.box<Product>('productSBox').values.toList();
+      tempList = _productList;
       if (categoryId != null) {
         _productList = _productList?.where((element) {
           bool x = false;
@@ -144,6 +145,7 @@ class ProductController extends GetxController implements GetxService {
       if (response.statusCode == 200) {
         _productList = [];
         _productList?.addAll(ProductModel.fromJson(response.body).products!);
+        tempList = _productList;
         Hive.box<Product>('productSBox')
             .addAll(ProductModel.fromJson(response.body).products!);
         _totalSize = ProductModel.fromJson(response.body).totalSize;
@@ -158,7 +160,7 @@ class ProductController extends GetxController implements GetxService {
   }
 
   void f(String searchPattern) {
-    _productList = _productList?.where((element) {
+    _productList = tempList?.where((element) {
       bool x = false;
 
       if (element.name!.contains(searchPattern.capitalizeFirst ?? "loda")) {
