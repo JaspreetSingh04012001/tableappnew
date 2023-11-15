@@ -136,6 +136,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
 
                     addOnIdList.add(AddOn(
                       id: widget.product.addOns![index].id,
+                      price:  (widget.product.addOns![index].price != null) ?(widget.product.addOns![index].price! * productController.addOnQtyList[index]) : null,
                       quantity: productController.addOnQtyList[index],
                       name: widget.product.addOns![index].name,
                     ));

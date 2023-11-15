@@ -251,7 +251,7 @@ class _CartDetailsState extends State<CartDetails> {
                                                 customerName;
                                           });
                                         },
-                                        // inputType: TextInputType.number,
+                                        //   inputType: TextInputType.number,
                                         //inputFormatter:[FilteringTextInputFormatter.allow(RegExp("[0-9]"))],
                                         hintText: 'Customer Name/Table No.',
                                         hintStyle: robotoRegular.copyWith(
@@ -342,6 +342,7 @@ class _CartDetailsState extends State<CartDetails> {
                                   cartController.cartList[index];
                               List<Variation>? variationList;
                               List<Widget> variationWidgetList = [];
+                              List<Widget> addOnWidgetList = [];
                               bool takeAway = false;
 
                               if (cartItem.product!.branchProduct != null &&
@@ -356,17 +357,79 @@ class _CartDetailsState extends State<CartDetails> {
                               String variationText = '';
                               String addonsName = '';
 
-                              if (cartItem.variation != null &&
-                                  cartItem.variation!.isNotEmpty) {
-                                cartItem.addOnIds?.forEach((addOn) {
-                                  addonsName =
-                                      '$addonsName${addOn.name} (${addOn.quantity}), ';
-                                });
-                                if (addonsName.isNotEmpty) {
-                                  addonsName = addonsName.substring(
-                                      0, addonsName.length - 2);
-                                }
-                              }
+                              cartItem.addOnIds?.forEach((addOn) {
+                                addonsName =
+                                    '$addonsName${addOn.name} (${addOn.quantity}), ';
+
+                                addOnWidgetList.add(
+                                  
+                                    Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                        flex: 5,
+                                        child: Text(
+                                          overflow: TextOverflow.ellipsis,
+                                          addOn.name.toString(),
+                                          style: robotoRegular.copyWith(
+                                            fontSize: Dimensions.fontSizeLarge,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge!
+                                                .color!,
+                                          ),
+                                          maxLines: 1,
+                                          // overflow: TextOverflow
+                                          //     .ellipsis,
+                                        )),
+                                    Expanded(
+                                        // flex: 5,
+                                        child: Padding(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal:
+                                              Dimensions.paddingSizeExtraSmall),
+                                      child: Text(
+                                        overflow: TextOverflow.ellipsis,
+                                        addOn.quantity.toString(),
+                                        textAlign: TextAlign.center,
+                                        style: robotoRegular.copyWith(
+                                            fontSize: Dimensions.fontSizeLarge,
+                                            color: Theme.of(context)
+                                                .textTheme
+                                                .titleLarge!
+                                                .color!),
+                                      ),
+                                    )),
+                                    Expanded(
+                                        flex: 2,
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(
+                                              horizontal: Dimensions
+                                                  .paddingSizeExtraSmall),
+                                          child: Text(
+                                            overflow: TextOverflow.ellipsis,
+                                            // "lmm",
+                                            "${PriceConverter.convertPrice(addOn.price ?? 0)}"
+                                                .trim(),
+                                            textAlign: TextAlign.end,
+                                            style: robotoRegular.copyWith(
+                                                fontSize:
+                                                    Dimensions.fontSizeLarge,
+                                                color: Theme.of(context)
+                                                    .textTheme
+                                                    .titleLarge!
+                                                    .color!),
+                                            maxLines: 2,
+                                          ),
+                                        )),
+                                  ],
+                                ));
+                              });
+                              // if (addonsName.isNotEmpty) {
+                              //   addonsName = addonsName.substring(
+                              //       0, addonsName.length - 2);
+                              // }
 
                               if (variationList != null &&
                                   cartItem.variations!.isNotEmpty) {
@@ -666,8 +729,13 @@ class _CartDetailsState extends State<CartDetails> {
                                           ),
                                           //variationWidgetList.map((e) => e,).toList(),
                                           Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
                                             mainAxisSize: MainAxisSize.min,
-                                            children: variationWidgetList,
+                                            children: [
+                                              ...variationWidgetList,
+                                              ...addOnWidgetList
+                                            ],
                                           ),
                                           if (cartItem.note != null)
                                             Text(
@@ -695,14 +763,14 @@ class _CartDetailsState extends State<CartDetails> {
                                     // SizedBox(
                                     //   height: Dimensions.paddingSizeExtraSmall,
                                     // ),
-                                    if (addonsName.isNotEmpty)
-                                      Text(
-                                          overflow: TextOverflow.ellipsis,
-                                          '${'addons'.tr}: $addonsName',
-                                          style: robotoRegular.copyWith(
-                                            fontSize: Dimensions.fontSizeSmall,
-                                            color: Theme.of(context).hintColor,
-                                          )),
+                                    // if (addonsName.isNotEmpty)
+                                    //   Text(
+                                    //       overflow: TextOverflow.ellipsis,
+                                    //       '${'addons'.tr}: $addonsName',
+                                    //       style: robotoRegular.copyWith(
+                                    //         fontSize: Dimensions.fontSizeSmall,
+                                    //         color: Theme.of(context).hintColor,
+                                    //       )),
                                     Builder(builder: (context) {
                                       bool render = false;
                                       render = cartList.isNotEmpty &&

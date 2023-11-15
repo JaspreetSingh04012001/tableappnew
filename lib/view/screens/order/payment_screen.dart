@@ -4,6 +4,7 @@ import 'package:efood_table_booking/controller/printer_controller.dart';
 import 'package:efood_table_booking/data/model/response/cart_model.dart';
 import 'package:efood_table_booking/helper/price_converter.dart';
 import 'package:efood_table_booking/helper/responsive_helper.dart';
+import 'package:efood_table_booking/helper/route_helper.dart';
 import 'package:efood_table_booking/util/dimensions.dart';
 import 'package:efood_table_booking/util/images.dart';
 import 'package:efood_table_booking/util/styles.dart';
@@ -17,6 +18,7 @@ import 'package:efood_table_booking/view/screens/home/widget/filter_button_widge
 import 'package:efood_table_booking/view/screens/order/widget/order_success_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -119,6 +121,17 @@ class _PaymentScreenState extends State<PaymentScreen> {
             child: Column(
               children: [
                 SizedBox(height: Dimensions.paddingSizeExtraLarge),
+                CustomButton(
+                  height: ResponsiveHelper.isSmallTab() ? 40 : 50,
+                  width: 100,
+                  transparent: true,
+                  buttonText: 'back_to_home'.tr,
+                  fontSize: Dimensions.fontSizeDefault,
+                  onPressed: () => Get.offAllNamed(
+                    RouteHelper.home,
+                  ),
+                ),
+                const Gap(10),
                 Text(
                   overflow: TextOverflow.ellipsis,
                   'paid_by'.tr,
@@ -260,7 +273,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                             : null),
                                                 child: Padding(
                                                   padding: const EdgeInsets
-                                                          .symmetric(
+                                                      .symmetric(
                                                       horizontal: 12,
                                                       vertical: 8),
                                                   child: Text(
@@ -312,6 +325,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                             .withOpacity(0.4),
                                         hintText: 'enter_amount'.tr,
                                         controller: _amountTextController,
+                                        inputType: TextInputType.number,
                                         inputFormatter: [
                                           FilteringTextInputFormatter.allow(
                                               RegExp("[0-9]")),
@@ -424,6 +438,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                 ? 50
                                                 : 40,
                                     child: CustomTextField(
+                                      inputType: TextInputType.number,
                                       borderColor: Theme.of(context)
                                           .primaryColor
                                           .withOpacity(0.4),

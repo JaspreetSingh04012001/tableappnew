@@ -218,6 +218,7 @@ class OrderDetailsView extends StatelessWidget {
                                 }
 
                                 String addonsName = '';
+                                List<Widget> addOnWidgetList = [];
                                 bool takeAway = false;
                                 //orderController.currentOrderDetails.details.
                                 Details? orderDetails = orderController
@@ -244,6 +245,75 @@ class OrderDetailsView extends StatelessWidget {
                                 try {
                                   for (AddOns addOn in addons) {
                                     if (ids.contains(addOn.id)) {
+                                      addOnWidgetList.add(Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                              flex: 5,
+                                              child: Text(
+                                                overflow: TextOverflow.ellipsis,
+                                                addOn.name.toString(),
+                                                style: robotoRegular.copyWith(
+                                                  fontSize:
+                                                      Dimensions.fontSizeLarge,
+                                                  color: Theme.of(context)
+                                                      .textTheme
+                                                      .titleLarge!
+                                                      .color!,
+                                                ),
+                                                maxLines: 1,
+                                                // overflow: TextOverflow
+                                                //     .ellipsis,
+                                              )),
+                                          Expanded(
+                                              // flex: 5,
+                                              child: Padding(
+                                            padding: EdgeInsets.symmetric(
+                                                horizontal: Dimensions
+                                                    .paddingSizeExtraSmall),
+                                            child: Text(
+                                              overflow: TextOverflow.ellipsis,
+                                              addQty[a].toString(),
+                                              textAlign: TextAlign.center,
+                                              style: robotoRegular.copyWith(
+                                                  fontSize:
+                                                      Dimensions.fontSizeLarge,
+                                                  color: Theme.of(context)
+                                                      .textTheme
+                                                      .titleLarge!
+                                                      .color!),
+                                            ),
+                                          )),
+                                          Expanded(
+                                              flex: 2,
+                                              child: Padding(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: Dimensions
+                                                        .paddingSizeExtraSmall),
+                                                child: Text(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  // "lmm",
+                                                  PriceConverter.convertPrice(
+                                                          addOn.price ?? 0)
+                                                      .trim(),
+                                                  textAlign: TextAlign.end,
+                                                  style: robotoRegular.copyWith(
+                                                      fontSize: Dimensions
+                                                          .fontSizeLarge,
+                                                      color: Theme.of(context)
+                                                          .textTheme
+                                                          .titleLarge!
+                                                          .color!),
+                                                  maxLines: 2,
+                                                ),
+                                              )),
+                                        ],
+                                      ));
+
                                       addonsName = addonsName +
                                           ('${addOn.name} (${(addQty[a])}), ');
                                       a++;
@@ -397,25 +467,7 @@ class OrderDetailsView extends StatelessWidget {
                                                                   .hintColor,
                                                         ),
                                                       ),
-                                                      if (addonsName.isNotEmpty)
-                                                        SizedBox(
-                                                          height: Dimensions
-                                                              .paddingSizeExtraSmall,
-                                                        ),
-                                                      if (addonsName.isNotEmpty)
-                                                        Text(
-                                                            overflow:
-                                                                TextOverflow
-                                                                    .ellipsis,
-                                                            '${'addons'.tr}: $addonsName',
-                                                            style: robotoRegular
-                                                                .copyWith(
-                                                              fontSize: Dimensions
-                                                                  .fontSizeDefault,
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .hintColor,
-                                                            )),
+
                                                       // SizedBox(
                                                       //   height: Dimensions
                                                       //       .paddingSizeExtraSmall,
@@ -512,6 +564,28 @@ class OrderDetailsView extends StatelessWidget {
                                                     color: Theme.of(context)
                                                         .hintColor,
                                                   )),
+                                            ),
+                                          if (addonsName.isNotEmpty)
+                                            Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      "Add on :",
+                                                      style: robotoRegular
+                                                          .copyWith(
+                                                        fontSize: Dimensions
+                                                            .fontSizeLarge,
+                                                        color: Theme.of(context)
+                                                            .textTheme
+                                                            .titleLarge!
+                                                            .color!,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                ...addOnWidgetList
+                                              ],
                                             ),
                                           if (orderController
                                                       .currentOrderDetails!
@@ -764,8 +838,8 @@ class OrderDetailsView extends StatelessWidget {
                                                                         ?.order
                                                                         ?.cash ??
                                                                     "0")) -
-                                                            total +
-                                                            addOnsPrice)),
+                                                            (total +
+                                                                addOnsPrice))),
                                                   ),
                                                 if (orderController
                                                         .currentOrderDetails
@@ -787,8 +861,8 @@ class OrderDetailsView extends StatelessWidget {
                                                                         ?.order
                                                                         ?.card ??
                                                                     "0")) -
-                                                            total +
-                                                            addOnsPrice)),
+                                                            (total +
+                                                                addOnsPrice))),
                                                   ),
                                                 SizedBox(
                                                   height: Dimensions

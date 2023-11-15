@@ -53,6 +53,11 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
               );
         }
       });
+    } else {
+      Future.delayed(const Duration(seconds: 1))
+          .whenComplete(() => Get.offAllNamed(
+                RouteHelper.home,
+              ));
     }
 
     super.initState();
@@ -318,7 +323,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                                                     },
                                                     child: Padding(
                                                       padding: const EdgeInsets
-                                                              .symmetric(
+                                                          .symmetric(
                                                           vertical: 7,
                                                           horizontal: 7),
                                                       child: Container(
@@ -341,7 +346,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                                                           child: Padding(
                                                             padding:
                                                                 const EdgeInsets
-                                                                        .symmetric(
+                                                                    .symmetric(
                                                                     horizontal:
                                                                         12,
                                                                     vertical:
