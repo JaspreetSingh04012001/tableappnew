@@ -792,6 +792,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.5.0"
+  number_text_input_formatter:
+    dependency: "direct main"
+    description:
+      name: number_text_input_formatter
+      sha256: "463af97be4a9c1d534b949e8e75c70b58033a67bb0f76d0ba6ad54f87edeb5e3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.0+7"
   octo_image:
     dependency: transitive
     description:

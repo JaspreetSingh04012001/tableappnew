@@ -9,7 +9,8 @@ class SearchField extends StatefulWidget {
   final Function iconPressed;
   final Function(String) onSubmit;
   final Function(String) onChanged;
-  const SearchField({super.key, 
+  const SearchField({
+    super.key,
     required this.controller,
     required this.hint,
     required this.suffixIcon,
@@ -26,33 +27,40 @@ class _SearchFieldState extends State<SearchField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
-      
+      onTapOutside: (event) {
+        FocusManager.instance.primaryFocus?.unfocus();
+      },
       controller: widget.controller,
       textInputAction: TextInputAction.search,
       decoration: InputDecoration(
         hintText: widget.hint,
-        hintStyle: robotoRegular.copyWith(fontSize: Dimensions.fontSizeSmall, color: Theme.of(context).disabledColor),
+        hintStyle: robotoRegular.copyWith(
+            fontSize: Dimensions.fontSizeSmall,
+            color: Theme.of(context).disabledColor),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
         ),
         filled: true,
         fillColor: Theme.of(context).primaryColor.withOpacity(0.02),
         isDense: true,
-        
         suffixIcon: IconButton(
-          onPressed:()=> widget.iconPressed(),
-          icon: Icon(widget.suffixIcon, color: Theme.of(context).hintColor,),
+          onPressed: () => widget.iconPressed(),
+          icon: Icon(
+            widget.suffixIcon,
+            color: Theme.of(context).hintColor,
+          ),
         ),
-
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1),
+          borderSide:
+              BorderSide(color: Theme.of(context).primaryColor, width: 1),
         ),
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Theme.of(context).primaryColor, width: 1),
+          borderSide:
+              BorderSide(color: Theme.of(context).primaryColor, width: 1),
         ),
       ),
-      onSubmitted:(pattern)=> widget.onSubmit(pattern),
-      onChanged:(pattern)=> widget.onChanged(pattern),
+      onSubmitted: (pattern) => widget.onSubmit(pattern),
+      onChanged: (pattern) => widget.onChanged(pattern),
     );
   }
 }

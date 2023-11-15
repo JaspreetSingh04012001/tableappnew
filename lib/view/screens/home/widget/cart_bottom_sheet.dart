@@ -136,7 +136,10 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
 
                     addOnIdList.add(AddOn(
                       id: widget.product.addOns![index].id,
-                      price:  (widget.product.addOns![index].price != null) ?(widget.product.addOns![index].price! * productController.addOnQtyList[index]) : null,
+                      price: (widget.product.addOns![index].price != null)
+                          ? (widget.product.addOns![index].price! *
+                              productController.addOnQtyList[index])
+                          : null,
                       quantity: productController.addOnQtyList[index],
                       name: widget.product.addOns![index].name,
                     ));
@@ -329,16 +332,14 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                       width:
                                                                           150,
                                                                       child: Text.rich(
-                                                                          maxLines: 2,
-                                                                          overflow: TextOverflow.ellipsis,
-                                                                          TextSpan(text: variationList[index].name ?? "", style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge), children: <InlineSpan>[
-                                                                            if (variationList[index].isRequired ??
-                                                                                false)
-                                                                              TextSpan(
-                                                                                text: ' (${'required'.tr})',
-                                                                                style: robotoMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeSmall),
-                                                                              )
-                                                                          ]))
+                                                                          maxLines:
+                                                                              2,
+                                                                          overflow: TextOverflow
+                                                                              .ellipsis,
+                                                                          TextSpan(
+                                                                              text: variationList[index].name ?? "",
+                                                                              style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+                                                                              children: const <InlineSpan>[]))
                                                                       // Row(
 
                                                                       //     mainAxisAlignment:
@@ -364,27 +365,41 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                       //         ),
                                                                       //     ]),
                                                                       ),
-
-                                                                  Row(
-                                                                      mainAxisSize:
-                                                                          MainAxisSize
-                                                                              .min,
+                                                                  SizedBox(
+                                                                    width: 150,
+                                                                    child: Row(
                                                                       children: [
+                                                                        if (variationList[index].isRequired ??
+                                                                            false)
+                                                                          Text(
+                                                                            ' (${'required'.tr})',
+                                                                            style:
+                                                                                robotoMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeSmall),
+                                                                          ),
                                                                         (variationList[index].isMultiSelect!)
                                                                             ? Text(
                                                                                 overflow: TextOverflow.ellipsis,
                                                                                 '${'you_need_to_select_minimum'.tr} ${'${variationList[index].min}'
-                                                                                    ' ${'to_maximum'.tr} ${variationList[index].max} ${'options'.tr}'}',
+                                                                                    ' ${'to_maximum'.tr} ${variationList[index].max}'}',
                                                                                 style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor),
                                                                               )
-                                                                            : const SizedBox(),
-                                                                      ]),
-                                                                  SizedBox(
-                                                                      height: (variationList[index]
-                                                                              .isMultiSelect!)
-                                                                          ? Dimensions
-                                                                              .paddingSizeExtraSmall
-                                                                          : 0),
+                                                                            : Text(
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                                '',
+                                                                                style: robotoMedium.copyWith(
+                                                                                  fontSize: Dimensions.fontSizeExtraSmall,
+                                                                                ),
+                                                                              ),
+                                                                      ],
+                                                                    ),
+                                                                  ),
+
+                                                                  // SizedBox(
+                                                                  //     height: (variationList[index]
+                                                                  //             .isMultiSelect!)
+                                                                  //         ? Dimensions
+                                                                  //             .paddingSizeExtraSmall
+                                                                  //         : 0),
                                                                   if (variationList[
                                                                               index]
                                                                           .variationValues !=
@@ -915,8 +930,8 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                 }
                                                               },
                                                               child: Container(
-                                                                width: 100,
-                                                                height: 100,
+                                                                width: 130,
+                                                                height: 120,
                                                                 margin: EdgeInsets.only(
                                                                     right: Dimensions
                                                                         .paddingSizeDefault),
@@ -963,7 +978,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                 textAlign: TextAlign.center,
                                                                                 style: robotoMedium.copyWith(
                                                                                   color: productController.addOnActiveList[index] ? Colors.white : Theme.of(context).textTheme.bodyLarge!.color,
-                                                                                  fontSize: Dimensions.fontSizeSmall,
+                                                                                  fontSize: Dimensions.fontSizeExtraLarge,
                                                                                 ),
                                                                               ),
                                                                               const SizedBox(height: 5),
@@ -974,7 +989,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                 //  overflow: TextOverflow.ellipsis,
                                                                                 style: robotoRegular.copyWith(
                                                                                   color: productController.addOnActiveList[index] ? Colors.white : Theme.of(context).textTheme.bodyLarge!.color,
-                                                                                  fontSize: Dimensions.fontSizeExtraSmall,
+                                                                                  fontSize: Dimensions.fontSizeLarge,
                                                                                 ),
                                                                               ),
                                                                             ]),
@@ -1004,7 +1019,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                 Text(
                                                                                   overflow: TextOverflow.ellipsis,
                                                                                   productController.addOnQtyList[index].toString(),
-                                                                                  style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall),
+                                                                                  style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraLarge),
                                                                                 ),
                                                                                 Expanded(
                                                                                   child: InkWell(

@@ -17,9 +17,9 @@ import 'package:efood_table_booking/view/base/custom_text_field.dart';
 import 'package:efood_table_booking/view/screens/home/widget/filter_button_widget.dart';
 import 'package:efood_table_booking/view/screens/order/widget/order_success_screen.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:number_text_input_formatter/number_text_input_formatter.dart';
 
 class PaymentScreen extends StatefulWidget {
   const PaymentScreen({Key? key}) : super(key: key);
@@ -122,8 +122,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
               children: [
                 SizedBox(height: Dimensions.paddingSizeExtraLarge),
                 CustomButton(
+                  icon: Icons.arrow_back_ios,
                   height: ResponsiveHelper.isSmallTab() ? 40 : 50,
-                  width: 100,
+                  width: 200,
                   transparent: true,
                   buttonText: 'back_to_home'.tr,
                   fontSize: Dimensions.fontSizeDefault,
@@ -325,11 +326,21 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                             .withOpacity(0.4),
                                         hintText: 'enter_amount'.tr,
                                         controller: _amountTextController,
-                                        inputType: TextInputType.number,
+                                        inputType: const TextInputType
+                                            .numberWithOptions(decimal: true),
                                         inputFormatter: [
-                                          FilteringTextInputFormatter.allow(
-                                              RegExp("[0-9]")),
-                                          LengthLimitingTextInputFormatter(10),
+                                          NumberTextInputFormatter(
+                                            integerDigits: 10,
+                                            decimalDigits: 2,
+                                            maxValue: '1000000000.00',
+                                            decimalSeparator: '.',
+                                            groupDigits: 3,
+                                            groupSeparator: ',',
+                                            allowNegative: false,
+                                            overrideDecimalPoint: true,
+                                            insertDecimalPoint: false,
+                                            insertDecimalDigits: true,
+                                          ),
                                         ],
                                         hintStyle: robotoRegular.copyWith(
                                             fontSize: Dimensions.fontSizeSmall),
@@ -376,16 +387,30 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                 ? 50
                                                 : 40,
                                     child: CustomTextField(
-                                      inputType: TextInputType.number,
+                                      inputType:
+                                          const TextInputType.numberWithOptions(
+                                              decimal: true),
                                       borderColor: Theme.of(context)
                                           .primaryColor
                                           .withOpacity(0.4),
                                       hintText: 'enter_amount'.tr,
                                       controller: _amountTextController,
                                       inputFormatter: [
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp("[0-9]")),
-                                        LengthLimitingTextInputFormatter(10),
+                                        NumberTextInputFormatter(
+                                          integerDigits: 10,
+                                          decimalDigits: 2,
+                                          maxValue: '1000000000.00',
+                                          decimalSeparator: '.',
+                                          groupDigits: 3,
+                                          groupSeparator: ',',
+                                          allowNegative: false,
+                                          overrideDecimalPoint: true,
+                                          insertDecimalPoint: false,
+                                          insertDecimalDigits: true,
+                                        ),
+                                        // FilteringTextInputFormatter.allow(
+                                        //     RegExp("[0-9]")),
+                                        // LengthLimitingTextInputFormatter(10),
                                       ],
                                       hintStyle: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeSmall),
@@ -438,7 +463,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                 ? 50
                                                 : 40,
                                     child: CustomTextField(
-                                      inputType: TextInputType.number,
+                                      inputType:
+                                          const TextInputType.numberWithOptions(
+                                              decimal: true),
                                       borderColor: Theme.of(context)
                                           .primaryColor
                                           .withOpacity(0.4),
@@ -446,9 +473,18 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                       controller:
                                           _splitCardamountTextController,
                                       inputFormatter: [
-                                        FilteringTextInputFormatter.allow(
-                                            RegExp("[0-9]")),
-                                        LengthLimitingTextInputFormatter(10),
+                                        NumberTextInputFormatter(
+                                          integerDigits: 10,
+                                          decimalDigits: 2,
+                                          maxValue: '1000000000.00',
+                                          decimalSeparator: '.',
+                                          groupDigits: 3,
+                                          groupSeparator: ',',
+                                          allowNegative: false,
+                                          overrideDecimalPoint: true,
+                                          insertDecimalPoint: false,
+                                          insertDecimalDigits: true,
+                                        ),
                                       ],
                                       hintStyle: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeSmall),

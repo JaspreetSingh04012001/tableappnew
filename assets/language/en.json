@@ -95,8 +95,8 @@
   "minimum": "Min",
   "maximum": "Max",
   "and": "and",
-  "you_need_to_select_minimum": "Select minimum",
-  "to_maximum": "to maximum",
+  "you_need_to_select_minimum": "Select min",
+  "to_maximum": "to max",
   "options": "options",
   "option": "option",
   "options_from": "options from"
