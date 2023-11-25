@@ -450,284 +450,262 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                             CrossAxisAlignment.start,
                                         children: [
                                           //Product
-                                          Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                (widget.product.image != null &&
-                                                        widget.product.image!
-                                                            .isNotEmpty)
-                                                    ? Stack(children: [
-                                                        ClipRRect(
-                                                          borderRadius: BorderRadius
-                                                              .circular(Dimensions
-                                                                  .radiusSmall),
-                                                          child: CustomImage(
-                                                            image:
-                                                                '${Get.find<SplashController>().configModel?.baseUrls?.productImageUrl}/${widget.product.image ?? ''}',
-                                                            width: ResponsiveHelper
-                                                                    .isSmallTab()
-                                                                ? 100
-                                                                : isTab
-                                                                    ? 170
-                                                                    : 100,
-                                                            height: ResponsiveHelper
-                                                                    .isSmallTab()
-                                                                ? 100
-                                                                : isTab
-                                                                    ? 170
-                                                                    : 100,
-                                                            fit: BoxFit.cover,
+                                          SizedBox(
+                                            height:
+                                                ResponsiveHelper.isSmallTab()
+                                                    ? 100
+                                                    : isTab
+                                                        ? 170
+                                                        : 100,
+                                            child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  (widget.product.image !=
+                                                              null &&
+                                                          widget.product.image!
+                                                              .isNotEmpty)
+                                                      ? Stack(children: [
+                                                          ClipRRect(
+                                                            borderRadius:
+                                                                BorderRadius.circular(
+                                                                    Dimensions
+                                                                        .radiusSmall),
+                                                            child: CustomImage(
+                                                              image:
+                                                                  '${Get.find<SplashController>().configModel?.baseUrls?.productImageUrl}/${widget.product.image ?? ''}',
+                                                              width: ResponsiveHelper
+                                                                      .isSmallTab()
+                                                                  ? 100
+                                                                  : isTab
+                                                                      ? 170
+                                                                      : 100,
+                                                              height: ResponsiveHelper
+                                                                      .isSmallTab()
+                                                                  ? 100
+                                                                  : isTab
+                                                                      ? 170
+                                                                      : 100,
+                                                              fit: BoxFit.cover,
+                                                            ),
                                                           ),
-                                                        ),
-                                                        if (discount > 0)
-                                                          PriceStackTag(
-                                                              value: PriceConverter
-                                                                  .percentageCalculation(
-                                                            price.toString(),
-                                                            discount.toString(),
-                                                            discountType,
-                                                          )),
-                                                      ])
-                                                    : const SizedBox.shrink(),
-                                                SizedBox(
-                                                  width: Dimensions
-                                                      .paddingSizeDefault,
-                                                ),
-                                                Expanded(
-                                                  child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        Text(
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          widget.product.name ??
-                                                              '',
-                                                          style: robotoBold
-                                                              .copyWith(
-                                                            fontSize: Dimensions
-                                                                    .fontSizeExtraLarge +
-                                                                3,
-                                                          ),
-                                                          maxLines: 3,
-                                                        ),
-                                                        SizedBox(
-                                                          height: Dimensions
-                                                              .paddingSizeSmall,
-                                                        ),
-                                                        if (widget.product
-                                                                    .addOns ==
-                                                                null ||
-                                                            widget
-                                                                .product
-                                                                .addOns!
-                                                                .isEmpty)
-                                                          Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              children: [
-                                                                Row(
+                                                          if (discount > 0)
+                                                            PriceStackTag(
+                                                                value: PriceConverter
+                                                                    .percentageCalculation(
+                                                              price.toString(),
+                                                              discount
+                                                                  .toString(),
+                                                              discountType,
+                                                            )),
+                                                        ])
+                                                      : const SizedBox.shrink(),
+                                                  SizedBox(
+                                                    width: Dimensions
+                                                        .paddingSizeDefault,
+                                                  ),
+                                                  Expanded(
+                                                    child: Container(
+                                                      child: Column(
+                                                          crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            Text(
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              widget.product
+                                                                      .name ??
+                                                                  '',
+                                                              style: robotoBold
+                                                                  .copyWith(
+                                                                fontSize: Dimensions
+                                                                        .fontSizeExtraLarge +
+                                                                    3,
+                                                              ),
+                                                              maxLines: 3,
+                                                            ),
+                                                            SizedBox(
+                                                              height: Dimensions
+                                                                  .paddingSizeSmall,
+                                                            ),
+                                                            if (widget.product
+                                                                        .addOns ==
+                                                                    null ||
+                                                                widget
+                                                                    .product
+                                                                    .addOns!
+                                                                    .isEmpty)
+                                                              Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
                                                                   children: [
-                                                                    Text(
-                                                                      overflow:
-                                                                          TextOverflow
-                                                                              .ellipsis,
-                                                                      PriceConverter
-                                                                          .convertPrice(
-                                                                        price,
-                                                                        discount:
-                                                                            discount,
-                                                                        discountType:
-                                                                            discountType,
-                                                                      ),
-                                                                      style: robotoMedium.copyWith(
-                                                                          fontSize:
-                                                                              Dimensions.fontSizeExtraLarge + 5),
-                                                                    ),
-                                                                    SizedBox(
-                                                                        width: Dimensions
-                                                                            .paddingSizeExtraSmall),
-                                                                    price > priceWithDiscount
-                                                                        ? Text(
-                                                                            overflow:
-                                                                                TextOverflow.ellipsis,
-                                                                            PriceConverter.convertPrice(price),
-                                                                            style:
-                                                                                robotoMedium.copyWith(color: Theme.of(context).primaryColor, decoration: TextDecoration.lineThrough),
-                                                                          )
-                                                                        : const SizedBox(),
-                                                                  ],
-                                                                ),
-                                                              ]),
-                                                        if (isTab)
-                                                          SizedBox(
-                                                               height: ResponsiveHelper
-                                                                    .isSmallTab()
-                                                                ? 100
-                                                                : isTab
-                                                                    ? 170
-                                                                    : 100,
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                                  CrossAxisAlignment
-                                                                      .start,
-                                                              mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .end,
-                                                              mainAxisSize:
-                                                                  MainAxisSize
-                                                                      .min,
-                                                              children: [
-                                                                _productDescription(),
-                                                                Expanded(child: Container()),
-                                                                SizedBox(
-                                                                    width: 150,
-                                                                    child: Text.rich(
-                                                                        maxLines:
-                                                                            2,
-                                                                        overflow:
-                                                                            TextOverflow
-                                                                                .ellipsis,
-                                                                        TextSpan(
-                                                                            text: variationList[0].name ??
-                                                                                "",
-                                                                            style:
-                                                                                robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall),
-                                                                            children: const <InlineSpan>[]))),
-                                                                SizedBox(
-                                                                  // width: 150,
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      if (variationList[0]
-                                                                              .isRequired ??
-                                                                          false)
+                                                                    Row(
+                                                                      children: [
                                                                         Text(
-                                                                          ' (${'required'.tr})',
-                                                                          style: robotoMedium.copyWith(
-                                                                              color:
-                                                                                  Theme.of(context).primaryColor,
-                                                                              fontSize: Dimensions.fontSizeSmall),
+                                                                          overflow:
+                                                                              TextOverflow.ellipsis,
+                                                                          PriceConverter
+                                                                              .convertPrice(
+                                                                            price,
+                                                                            discount:
+                                                                                discount,
+                                                                            discountType:
+                                                                                discountType,
+                                                                          ),
+                                                                          style:
+                                                                              robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraLarge + 5),
                                                                         ),
-                                                                      (variationList[0]
-                                                                              .isMultiSelect!)
-                                                                          ? Text(
-                                                                              overflow:
-                                                                                  TextOverflow.ellipsis,
-                                                                              '${'you_need_to_select_minimum'.tr} ${'${variationList[0].min}'
-                                                                                  ' ${'to_maximum'.tr} ${variationList[0].max}'}',
-                                                                              style:
-                                                                                  robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor),
-                                                                            )
-                                                                          : Text(
-                                                                              overflow:
-                                                                                  TextOverflow.ellipsis,
-                                                                              '',
-                                                                              style:
-                                                                                  robotoMedium.copyWith(
-                                                                                fontSize: Dimensions.fontSizeExtraSmall,
-                                                                              ),
+                                                                        SizedBox(
+                                                                            width:
+                                                                                Dimensions.paddingSizeExtraSmall),
+                                                                        price > priceWithDiscount
+                                                                            ? Text(
+                                                                                overflow: TextOverflow.ellipsis,
+                                                                                PriceConverter.convertPrice(price),
+                                                                                style: robotoMedium.copyWith(color: Theme.of(context).primaryColor, decoration: TextDecoration.lineThrough),
+                                                                              )
+                                                                            : const SizedBox(),
+                                                                      ],
+                                                                    ),
+                                                                  ]),
+                                                            if (isTab)
+                                                              Expanded(
+                                                                child: Column(
+                                                                  crossAxisAlignment:
+                                                                      CrossAxisAlignment
+                                                                          .start,
+                                                                  mainAxisAlignment:
+                                                                      MainAxisAlignment
+                                                                          .end,
+                                                                  mainAxisSize:
+                                                                      MainAxisSize
+                                                                          .min,
+                                                                  children: [
+                                                                    _productDescription(),
+                                                                    Expanded(
+                                                                        child:
+                                                                            Container()),
+                                                                    SizedBox(
+                                                                        width:
+                                                                            150,
+                                                                        child: Text.rich(
+                                                                            maxLines:
+                                                                                2,
+                                                                            overflow: TextOverflow
+                                                                                .ellipsis,
+                                                                            TextSpan(
+                                                                                text: variationList[0].name ?? "",
+                                                                                style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall),
+                                                                                children: const <InlineSpan>[]))),
+                                                                    SizedBox(
+                                                                      // width: 150,
+                                                                      child:
+                                                                          Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.start,
+                                                                        children: [
+                                                                          if (variationList[0].isRequired ??
+                                                                              false)
+                                                                            Text(
+                                                                              ' (${'required'.tr})',
+                                                                              style: robotoMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeSmall),
                                                                             ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                                if (variationList[
-                                                                            0]
-                                                                        .variationValues !=
-                                                                    null)
-                                                                  Row(
-                                                                    //     MainAxisSize
-                                                                    //         .min,
-                                                                    children: List
-                                                                        .generate(
+                                                                          (variationList[0].isMultiSelect!)
+                                                                              ? Text(
+                                                                                  overflow: TextOverflow.ellipsis,
+                                                                                  '${'you_need_to_select_minimum'.tr} ${'${variationList[0].min}'
+                                                                                      ' ${'to_maximum'.tr} ${variationList[0].max}'}',
+                                                                                  style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor),
+                                                                                )
+                                                                              : Text(
+                                                                                  overflow: TextOverflow.ellipsis,
+                                                                                  '',
+                                                                                  style: robotoMedium.copyWith(
+                                                                                    fontSize: Dimensions.fontSizeExtraSmall,
+                                                                                  ),
+                                                                                ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                    if (variationList[0]
+                                                                            .variationValues !=
+                                                                        null)
+                                                                      Row(
+                                                                        //     MainAxisSize
+                                                                        //         .min,
+                                                                        children: List.generate(
                                                                             variationList[0].variationValues?.length ??
                                                                                 0,
                                                                             (i) {
-                                                                      return Padding(
-                                                                        padding: const EdgeInsets
-                                                                            .symmetric(
-                                                                            horizontal:
-                                                                                2,
-                                                                            vertical:
-                                                                                0),
-                                                                        child:
-                                                                            InkWell(
-                                                                          onTap:
-                                                                              () {
-                                                                            if (variationList[0].name == "Order Type" ||
-                                                                                variationList[0].name == "Order type") {
-                                                                              sharedPreferences.setInt("lastOrderType",
-                                                                                  i);
-                                                                            }
-                                                                            productController.setCartVariationIndex(
-                                                                                0,
-                                                                                i,
-                                                                                widget.product,
-                                                                                variationList[0].isMultiSelect!);
-                                                                            if (productController.quantity >
-                                                                                0) {
-                                                                              myChutiyaFunction(() =>
-                                                                                  null);
-                                                                            }
-                                                                            if (productController.quantity ==
-                                                                                0) {
-                                                                              myChutiyaFunction(() {
-                                                                                //   productController.setQuantity(true);
-                                                                              });
-                                                                            }
-                                                                            //    myChutiyaFunction();
-                                                                          },
-                                                                          child:
-                                                                              Stack(
-                                                                            alignment:
-                                                                                Alignment.topRight,
-                                                                            children: [
-                                                                              Container(
-                                                                                constraints: const BoxConstraints(minWidth: 110, maxWidth: 150),
-                                                                                alignment: Alignment.center,
-                                                                                // width: 110,
-                                                                                decoration: BoxDecoration(border: Border.all(width: 1.5, color: Theme.of(context).disabledColor), borderRadius: BorderRadius.circular(4), color: productController.selectedVariations[0][i] ? Theme.of(context).primaryColor : null),
-                                                                                child: Padding(
-                                                                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-                                                                                  child: Text(
-                                                                                    overflow: TextOverflow.ellipsis,
-                                                                                    variationList[0].variationValues![i].level != null ? variationList[0].variationValues![i].level!.trim() : '',
-                                                                                    maxLines: 1,
-                                                                                    //  overflow: TextOverflow.ellipsis,
-                                                                                    style: productController.selectedVariations[0][i] ? robotoMedium.copyWith(color: Colors.white, fontSize: Dimensions.fontSizeLarge) : robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
+                                                                          return Padding(
+                                                                            padding:
+                                                                                const EdgeInsets.symmetric(horizontal: 2, vertical: 0),
+                                                                            child:
+                                                                                InkWell(
+                                                                              onTap: () {
+                                                                                if (variationList[0].name == "Order Type" || variationList[0].name == "Order type") {
+                                                                                  sharedPreferences.setInt("lastOrderType", i);
+                                                                                }
+                                                                                productController.setCartVariationIndex(0, i, widget.product, variationList[0].isMultiSelect!);
+                                                                                if (productController.quantity > 0) {
+                                                                                  myChutiyaFunction(() => null);
+                                                                                }
+                                                                                if (productController.quantity == 0) {
+                                                                                  myChutiyaFunction(() {
+                                                                                    //   productController.setQuantity(true);
+                                                                                  });
+                                                                                }
+                                                                                //    myChutiyaFunction();
+                                                                              },
+                                                                              child: Stack(
+                                                                                alignment: Alignment.topRight,
+                                                                                children: [
+                                                                                  Container(
+                                                                                    constraints: const BoxConstraints(minWidth: 110, maxWidth: 150),
+                                                                                    alignment: Alignment.center,
+                                                                                    // width: 110,
+                                                                                    decoration: BoxDecoration(border: Border.all(width: 1.5, color: Theme.of(context).disabledColor), borderRadius: BorderRadius.circular(4), color: productController.selectedVariations[0][i] ? Theme.of(context).primaryColor : null),
+                                                                                    child: Padding(
+                                                                                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
+                                                                                      child: Text(
+                                                                                        overflow: TextOverflow.ellipsis,
+                                                                                        variationList[0].variationValues![i].level != null ? variationList[0].variationValues![i].level!.trim() : '',
+                                                                                        maxLines: 1,
+                                                                                        //  overflow: TextOverflow.ellipsis,
+                                                                                        style: productController.selectedVariations[0][i] ? robotoMedium.copyWith(color: Colors.white, fontSize: Dimensions.fontSizeLarge) : robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
+                                                                                      ),
+                                                                                    ),
                                                                                   ),
-                                                                                ),
+                                                                                  Padding(
+                                                                                    padding: const EdgeInsets.only(top: 3, right: 3),
+                                                                                    child: Text(
+                                                                                      overflow: TextOverflow.ellipsis,
+                                                                                      variationList[0].variationValues![i].optionPrice! > 0 ? '+${PriceConverter.convertPrice(variationList[0].variationValues![i].optionPrice ?? 0)}' : 'free'.tr,
+                                                                                      maxLines: 1,
+                                                                                      // overflow:
+                                                                                      //     TextOverflow.ellipsis,
+                                                                                      style: productController.selectedVariations[0][i] ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault, color: Colors.white) : robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault, color: Theme.of(context).disabledColor),
+                                                                                    ),
+                                                                                  ),
+                                                                                ],
                                                                               ),
-                                                                              Padding(
-                                                                                padding: const EdgeInsets.only(top: 3, right: 3),
-                                                                                child: Text(
-                                                                                  overflow: TextOverflow.ellipsis,
-                                                                                  variationList[0].variationValues![i].optionPrice! > 0 ? '+${PriceConverter.convertPrice(variationList[0].variationValues![i].optionPrice ?? 0)}' : 'free'.tr,
-                                                                                  maxLines: 1,
-                                                                                  // overflow:
-                                                                                  //     TextOverflow.ellipsis,
-                                                                                  style: productController.selectedVariations[0][i] ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault, color: Colors.white) : robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault, color: Theme.of(context).disabledColor),
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        ),
-                                                                      );
-                                                                    }),
-                                                                  )
-                                                              ],
-                                                            ),
-                                                          ),
-                                                      ]),
-                                                ),
-                                              ]),
+                                                                            ),
+                                                                          );
+                                                                        }),
+                                                                      )
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                          ]),
+                                                    ),
+                                                  ),
+                                                ]),
+                                          ),
                                           if (!ResponsiveHelper.isSmallTab())
                                             SizedBox(
                                                 height: Dimensions
@@ -1736,11 +1714,11 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
           crossAxisAlignment: CrossAxisAlignment.center,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              overflow: TextOverflow.ellipsis,
-              'description'.tr,
-              style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
-            ),
+            // Text(
+            //   overflow: TextOverflow.ellipsis,
+            //   'description'.tr,
+            //   style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+            // ),
             VegTagView(product: widget.product),
           ],
         ),
