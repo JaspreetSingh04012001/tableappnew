@@ -5,32 +5,33 @@ part 'product.g.dart';
 
 @HiveType(typeId: 0)
 class Product extends HiveObject {
-  Product({
-    this.id,
-    this.name,
-    this.description,
-    this.image,
-    this.price,
-    this.variations,
-    this.addOns,
-    this.tax,
-    this.availableTimeStarts,
-    this.availableTimeEnds,
-    this.status,
-    this.createdAt,
-    this.updatedAt,
-    this.attributes,
-    this.categoryIds,
-    this.choiceOptions,
-    this.discount,
-    this.discountType,
-    this.taxType,
-    this.setMenu,
-    this.popularityCount,
-    this.rating,
-    this.productType,
-    this.branchProduct,
-  });
+  Product(
+      {this.addonlimit,
+      this.id,
+      this.name,
+      this.description,
+      this.image,
+      this.price,
+      this.variations,
+      this.addOns,
+      this.tax,
+      this.availableTimeStarts,
+      this.availableTimeEnds,
+      this.status,
+      this.createdAt,
+      this.updatedAt,
+      this.attributes,
+      this.categoryIds,
+      this.choiceOptions,
+      this.discount,
+      this.discountType,
+      this.taxType,
+      this.setMenu,
+      this.popularityCount,
+      this.rating,
+      this.productType,
+      this.branchProduct,
+      this.addonssecondary});
 
   @HiveField(0)
   int? id;
@@ -80,12 +81,22 @@ class Product extends HiveObject {
   String? productType;
   @HiveField(23)
   BranchProduct? branchProduct;
+  @HiveField(24)
+  int? addonlimit;
+  @HiveField(25)
+  var addonssecondary;
 
+// "add_ons_secondary": "[\"37\",\"40\"]",
   // factory Product.fromRawJson(String str) => Product.fromJson(json.decode(str));
-
+//  "add_on_limit": "0",
   // String toRawJson() => json.encode(toJson());
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
+        addonlimit: json["add_on_limit"] == null
+            ? 0
+            : (json["add_on_limit"] is String
+                ? int.parse(json["add_on_limit"])
+                : json["add_on_limit"]),
         id: json["id"],
         name: json["name"],
         description: json["description"] ?? '',
@@ -131,10 +142,12 @@ class Product extends HiveObject {
         branchProduct: json['branch_product'] != null
             ? BranchProduct.fromJson(json['branch_product'])
             : null,
+        addonssecondary: json['add_ons_secondary'],
       );
 
   Map<String, dynamic> toJson() => {
         "id": id,
+        "add_on_limit": addonlimit,
         "name": name,
         "description": description,
         "image": image,
@@ -160,5 +173,6 @@ class Product extends HiveObject {
             ? List<dynamic>.from(rating!.map((x) => x.toJson()))
             : null,
         "product_type": productType,
+        "add_ons_secondary": addonssecondary
       };
 }

@@ -6,7 +6,9 @@ import 'dart:convert';
 
 import 'package:efood_table_booking/data/model/response/product.dart';
 import 'package:hive/hive.dart';
-  part 'product_model.g.dart';
+
+part 'product_model.g.dart';
+
 class ProductModel {
   ProductModel({
     this.totalSize,
@@ -44,13 +46,13 @@ class ProductModel {
 
 @HiveType(typeId: 2)
 class AddOn extends HiveObject {
-  AddOn({
-    this.id,
-    this.name,
-    this.price,
-    this.quantity,
-    this.tax,
-  });
+  AddOn(
+      {this.id,
+      this.name,
+      this.price,
+      this.quantity,
+      this.tax,
+      this.is_product});
 
   @HiveField(0)
   int? id;
@@ -62,6 +64,8 @@ class AddOn extends HiveObject {
   int? quantity;
   @HiveField(4)
   double? tax;
+  @HiveField(5)
+  String? is_product;
 
   factory AddOn.fromRawJson(String str) => AddOn.fromJson(json.decode(str));
 
@@ -74,6 +78,7 @@ class AddOn extends HiveObject {
       price: double.tryParse('${json["price"]}'),
       tax: double.tryParse('${json["tax"]}'),
       quantity: json['quantity'],
+      is_product: json['is_product'],
     );
   }
 
@@ -83,6 +88,7 @@ class AddOn extends HiveObject {
         "price": price,
         "quantity": quantity,
         "tax": tax,
+        "is_product": is_product,
       };
 }
 

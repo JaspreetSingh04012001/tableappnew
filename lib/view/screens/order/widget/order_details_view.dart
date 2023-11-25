@@ -6,7 +6,6 @@ import 'package:efood_table_booking/util/dimensions.dart';
 import 'package:efood_table_booking/util/styles.dart';
 import 'package:efood_table_booking/view/base/custom_divider.dart';
 import 'package:efood_table_booking/view/base/custom_loader.dart';
-import 'package:efood_table_booking/view/base/product_type_view.dart';
 import 'package:efood_table_booking/view/screens/cart/widget/cart_detais.dart';
 import 'package:efood_table_booking/view/screens/order/widget/emailDialog.dart';
 import 'package:efood_table_booking/view/screens/order/widget/invoice_print_screen.dart';
@@ -67,7 +66,9 @@ class OrderDetailsView extends StatelessWidget {
                     }
                   }
 
-                  double total = itemsPrice - discount + tax;
+                  double total =
+                      orderController.currentOrderDetails!.order?.orderAmount ??
+                          0;
                   return Padding(
                     padding: EdgeInsets.symmetric(
                         horizontal: Dimensions.paddingSizeLarge),
@@ -202,9 +203,13 @@ class OrderDetailsView extends StatelessWidget {
                               itemCount: orderController
                                   .currentOrderDetails?.details?.length,
                               itemBuilder: (context, index) {
-                                itemCount = orderController
-                                        .currentOrderDetails?.details?.length ??
-                                    0;
+                                // itemCount += orderController
+                                //         .currentOrderDetails?.details?.length ??
+                                //     0;
+                                orderController.currentOrderDetails?.details
+                                    ?.forEach((element) {
+                                  itemCount += element.quantity ?? 0;
+                                });
                                 // orderController
                                 //     .currentOrderDetails?.details[0].variations;
                                 late Details details;
@@ -298,7 +303,9 @@ class OrderDetailsView extends StatelessWidget {
                                                       TextOverflow.ellipsis,
                                                   // "lmm",
                                                   PriceConverter.convertPrice(
-                                                          addOn.price ?? 0)
+                                                          (addOn.price! *
+                                                                  addQty[a]) ??
+                                                              0)
                                                       .trim(),
                                                   textAlign: TextAlign.end,
                                                   style: robotoRegular.copyWith(
@@ -449,24 +456,24 @@ class OrderDetailsView extends StatelessWidget {
                                                         ),
                                                         maxLines: 2,
                                                       ),
-                                                      SizedBox(
-                                                        height: Dimensions
-                                                            .paddingSizeExtraSmall,
-                                                      ),
-                                                      Text(
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        PriceConverter
-                                                            .convertPrice(details
-                                                                .productDetails!
-                                                                .price!),
-                                                        style: robotoRegular
-                                                            .copyWith(
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .hintColor,
-                                                        ),
-                                                      ),
+                                                      // SizedBox(
+                                                      //   height: Dimensions
+                                                      //       .paddingSizeExtraSmall,
+                                                      // ),
+                                                      // Text(
+                                                      //   overflow: TextOverflow
+                                                      //       .ellipsis,
+                                                      //   PriceConverter
+                                                      //       .convertPrice(details
+                                                      //           .productDetails!
+                                                      //           .price!),
+                                                      //   style: robotoRegular
+                                                      //       .copyWith(
+                                                      //     color:
+                                                      //         Theme.of(context)
+                                                      //             .hintColor,
+                                                      //   ),
+                                                      // ),
 
                                                       // SizedBox(
                                                       //   height: Dimensions
@@ -506,47 +513,47 @@ class OrderDetailsView extends StatelessWidget {
                                                           .color!),
                                                 ),
                                               )),
-                                              Expanded(
-                                                  flex: 2,
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.end,
-                                                    children: [
-                                                      Padding(
-                                                        padding: EdgeInsets.symmetric(
-                                                            horizontal: Dimensions
-                                                                .paddingSizeExtraSmall),
-                                                        child: Text(
-                                                          overflow: TextOverflow
-                                                              .ellipsis,
-                                                          PriceConverter
-                                                              .convertPrice(
-                                                            details.price! *
-                                                                details
-                                                                    .quantity!,
-                                                          ),
-                                                          textAlign:
-                                                              TextAlign.end,
-                                                          style: robotoRegular.copyWith(
-                                                              fontSize: Dimensions
-                                                                  .fontSizeLarge,
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .titleLarge!
-                                                                  .color!),
-                                                          maxLines: 1,
-                                                        ),
-                                                      ),
-                                                      SizedBox(
-                                                          height: Dimensions
-                                                              .paddingSizeSmall),
-                                                      ProductTypeView(
-                                                          productType: details
-                                                              .productDetails
-                                                              ?.productType),
-                                                    ],
-                                                  )),
+                                              // Expanded(
+                                              //     flex: 2,
+                                              //     child: Column(
+                                              //       crossAxisAlignment:
+                                              //           CrossAxisAlignment.end,
+                                              //       children: [
+                                              //         Padding(
+                                              //           padding: EdgeInsets.symmetric(
+                                              //               horizontal: Dimensions
+                                              //                   .paddingSizeExtraSmall),
+                                              //           child: Text(
+                                              //             overflow: TextOverflow
+                                              //                 .ellipsis,
+                                              //             PriceConverter
+                                              //                 .convertPrice(
+                                              //               details.price! *
+                                              //                   details
+                                              //                       .quantity!,
+                                              //             ),
+                                              //             textAlign:
+                                              //                 TextAlign.end,
+                                              //             style: robotoRegular.copyWith(
+                                              //                 fontSize: Dimensions
+                                              //                     .fontSizeLarge,
+                                              //                 color: Theme.of(
+                                              //                         context)
+                                              //                     .textTheme
+                                              //                     .titleLarge!
+                                              //                     .color!),
+                                              //             maxLines: 1,
+                                              //           ),
+                                              //         ),
+                                              //         SizedBox(
+                                              //             height: Dimensions
+                                              //                 .paddingSizeSmall),
+                                              //         ProductTypeView(
+                                              //             productType: details
+                                              //                 .productDetails
+                                              //                 ?.productType),
+                                              //       ],
+                                              //     )),
                                             ],
                                           ),
                                           if (variationText != '')
@@ -730,11 +737,11 @@ class OrderDetailsView extends StatelessWidget {
                                                         ),
                                                       )
                                                     ]),
-                                                PriceWithType(
-                                                  type: 'items_price'.tr,
-                                                  amount: PriceConverter
-                                                      .convertPrice(itemsPrice),
-                                                ),
+                                                // PriceWithType(
+                                                //   type: 'items_price'.tr,
+                                                //   amount: PriceConverter
+                                                //       .convertPrice(itemsPrice),
+                                                // ),
                                                 // PriceWithType(
                                                 //     type: 'discount'.tr,
                                                 //     amount:
@@ -743,15 +750,14 @@ class OrderDetailsView extends StatelessWidget {
                                                 //     type: 'vat_tax'.tr,
                                                 //     amount:
                                                 //         '+ ${PriceConverter.convertPrice(tax)}'),
-                                                PriceWithType(
-                                                    type: 'addons'.tr,
-                                                    amount:
-                                                        '+ ${PriceConverter.convertPrice(addOnsPrice)}'),
+                                                // PriceWithType(
+                                                //     type: 'addons'.tr,
+                                                //     amount:
+                                                //         '+ ${PriceConverter.convertPrice(addOnsPrice)}'),
                                                 PriceWithType(
                                                     type: 'total'.tr,
                                                     amount: PriceConverter
-                                                        .convertPrice(total +
-                                                            addOnsPrice),
+                                                        .convertPrice(total),
                                                     isTotal: true),
                                                 if (orderController
                                                         .currentOrderDetails
@@ -838,8 +844,7 @@ class OrderDetailsView extends StatelessWidget {
                                                                         ?.order
                                                                         ?.cash ??
                                                                     "0")) -
-                                                            (total +
-                                                                addOnsPrice))),
+                                                            (total))),
                                                   ),
                                                 if (orderController
                                                         .currentOrderDetails
@@ -861,8 +866,7 @@ class OrderDetailsView extends StatelessWidget {
                                                                         ?.order
                                                                         ?.card ??
                                                                     "0")) -
-                                                            (total +
-                                                                addOnsPrice))),
+                                                            (total))),
                                                   ),
                                                 SizedBox(
                                                   height: Dimensions

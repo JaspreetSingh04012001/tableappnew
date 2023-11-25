@@ -184,7 +184,7 @@ class PrinterController extends GetxController {
 
   Future<void> printTest({bool byWaitor = false}) async {
     if (byWaitor) {}
-    print("jassPrintingWaitor");
+
     SharedPreferences pref = await SharedPreferences.getInstance();
 
     printCount;
@@ -224,22 +224,14 @@ class PrinterController extends GetxController {
     List<int> Frontbytes = [];
     List<int> Backbytes = [];
 
-    // final generator = Generator(
-    //     optionprinttype == "58 mm" ? PaperSize.mm58 : PaperSize.mm80, profile);
-    // bytes += generator.drawer(pin: PosDrawer.pin2);
-    // bytes += generator.drawer();
-
-    //bytes += generator.setGlobalFont(PosFontType.fontA);
-
-//orderController.currentOrderDetails.details;
-    double itemsPrice = 0;
-    double discount = 0;
-    double tax = 0;
-    double addOnsPrice = 0;
+    //double itemsPrice = 0;
+    // double discount = 0;
+    // double tax = 0;
+    // double addOnsPrice = 0;
     late String date;
     String? name;
     int itemCount = 0;
-    //SharedPreferences sharedPref//erences = await SharedPreferences.getInstance();
+
     // sharedPreferences.setString("branchName", value.name.toString());
     name = sharedPreferences.getString("branchName");
 
@@ -254,13 +246,13 @@ class PrinterController extends GetxController {
     if (orderController.currentOrderDetails?.details != null) {
       for (Details orderDetails in orderDetails) {
         itemCount += orderDetails.quantity!.toInt();
-        itemsPrice =
-            itemsPrice + (orderDetails.price! * orderDetails.quantity!.toInt());
-        discount = discount +
-            (orderDetails.discountOnProduct! * orderDetails.quantity!.toInt());
-        tax = (tax +
-            (orderDetails.taxAmount! * orderDetails.quantity!.toInt()) +
-            orderDetails.addonTaxAmount!);
+        // itemsPrice =
+        //     itemsPrice + (orderDetails.price! * orderDetails.quantity!.toInt());
+        // discount = discount +
+        //     (orderDetails.discountOnProduct! * orderDetails.quantity!.toInt());
+        // tax = (tax +
+        //     (orderDetails.taxAmount! * orderDetails.quantity!.toInt()) +
+        //     orderDetails.addonTaxAmount!);
         date = orderController.currentOrderDetails?.order!.createdAt
                 ?.replaceAll(".000000Z", "")
                 .replaceAll("T", " ") ??
@@ -268,20 +260,8 @@ class PrinterController extends GetxController {
       }
     }
 
-    double total = itemsPrice - discount + tax;
+    // double total = orderController.currentOrderDetails?.order?.orderAmount ?? 0;
 
-    // widget.order;
-    // widget.orderDetails;
-    // var date =
-    //     DateConverter.dateTimeStringToMonthAndTime(widget.order!.createdAt!);
-
-    // bytes += generator.text("EFood",
-    //     styles: const PosStyles(
-    //         bold: true,
-    //         align: PosAlign.center,
-    //         height: PosTextSize.size3,
-    //         width: PosTextSize.size3));
-    print('${'order'.tr}# ${orderController.currentOrderDetails?.order?.id}');
     bytes += generator.text(name ?? " ",
         styles: const PosStyles(
             bold: true,
@@ -377,7 +357,7 @@ class PrinterController extends GetxController {
       String variationText = '';
       String? note = details.note;
       int a = 0;
-      String addonsName = '';
+      //  String addonsName = '';
       bool takeAway = false;
 
       List<AddOns> addons = details.productDetails == null
@@ -387,17 +367,21 @@ class PrinterController extends GetxController {
               : details.productDetails!.addOns!;
       List<int> addQty = details.addOnQtys ?? [];
       List<int> ids = details.addOnIds ?? [];
-      if (ids.length == details.addOnPrices?.length &&
-          ids.length == details.addOnQtys?.length) {
-        for (int i = 0; i < ids.length; i++) {
-          addOnsPrice =
-              addOnsPrice + (details.addOnPrices![i] * details.addOnQtys![i]);
-        }
-      }
+      List<String> myAdddonData = [];
+      // if (ids.length == details.addOnPrices?.length &&
+      //     ids.length == details.addOnQtys?.length) {
+      //   for (int i = 0; i < ids.length; i++) {
+      //     addOnsPrice =
+      //         addOnsPrice + (details.addOnPrices![i] * details.addOnQtys![i]);
+      //   }
+      // }
       try {
         for (AddOns addOn in addons) {
           if (ids.contains(addOn.id)) {
-            addonsName = addonsName + ('${addOn.name} (${(addQty[a])}), ');
+            // "${details.quantity} x ${details.productDetails?.name ?? ''}:${PriceConverter.convertPrice(details.price! * details.quantity!)}",
+            //  addonsName = addonsName + ('${addOn.name} (${(addQty[a])}), ');
+            myAdddonData.add(
+                "${addQty[a]} x ${addOn.name}:${PriceConverter.convertPrice(addOn.price! * addQty[a])}");
             a++;
           }
         }
@@ -436,7 +420,7 @@ class PrinterController extends GetxController {
       if (variationText.contains("Order Type (Take away)")) {
         takeAway = true;
       }
-      print("Jass $variationText");
+
       variationText = variationText
           .replaceAll("Order Type (Dine in)", "")
           .replaceAll("Order Type (Take away)", "")
@@ -456,16 +440,20 @@ class PrinterController extends GetxController {
                 align: PosAlign.center));
 
         Frontbytes += generator.text(
-            "${details.quantity} x ${details.productDetails?.name ?? ''}:${PriceConverter.convertPrice(details.price! * details.quantity!)}",
+            myAdddonData.isNotEmpty
+                ? "${details.productDetails?.name ?? ''} x ${details.quantity}"
+                : "${details.quantity} x ${details.productDetails?.name ?? ''}:${PriceConverter.convertPrice(details.price! * details.quantity!)}",
             styles: const PosStyles(
               bold: true,
               height: PosTextSize.size1,
               width: PosTextSize.size2,
             ));
 
-        if (addonsName.isNotEmpty) {
-          Frontbytes += generator.text('${'addons'.tr}: ${"$addonsName)"}',
-              styles: const PosStyles(bold: true, height: PosTextSize.size1));
+        if (myAdddonData.isNotEmpty) {
+          for (var element in myAdddonData) {
+            Frontbytes += generator.text(element,
+                styles: const PosStyles(bold: true, height: PosTextSize.size1));
+          }
         }
         if (variationText != '') {
           Frontbytes += generator.text("$variationText)",
@@ -485,16 +473,20 @@ class PrinterController extends GetxController {
                 align: PosAlign.center));
 
         Backbytes += generator.text(
-            "${details.quantity} x ${details.productDetails?.name ?? ''}:${PriceConverter.convertPrice(details.price! * details.quantity!)}",
+            myAdddonData.isNotEmpty
+                ? "${details.productDetails?.name ?? ''} x ${details.quantity}"
+                : "${details.quantity} x ${details.productDetails?.name ?? ''}:${PriceConverter.convertPrice(details.price! * details.quantity!)}",
             styles: const PosStyles(
               bold: true,
               height: PosTextSize.size1,
               width: PosTextSize.size2,
             ));
 
-        if (addonsName.isNotEmpty) {
-          Backbytes += generator.text('${'addons'.tr}: $addonsName',
-              styles: const PosStyles(bold: true, height: PosTextSize.size1));
+        if (myAdddonData.isNotEmpty) {
+          for (var element in myAdddonData) {
+            Backbytes += generator.text(element,
+                styles: const PosStyles(bold: true, height: PosTextSize.size1));
+          }
         }
         if (variationText != '') {
           Backbytes += generator.text(variationText,
@@ -514,16 +506,20 @@ class PrinterController extends GetxController {
               align: PosAlign.center));
 
       bytes += generator.text(
-          "${details.quantity} x ${details.productDetails?.name ?? ''}:${PriceConverter.convertPrice(details.price! * details.quantity!)}",
+          myAdddonData.isNotEmpty
+              ? "${details.productDetails?.name ?? ''} x ${details.quantity}"
+              : "${details.quantity} x ${details.productDetails?.name ?? ''}:${PriceConverter.convertPrice(details.price! * details.quantity!)}",
           styles: const PosStyles(
             bold: true,
             height: PosTextSize.size1,
             width: PosTextSize.size2,
           ));
 
-      if (addonsName.isNotEmpty) {
-        bytes += generator.text('${'addons'.tr}: $addonsName)',
-            styles: const PosStyles(bold: true, height: PosTextSize.size1));
+      if (myAdddonData.isNotEmpty) {
+        for (var element in myAdddonData) {
+          bytes += generator.text(element,
+              styles: const PosStyles(bold: true, height: PosTextSize.size1));
+        }
       }
       if (variationText != '') {
         bytes += generator.text("$variationText)",
@@ -547,18 +543,18 @@ class PrinterController extends GetxController {
     bytes += generator.text("${'Item Count'} : $itemCount",
         styles: const PosStyles(
             height: PosTextSize.size1, width: PosTextSize.size2));
-    bytes += generator.text(
-        "${'item_price'.tr} : ${PriceConverter.convertPrice(itemsPrice)}");
+    // bytes += generator.text(
+    //     "${'item_price'.tr} : ${PriceConverter.convertPrice(itemsPrice)}");
     // bytes += generator
     //     .text("${'discount'.tr} : -${PriceConverter.convertPrice(discount)}");
 
     // bytes += generator
     //     .text("${'vat_tax'.tr} : +${PriceConverter.convertPrice(tax)}");
-    bytes += generator
-        .text("${'add_ons'.tr} : +${PriceConverter.convertPrice(addOnsPrice)}");
+    // bytes += generator
+    //     .text("${'add_ons'.tr} : +${PriceConverter.convertPrice(addOnsPrice)}");
 
     bytes += generator.text(
-        "${'total'.tr} : ${PriceConverter.convertPrice(total + addOnsPrice)}",
+        "${'total'.tr} : ${PriceConverter.convertPrice(orderController.currentOrderDetails?.order?.orderAmount ?? 0)}",
         styles: const PosStyles(
             height: PosTextSize.size2, width: PosTextSize.size2));
 
@@ -612,13 +608,13 @@ class PrinterController extends GetxController {
       bytes += generator.text(
           styles: const PosStyles(
               height: PosTextSize.size1, width: PosTextSize.size1, bold: true),
-          "${'change'.tr} : ${PriceConverter.convertPrice(((double.parse(orderController.currentOrderDetails?.order?.card ?? "0") + double.parse(orderController.currentOrderDetails?.order?.card ?? "0")) - total))}");
+          "${'change'.tr} : ${PriceConverter.convertPrice(((double.parse(orderController.currentOrderDetails?.order?.card ?? "0") + double.parse(orderController.currentOrderDetails?.order?.card ?? "0")) - (orderController.currentOrderDetails?.order?.orderAmount ?? 0)))}");
     }
     if (orderController.currentOrderDetails?.order?.paymentMethod == "cash") {
       bytes += generator.text(
           styles: const PosStyles(
               height: PosTextSize.size1, width: PosTextSize.size1, bold: true),
-          "${'change'.tr} : ${PriceConverter.convertPrice((double.parse(orderController.currentOrderDetails?.order?.cash ?? "0") - total))}");
+          "${'change'.tr} : ${PriceConverter.convertPrice((double.parse(orderController.currentOrderDetails?.order?.cash ?? "0") - (orderController.currentOrderDetails?.order?.orderAmount ?? 0)))}");
     }
 
     bytes += generator.feed(2);

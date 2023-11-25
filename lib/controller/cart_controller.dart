@@ -13,13 +13,8 @@ class CartController extends GetxController implements GetxService {
   final bool _isCartUpdate = false;
   int? _peopleNumber;
   double _totalAmount = 0.0;
-  String? _customerName ;
-  String? _customerEmail ;
-
-
-
-
-
+  String? _customerName;
+  String? _customerEmail;
 
   List<CartModel> get cartList => _cartList;
   double get amount => _amount;
@@ -32,13 +27,14 @@ class CartController extends GetxController implements GetxService {
   set setPeopleNumber(int value) {
     _peopleNumber = value;
   }
+
   set setCustomerName(String value) {
     _customerName = value;
   }
+
   set setCustomerEmail(String value) {
     _customerEmail = value;
   }
-
 
   set setTotalAmount(double value) {
     _totalAmount = value;
@@ -52,46 +48,50 @@ class CartController extends GetxController implements GetxService {
     }
   }
 
-  int getCartIndex (Product product) {
-    for(int index = 0; index < _cartList.length; index ++) {
-      if(_cartList[index].product?.id == product.id ) {
-        if( _cartList[index].product?.variations != null &&
+  int getCartIndex(Product product) {
+    for (int index = 0; index < _cartList.length; index++) {
+      if (_cartList[index].product?.id == product.id) {
+        if (_cartList[index].product?.variations != null &&
             cartList[index].product!.variations!.isNotEmpty &&
-            _cartList[index].product!.variations![0].isMultiSelect  != null){
-          if(_cartList[index].product!.variations![0].isMultiSelect == product.variations![0].isMultiSelect){
+            _cartList[index].product!.variations![0].isMultiSelect != null) {
+          if (_cartList[index].product!.variations![0].isMultiSelect ==
+              product.variations![0].isMultiSelect) {
             return index;
           }
-        }
-        else{
+        } else {
           return index;
         }
-
       }
     }
     return -1;
   }
 
-  int getCartQty(Product product){
+  int? getmyCartIndex(Product product) {
+    int? indexi;
+    for (int index = 0; index < _cartList.length; index++) {
+      if (_cartList[index].product?.id == product.id) {
+        indexi = index;
+        return indexi;
+      }
+    }
+
+    return indexi;
+  }
+
+  int getCartQty(Product product) {
     int count = 0;
-    for(int i= 0; i < _cartList.length; i++){
-      if(product.id == _cartList[i].product?.id){
-        count+=_cartList[i].quantity!;
+    for (int i = 0; i < _cartList.length; i++) {
+      if (product.id == _cartList[i].product?.id) {
+        count += _cartList[i].quantity!;
       }
     }
     return count;
   }
 
-
-
-
-
-
-
   void addToCart(CartModel cartModel, int index) {
-    if(index != -1) {
+    if (index != -1) {
       _cartList.replaceRange(index, index + 1, [cartModel]);
-
-    }else {
+    } else {
       _cartList.add(cartModel);
     }
     cartRepo.addToCartList(_cartList);
@@ -100,7 +100,8 @@ class CartController extends GetxController implements GetxService {
   }
 
   void removeFromCart(int index) {
-    _amount = _amount - (_cartList[index].discountedPrice! * _cartList[index].quantity!);
+    _amount = _amount -
+        (_cartList[index].discountedPrice! * _cartList[index].quantity!);
     _cartList.removeAt(index);
     cartRepo.addToCartList(_cartList);
     update();
@@ -110,13 +111,5 @@ class CartController extends GetxController implements GetxService {
     _cartList = [];
     cartRepo.clearCartData();
     update();
-
   }
-
-
-
-
-
-
-
 }

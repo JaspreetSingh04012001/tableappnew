@@ -1,8 +1,6 @@
 import 'package:efood_table_booking/controller/cart_controller.dart';
 import 'package:efood_table_booking/controller/product_controller.dart';
 import 'package:efood_table_booking/controller/splash_controller.dart';
-import 'package:efood_table_booking/data/model/response/cart_model.dart'
-    as cart;
 import 'package:efood_table_booking/data/model/response/cart_model.dart';
 import 'package:efood_table_booking/data/model/response/product.dart';
 import 'package:efood_table_booking/data/model/response/product_model.dart';
@@ -12,7 +10,6 @@ import 'package:efood_table_booking/helper/responsive_helper.dart';
 import 'package:efood_table_booking/util/dimensions.dart';
 import 'package:efood_table_booking/util/images.dart';
 import 'package:efood_table_booking/util/styles.dart';
-import 'package:efood_table_booking/view/base/custom_button.dart';
 import 'package:efood_table_booking/view/base/custom_image.dart';
 import 'package:efood_table_booking/view/base/custom_rounded_button.dart';
 import 'package:efood_table_booking/view/base/custom_snackbar.dart';
@@ -21,6 +18,8 @@ import 'package:efood_table_booking/view/screens/home/widget/quantity_button.dar
 import 'package:expandable_text/expandable_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../base/custom_text_field.dart';
 
@@ -37,10 +36,33 @@ class ProductBottomSheet extends StatefulWidget {
 
 class _ProductBottomSheetState extends State<ProductBottomSheet> {
   TextEditingController note = TextEditingController();
+  late SharedPreferences sharedPreferences;
+  var logger = Logger();
+  void initVariation() async {
+    sharedPreferences = await SharedPreferences.getInstance();
+    if (widget.product.variations != null) {
+      // variationList = widget.product.variations ?? [];
+      j:
+      for (Variation element in widget.product.variations ?? []) {
+        logger.i(element.name);
+        if (element.name == "Order Type" || element.name == "Order type") {
+          Get.find<ProductController>().setCartVariationIndex(
+              widget.product.variations!.indexOf(element),
+              sharedPreferences.getInt("lastOrderType") ?? 0,
+              widget.product,
+              element.isMultiSelect!);
+          break j;
+        }
+      }
+    }
+  }
+
   @override
   void initState() {
     super.initState();
+    // initVariation();
     Get.find<ProductController>().initData(widget.product, widget.cart);
+    logger.i(widget.product.toJson());
     if (widget.cart?.note != null) note.text = widget.cart?.note ?? '';
   }
 
@@ -73,14 +95,15 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
             ),
             child: GetBuilder<CartController>(builder: (cartController) {
               // note.text = cartController.
-              return GetBuilder<ProductController>(
-                  builder: (productController) {
+              return GetBuilder<ProductController>(initState: (state) {
+                initVariation();
+              }, builder: (productController) {
                 double variationPrice = 0;
                 double price = widget.product.price ?? 0;
                 double discount = widget.product.discount ?? 0;
                 String discountType = widget.product.discountType ?? 'percent';
                 List<Variation> variationList = [];
-
+                int addonLimit = widget.product.addonlimit ?? 0;
                 if (widget.product.branchProduct != null &&
                     widget.product.branchProduct!.isAvailable!) {
                   variationList =
@@ -120,9 +143,11 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                 int addonLen = widget.product.addOns != null
                     ? widget.product.addOns!.length
                     : 0;
-
+                int addoncount = 0;
                 for (int index = 0; index < addonLen; index++) {
                   if (productController.addOnActiveList[index]) {
+                    addoncount =
+                        addoncount + productController.addOnQtyList[index];
                     double addonItemPrice =
                         widget.product.addOns![index].price! *
                             productController.addOnQtyList[index];
@@ -145,6 +170,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                     ));
                   }
                 }
+                //   productController.setQty(addonLen);
 
                 double priceWithAddonsVariation = addonsCost +
                     (PriceConverter.convertWithDiscount(
@@ -158,8 +184,249 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                     widget.product.availableTimeStarts,
                     widget.product.availableTimeEnds);
 
-                // _cartIndex = cartController.getCartIndex(widget.product);
-                // enum Gender { male, female, other }
+                void updateAddon() {
+                  variationPrice = 0;
+                  for (int index = 0; index < variationList.length; index++) {
+                    if (variationList[index].variationValues != null) {
+                      for (int i = 0;
+                          i < variationList[index].variationValues!.length;
+                          i++) {
+                        if (productController.selectedVariations[index][i]) {
+                          variationPrice += variationList[index]
+                                  .variationValues![i]
+                                  .optionPrice ??
+                              0;
+                        }
+                      }
+                    }
+                  }
+
+                  addonsCost = 0;
+                  addOnIdList.clear();
+                  int addonLen = widget.product.addOns != null
+                      ? widget.product.addOns!.length
+                      : 0;
+
+                  for (int index = 0; index < addonLen; index++) {
+                    if (productController.addOnActiveList[index]) {
+                      double addonItemPrice =
+                          widget.product.addOns![index].price! *
+                              productController.addOnQtyList[index];
+                      addonsCost = addonsCost + (addonItemPrice);
+                      addonsTax = addonsTax +
+                          (addonItemPrice -
+                              PriceConverter.convertWithDiscount(
+                                  (addonItemPrice),
+                                  widget.product.addOns![index].tax ?? 0,
+                                  'percent'));
+
+                      addOnIdList.add(AddOn(
+                        id: widget.product.addOns![index].id,
+                        price: (widget.product.addOns![index].price != null)
+                            ? (widget.product.addOns![index].price! *
+                                productController.addOnQtyList[index])
+                            : null,
+                        quantity: productController.addOnQtyList[index],
+                        name: widget.product.addOns![index].name,
+                      ));
+                    }
+                  }
+                }
+
+                void removeMe() {
+                  for (var cartItem in cartController.cartList) {
+                    if (cartItem.product!.id == widget.product.id) {
+                      cartController.cartList
+                          .removeAt(cartController.cartList.indexOf(cartItem));
+                      //  cartController.update();
+                    }
+                  }
+                }
+
+                void myChutiyaFunction(Function() onTap) {
+                  addonsCost = 0;
+                  addOnIdList.clear();
+                  addoncount = 0;
+                  for (int index = 0; index < addonLen; index++) {
+                    if (productController.addOnActiveList[index]) {
+                      addoncount =
+                          addoncount + productController.addOnQtyList[index];
+                    }
+                  }
+                  // productController.setQty(addoncount);
+                  if (addonLimit != 0 && addoncount == addonLimit) {
+                    showCustomSnackBar('Limit has been reached',
+                        isToast: true, isError: true);
+                    return;
+                  }
+
+                  if (variationList.isNotEmpty) {
+                    for (int index = 0; index < variationList.length; index++) {
+                      if (!variationList[index].isMultiSelect! &&
+                          variationList[index].isRequired! &&
+                          !productController.selectedVariations[index]
+                              .contains(true)) {
+                        showCustomSnackBar(
+                            '${'choose_a_variation_from'.tr} ${variationList[index].name}',
+                            isToast: true,
+                            isError: true);
+                        return;
+                      } else if (variationList[index].isMultiSelect! &&
+                          (variationList[index].isRequired! ||
+                              productController.selectedVariations[index]
+                                  .contains(true)) &&
+                          variationList[index].min! >
+                              productController.selectedVariationLength(
+                                  productController.selectedVariations,
+                                  index)) {
+                        showCustomSnackBar(
+                            '${'you_need_to_select_minimum'.tr} ${variationList[index].min} '
+                            '${'to_maximum'.tr} ${variationList[index].max} ${'options_from'.tr} ${variationList[index].name} ${'variation'.tr}',
+                            isError: true,
+                            isToast: true);
+                        return;
+                      }
+                    }
+                  }
+                  onTap();
+                  variationPrice = 0;
+                  for (int index = 0; index < variationList.length; index++) {
+                    if (variationList[index].variationValues != null) {
+                      for (int i = 0;
+                          i < variationList[index].variationValues!.length;
+                          i++) {
+                        if (productController.selectedVariations[index][i]) {
+                          variationPrice += variationList[index]
+                                  .variationValues![i]
+                                  .optionPrice ??
+                              0;
+                        }
+                      }
+                    }
+                  }
+
+                  //if (addonLen > addonLimit) return;
+                  for (int index = 0; index < addonLen; index++) {
+                    if (productController.addOnActiveList[index]) {
+                      double addonItemPrice =
+                          widget.product.addOns![index].price! *
+                              productController.addOnQtyList[index];
+                      addonsCost = addonsCost + (addonItemPrice);
+                      addonsTax = addonsTax +
+                          (addonItemPrice -
+                              PriceConverter.convertWithDiscount(
+                                  (addonItemPrice),
+                                  widget.product.addOns![index].tax ?? 0,
+                                  'percent'));
+
+                      addOnIdList.add(AddOn(
+                        id: widget.product.addOns![index].id,
+                        price: (widget.product.addOns![index].price != null)
+                            ? (widget.product.addOns![index].price! *
+                                productController.addOnQtyList[index])
+                            : null,
+                        quantity: productController.addOnQtyList[index],
+                        name: widget.product.addOns![index].name,
+                      ));
+                    }
+                  }
+
+                  bool found = false;
+                  if (addonsCost == 0) productController.setQuantity(true);
+                  if (cartController.cartList.isNotEmpty) {
+                    for (var cartItem in cartController.cartList) {
+                      if (cartItem.product!.id == widget.product.id) {
+                        found = true;
+                        cartController.addToCart(
+                            CartModel(
+                              note: note.text.isNotEmpty
+                                  ? note.text.toString()
+                                  : null,
+                              price: addonsCost == 0
+                                  ? ((productController.quantity != null ||
+                                          productController.quantity > 0)
+                                      ? widget.product.price! *
+                                          productController.quantity
+                                      : widget.product.price)
+                                  : addonsCost + variationPrice,
+                              discountedPrice: priceWithDiscount,
+                              variation: [],
+                              discountAmount: priceWithVariation -
+                                  PriceConverter.convertWithDiscount(
+                                    priceWithVariation,
+                                    discount,
+                                    discountType,
+                                  ),
+                              quantity: productController.quantity,
+                              // : addOnIdList
+                              //     .map((e) => e.quantity)
+                              //     .toList()
+                              //     .reduce((a, b) => a! + b!),
+                              taxAmount: (priceWithVariation -
+                                  PriceConverter.convertWithDiscount(
+                                      priceWithVariation,
+                                      widget.product.tax!,
+                                      widget.product.taxType!) +
+                                  addonsTax),
+                              addOnIds:
+                                  addOnIdList.isEmpty ? null : addOnIdList,
+                              product: widget.product,
+                              variations: productController.selectedVariations,
+                            ),
+                            cartController.cartList.indexOf(cartItem));
+                      }
+                    }
+                  }
+
+                  if (found == false) {
+                    cartController.addToCart(
+                        CartModel(
+                          note: note.text.isNotEmpty
+                              ? note.text.toString()
+                              : null,
+                          price: addonsCost == 0
+                              ? ((productController.quantity != null ||
+                                      productController.quantity > 0)
+                                  ? widget.product.price! *
+                                      productController.quantity
+                                  : widget.product.price)
+                              : addonsCost + variationPrice,
+                          discountedPrice: priceWithDiscount,
+                          variation: [],
+                          discountAmount: priceWithVariation -
+                              PriceConverter.convertWithDiscount(
+                                priceWithVariation,
+                                discount,
+                                discountType,
+                              ),
+                          quantity: productController.quantity,
+                          taxAmount: (priceWithVariation -
+                              PriceConverter.convertWithDiscount(
+                                  priceWithVariation,
+                                  widget.product.tax!,
+                                  widget.product.taxType!) +
+                              addonsTax),
+                          addOnIds: addOnIdList,
+                          product: widget.product,
+                          variations: productController.selectedVariations,
+                        ),
+                        widget.cart != null
+                            ? widget.cartIndex!
+                            : productController.cartIndex);
+
+                    // for (int index = 0; index < addonLen; index++) {
+                    //   if (productController.addOnActiveList[index]) {
+                    //     addoncount =
+                    //         addoncount + productController.addOnQtyList[index];
+                    //   }
+                    // }
+                    // productController.setQty(addoncount);
+                  }
+                  if (addonsCost == 0) productController.setQuantity(false);
+
+                  showCustomSnackBar('Item added to cart',
+                      isError: false, isToast: true);
+                }
 
                 return Column(
                   mainAxisSize: MainAxisSize.min,
@@ -251,47 +518,51 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                           height: Dimensions
                                                               .paddingSizeSmall,
                                                         ),
-                                                        Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .start,
-                                                            children: [
-                                                              Row(
-                                                                children: [
-                                                                  Text(
-                                                                    overflow:
-                                                                        TextOverflow
-                                                                            .ellipsis,
-                                                                    PriceConverter
-                                                                        .convertPrice(
-                                                                      price,
-                                                                      discount:
-                                                                          discount,
-                                                                      discountType:
-                                                                          discountType,
+                                                        if (widget.product
+                                                                    .addOns ==
+                                                                null ||
+                                                            widget
+                                                                .product
+                                                                .addOns!
+                                                                .isEmpty)
+                                                          Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              children: [
+                                                                Row(
+                                                                  children: [
+                                                                    Text(
+                                                                      overflow:
+                                                                          TextOverflow
+                                                                              .ellipsis,
+                                                                      PriceConverter
+                                                                          .convertPrice(
+                                                                        price,
+                                                                        discount:
+                                                                            discount,
+                                                                        discountType:
+                                                                            discountType,
+                                                                      ),
+                                                                      style: robotoMedium.copyWith(
+                                                                          fontSize:
+                                                                              Dimensions.fontSizeExtraLarge + 5),
                                                                     ),
-                                                                    style: robotoMedium.copyWith(
-                                                                        fontSize:
-                                                                            Dimensions.fontSizeExtraLarge +
-                                                                                5),
-                                                                  ),
-                                                                  SizedBox(
-                                                                      width: Dimensions
-                                                                          .paddingSizeExtraSmall),
-                                                                  price > priceWithDiscount
-                                                                      ? Text(
-                                                                          overflow:
-                                                                              TextOverflow.ellipsis,
-                                                                          PriceConverter.convertPrice(
-                                                                              price),
-                                                                          style: robotoMedium.copyWith(
-                                                                              color: Theme.of(context).primaryColor,
-                                                                              decoration: TextDecoration.lineThrough),
-                                                                        )
-                                                                      : const SizedBox(),
-                                                                ],
-                                                              ),
-                                                            ]),
+                                                                    SizedBox(
+                                                                        width: Dimensions
+                                                                            .paddingSizeExtraSmall),
+                                                                    price > priceWithDiscount
+                                                                        ? Text(
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                            PriceConverter.convertPrice(price),
+                                                                            style:
+                                                                                robotoMedium.copyWith(color: Theme.of(context).primaryColor, decoration: TextDecoration.lineThrough),
+                                                                          )
+                                                                        : const SizedBox(),
+                                                                  ],
+                                                                ),
+                                                              ]),
                                                         if (isTab)
                                                           _productDescription(),
                                                       ]),
@@ -303,9 +574,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                     .paddingSizeSmall),
 
                                           if (!isTab) _productDescription(),
-                                          ButtonWidget(
-                                              cartIndex:
-                                                  widget.cartIndex ?? -1),
+
                                           SizedBox(
                                               height: Dimensions
                                                   .paddingSizeDefault),
@@ -339,34 +608,9 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                           TextSpan(
                                                                               text: variationList[index].name ?? "",
                                                                               style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
-                                                                              children: const <InlineSpan>[]))
-                                                                      // Row(
-
-                                                                      //     mainAxisAlignment:
-                                                                      //         MainAxisAlignment
-                                                                      //             .center,
-                                                                      //     crossAxisAlignment:
-                                                                      //         CrossAxisAlignment.center,
-                                                                      //     children: [
-                                                                      //       Text(
-                                                                      //         overflow:
-                                                                      //             TextOverflow.ellipsis,
-                                                                      //         variationList[index].name ??
-                                                                      //             '',
-                                                                      //         style:
-                                                                      //             robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
-                                                                      //       ),
-                                                                      //       if (variationList[index].isRequired ??
-                                                                      //           false)
-                                                                      //         Text(
-                                                                      //           overflow: TextOverflow.ellipsis,
-                                                                      //           ' (${'required'.tr})',
-                                                                      //           style: robotoMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeSmall),
-                                                                      //         ),
-                                                                      //     ]),
-                                                                      ),
+                                                                              children: const <InlineSpan>[]))),
                                                                   SizedBox(
-                                                                    width: 150,
+                                                                    // width: 150,
                                                                     child: Row(
                                                                       children: [
                                                                         if (variationList[index].isRequired ??
@@ -400,21 +644,34 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                   //         ? Dimensions
                                                                   //             .paddingSizeExtraSmall
                                                                   //         : 0),
+
                                                                   if (variationList[
                                                                               index]
                                                                           .variationValues !=
                                                                       null)
-                                                                    Column(
-                                                                      mainAxisSize:
-                                                                          MainAxisSize
-                                                                              .min,
+                                                                    Wrap(
+                                                                      // mainAxisSize:
+                                                                      //     MainAxisSize
+                                                                      //         .min,
                                                                       children: List.generate(
                                                                           variationList[index].variationValues?.length ?? 0,
                                                                           (i) => Padding(
-                                                                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 6),
+                                                                                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 6),
                                                                                 child: InkWell(
                                                                                   onTap: () {
+                                                                                    if (variationList[index].name == "Order Type" || variationList[index].name == "Order type") {
+                                                                                      sharedPreferences.setInt("lastOrderType", i);
+                                                                                    }
                                                                                     productController.setCartVariationIndex(index, i, widget.product, variationList[index].isMultiSelect!);
+                                                                                    if (productController.quantity > 0) {
+                                                                                      myChutiyaFunction(() => null);
+                                                                                    }
+                                                                                    if (productController.quantity == 0) {
+                                                                                      myChutiyaFunction(() {
+                                                                                        //   productController.setQuantity(true);
+                                                                                      });
+                                                                                    }
+                                                                                    //    myChutiyaFunction();
                                                                                   },
                                                                                   child: Stack(
                                                                                     alignment: Alignment.topRight,
@@ -552,285 +809,6 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                 ]),
                                                           )),
                                                 )
-                                              // ListView.builder(
-                                              //     shrinkWrap: true,
-                                              //     itemCount:
-                                              //         variationList.length,
-                                              //     physics:
-                                              //         const NeverScrollableScrollPhysics(),
-                                              //     padding: EdgeInsets.zero,
-                                              //     itemBuilder:
-                                              //         (context, index) {
-                                              //       return Column(
-                                              //           mainAxisSize:
-                                              //               MainAxisSize.min,
-                                              //           crossAxisAlignment:
-                                              //               CrossAxisAlignment
-                                              //                   .start,
-                                              //           children: [
-                                              //             Row(
-                                              //                 mainAxisSize:
-                                              //                     MainAxisSize
-                                              //                         .min,
-                                              //                 mainAxisAlignment:
-                                              //                     MainAxisAlignment
-                                              //                         .spaceBetween,
-                                              //                 children: [
-                                              //                   Row(
-                                              //                       mainAxisSize:
-                                              //                           MainAxisSize
-                                              //                               .min,
-                                              //                       mainAxisAlignment:
-                                              //                           MainAxisAlignment
-                                              //                               .start,
-                                              //                       crossAxisAlignment:
-                                              //                           CrossAxisAlignment
-                                              //                               .center,
-                                              //                       children: [
-                                              //                         Text(
-                                              //                           overflow:
-                                              //                               TextOverflow.ellipsis,
-                                              //                           variationList[index].name ??
-                                              //                               '',
-                                              //                           style: robotoMedium.copyWith(
-                                              //                               fontSize:
-                                              //                                   Dimensions.fontSizeLarge),
-                                              //                         ),
-                                              //                         Text(
-                                              //                           overflow:
-                                              //                               TextOverflow.ellipsis,
-                                              //                           ' (${variationList[index].isRequired! ? 'required'.tr : 'optional'.tr})',
-                                              //                           style: robotoMedium.copyWith(
-                                              //                               color:
-                                              //                                   Theme.of(context).primaryColor,
-                                              //                               fontSize: Dimensions.fontSizeSmall),
-                                              //                         ),
-                                              //                       ]),
-                                              //                   if (index == 0)
-                                              //                     ButtonWidget(
-                                              //                         cartIndex:
-                                              //                             widget.cartIndex ??
-                                              //                                 -1),
-                                              //                 ]),
-                                              //             SizedBox(
-                                              //                 height: Dimensions
-                                              //                     .paddingSizeExtraSmall),
-                                              //             Row(
-                                              //                 mainAxisSize:
-                                              //                     MainAxisSize
-                                              //                         .min,
-                                              //                 children: [
-                                              //                   (variationList[
-                                              //                               index]
-                                              //                           .isMultiSelect!)
-                                              //                       ? Text(
-                                              //                           overflow:
-                                              //                               TextOverflow.ellipsis,
-                                              //                           '${'you_need_to_select_minimum'.tr} ${'${variationList[index].min}'
-                                              //                               ' ${'to_maximum'.tr} ${variationList[index].max} ${'options'.tr}'}',
-                                              //                           style: robotoMedium.copyWith(
-                                              //                               fontSize:
-                                              //                                   Dimensions.fontSizeExtraSmall,
-                                              //                               color: Theme.of(context).disabledColor),
-                                              //                         )
-                                              //                       : const SizedBox(),
-                                              //                 ]),
-                                              //             SizedBox(
-                                              //                 height: (variationList[
-                                              //                             index]
-                                              //                         .isMultiSelect!)
-                                              //                     ? Dimensions
-                                              //                         .paddingSizeExtraSmall
-                                              //                     : 0),
-                                              //             if (variationList[
-                                              //                         index]
-                                              //                     .variationValues !=
-                                              //                 null)
-                                              //               Wrap(
-                                              //                 children:
-                                              //                     List.generate(
-                                              //                         variationList[index]
-                                              //                                 .variationValues
-                                              //                                 ?.length ??
-                                              //                             0,
-                                              //                         (i) =>
-                                              //                             Padding(
-                                              //                               padding:
-                                              //                                   const EdgeInsets.symmetric(horizontal: 3, vertical: 2),
-                                              //                               child:
-                                              //                                   InkWell(
-                                              //                                 onTap: () {
-                                              //                                   productController.setCartVariationIndex(index, i, widget.product, variationList[index].isMultiSelect!);
-                                              //                                 },
-                                              //                                 child: Container(
-                                              //                                   decoration: BoxDecoration(border: Border.all(width: 1, color: Theme.of(context).disabledColor), borderRadius: BorderRadius.circular(4), color: productController.selectedVariations[index][i] ? Theme.of(context).primaryColor : null),
-                                              //                                   child: Padding(
-                                              //                                     padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 6),
-                                              //                                     child: Row(
-                                              //                                         mainAxisSize: MainAxisSize.min,
-                                              //                                         crossAxisAlignment: CrossAxisAlignment.end,
-                                              //                                         //  mainAxisAlignment: MainAxisAlignment.end,
-                                              //                                         children: [
-                                              //                                           Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.center, children: [
-                                              //                                             // variationList[index].isMultiSelect!
-                                              //                                             //     ? Checkbox(
-                                              //                                             //         value: productController.selectedVariations[index][i],
-                                              //                                             //         activeColor: Theme.of(context).primaryColor,
-                                              //                                             //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
-                                              //                                             //         onChanged: (bool? newValue) {
-                                              //                                             //           productController.setCartVariationIndex(
-                                              //                                             //             index,
-                                              //                                             //             i,
-                                              //                                             //             widget.product,
-                                              //                                             //             variationList[index].isMultiSelect!,
-                                              //                                             //           );
-                                              //                                             //         },
-                                              //                                             //         visualDensity: const VisualDensity(horizontal: -3, vertical: -3),
-                                              //                                             //       )
-                                              //                                             //     : Radio(
-                                              //                                             //         value: i,
-                                              //                                             //         groupValue: productController.selectedVariations[index].indexOf(true),
-                                              //                                             //         onChanged: (value) {
-                                              //                                             //           productController.setCartVariationIndex(
-                                              //                                             //             index,
-                                              //                                             //             i,
-                                              //                                             //             widget.product,
-                                              //                                             //             variationList[index].isMultiSelect!,
-                                              //                                             //           );
-                                              //                                             //         },
-                                              //                                             //         activeColor: Theme.of(context).primaryColor,
-                                              //                                             //         toggleable: false,
-                                              //                                             //         visualDensity: const VisualDensity(horizontal: -3, vertical: -3),
-                                              //                                             //       ),
-                                              //                                             Text(
-                                              //                                               overflow: TextOverflow.ellipsis,
-                                              //                                               variationList[index].variationValues![i].level != null ? variationList[index].variationValues![i].level!.trim() : '',
-                                              //                                               maxLines: 1,
-                                              //                                               //  overflow: TextOverflow.ellipsis,
-                                              //                                               style: productController.selectedVariations[index][i] ? robotoMedium.copyWith(color: Colors.white) : robotoRegular,
-                                              //                                             ),
-                                              //                                           ]),
-                                              //                                           //const Spacer(),
-                                              //                                           const SizedBox(
-                                              //                                             width: 3,
-                                              //                                           ),
-                                              //                                           Text(
-                                              //                                             overflow: TextOverflow.ellipsis,
-                                              //                                             variationList[index].variationValues![i].optionPrice! > 0 ? '+${PriceConverter.convertPrice(variationList[index].variationValues![i].optionPrice ?? 0)}' : 'free'.tr,
-                                              //                                             maxLines: 1,
-                                              //                                             // overflow:
-                                              //                                             //     TextOverflow.ellipsis,
-                                              //                                             style: productController.selectedVariations[index][i] ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Colors.white) : robotoRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor),
-                                              //                                           ),
-                                              //                                         ]),
-                                              //                                   ),
-                                              //                                 ),
-                                              //                               ),
-                                              //                             )),
-                                              //               ),
-                                              //             // ListView.builder(
-                                              //             //   // scrollDirection:
-                                              //             //   //     Axis.horizontal,
-                                              //             //   shrinkWrap: true,
-                                              //             //   physics:
-                                              //             //       const NeverScrollableScrollPhysics(),
-                                              //             //   padding:
-                                              //             //       EdgeInsets
-                                              //             //           .zero,
-                                              //             //   itemCount:
-                                              //             //       variationList[
-                                              //             //               index]
-                                              //             //           .variationValues
-                                              //             //           ?.length,
-                                              //             //   itemBuilder:
-                                              //             //       (context, i) {
-                                              //             //     return
-                                              //             //     InkWell(
-                                              //             //       onTap: () {
-                                              //             //         productController.setCartVariationIndex(
-                                              //             //             index,
-                                              //             //             i,
-                                              //             //             widget
-                                              //             //                 .product,
-                                              //             //             variationList[index]
-                                              //             //                 .isMultiSelect!);
-                                              //             //       },
-                                              //             //       child: Row(
-                                              //             //           children: [
-                                              //             //             Row(
-                                              //             //                 crossAxisAlignment:
-                                              //             //                     CrossAxisAlignment.center,
-                                              //             //                 children: [
-                                              //             //                   // variationList[index].isMultiSelect!
-                                              //             //                   //     ? Checkbox(
-                                              //             //                   //         value: productController.selectedVariations[index][i],
-                                              //             //                   //         activeColor: Theme.of(context).primaryColor,
-                                              //             //                   //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
-                                              //             //                   //         onChanged: (bool? newValue) {
-                                              //             //                   //           productController.setCartVariationIndex(
-                                              //             //                   //             index,
-                                              //             //                   //             i,
-                                              //             //                   //             widget.product,
-                                              //             //                   //             variationList[index].isMultiSelect!,
-                                              //             //                   //           );
-                                              //             //                   //         },
-                                              //             //                   //         visualDensity: const VisualDensity(horizontal: -3, vertical: -3),
-                                              //             //                   //       )
-                                              //             //                   //     : Radio(
-                                              //             //                   //         value: i,
-                                              //             //                   //         groupValue: productController.selectedVariations[index].indexOf(true),
-                                              //             //                   //         onChanged: (value) {
-                                              //             //                   //           productController.setCartVariationIndex(
-                                              //             //                   //             index,
-                                              //             //                   //             i,
-                                              //             //                   //             widget.product,
-                                              //             //                   //             variationList[index].isMultiSelect!,
-                                              //             //                   //           );
-                                              //             //                   //         },
-                                              //             //                   //         activeColor: Theme.of(context).primaryColor,
-                                              //             //                   //         toggleable: false,
-                                              //             //                   //         visualDensity: const VisualDensity(horizontal: -3, vertical: -3),
-                                              //             //                   //       ),
-                                              //             //                   Text(
-                                              //             //                     overflow: TextOverflow.ellipsis,
-                                              //             //                     variationList[index].variationValues![i].level != null ? variationList[index].variationValues![i].level!.trim() : '',
-                                              //             //                     maxLines: 1,
-                                              //             //                     //  overflow: TextOverflow.ellipsis,
-                                              //             //                     style: productController.selectedVariations[index][i] ? robotoMedium : robotoRegular,
-                                              //             //                   ),
-                                              //             //                 ]),
-                                              //             //             //const Spacer(),
-                                              //             //             Text(
-                                              //             //               overflow:
-                                              //             //                   TextOverflow.ellipsis,
-                                              //             //               variationList[index].variationValues![i].optionPrice! > 0
-                                              //             //                   ? '+${PriceConverter.convertPrice(variationList[index].variationValues![i].optionPrice ?? 0)}'
-                                              //             //                   : 'free'.tr,
-                                              //             //               maxLines:
-                                              //             //                   1,
-                                              //             //               // overflow:
-                                              //             //               //     TextOverflow.ellipsis,
-                                              //             //               style: productController.selectedVariations[index][i]
-                                              //             //                   ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraSmall)
-                                              //             //                   : robotoRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor),
-                                              //             //             ),
-                                              //             //           ]),
-                                              //             //     );
-                                              //             //   },
-                                              //             // ),
-
-                                              //             SizedBox(
-                                              //                 height: index !=
-                                              //                         variationList
-                                              //                                 .length -
-                                              //                             1
-                                              //                     ? Dimensions
-                                              //                         .paddingSizeLarge
-                                              //                     : 0),
-                                              //           ]);
-                                              //     },
-                                              //   )
-
                                               : Row(
                                                   mainAxisAlignment:
                                                       MainAxisAlignment.end,
@@ -899,77 +877,89 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                       SizedBox(
                                                           height: Dimensions
                                                               .paddingSizeDefault),
-                                                      SizedBox(
-                                                        height: 100,
-                                                        child: ListView.builder(
-                                                          scrollDirection:
-                                                              Axis.horizontal,
-                                                          itemCount: widget
-                                                              .product
-                                                              .addOns!
-                                                              .length,
-                                                          itemBuilder:
-                                                              (context, index) {
-                                                            return InkWell(
-                                                              onTap: () {
-                                                                if (!productController
-                                                                        .addOnActiveList[
-                                                                    index]) {
-                                                                  productController
-                                                                      .addAddOn(
-                                                                          true,
-                                                                          index);
-                                                                } else if (productController
-                                                                            .addOnQtyList[
-                                                                        index] ==
-                                                                    1) {
-                                                                  productController
-                                                                      .addAddOn(
-                                                                          false,
-                                                                          index);
-                                                                }
-                                                              },
-                                                              child: Container(
-                                                                width: 130,
-                                                                height: 120,
-                                                                margin: EdgeInsets.only(
-                                                                    right: Dimensions
-                                                                        .paddingSizeDefault),
-                                                                alignment:
-                                                                    Alignment
-                                                                        .center,
-                                                                decoration:
-                                                                    BoxDecoration(
-                                                                  color: productController
+                                                      Wrap(
+                                                        children: List.generate(
+                                                            widget.product
+                                                                .addOns!.length,
+                                                            (index) => InkWell(
+                                                                  onTap: () {
+                                                                    myChutiyaFunction(
+                                                                        () {
+                                                                      if (!productController
                                                                               .addOnActiveList[
-                                                                          index]
-                                                                      ? Theme.of(
-                                                                              context)
-                                                                          .primaryColor
-                                                                      : Theme.of(
-                                                                              context)
-                                                                          .hintColor
-                                                                          .withOpacity(
-                                                                              0.15),
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                          Dimensions
-                                                                              .radiusSmall),
-                                                                  boxShadow:
-                                                                      productController
+                                                                          index]) {
+                                                                        productController.addAddOn(
+                                                                            true,
+                                                                            index);
+
+                                                                        productController
+                                                                            .setQuantity(true);
+                                                                      } else if (productController
+                                                                              .addOnQtyList[index] ==
+                                                                          1) {
+                                                                        productController.addAddOn(
+                                                                            false,
+                                                                            index);
+                                                                        // if (productController
+                                                                        //         .quantity !=
+                                                                        //     1) {
+                                                                        productController
+                                                                            .setQuantity(false);
+                                                                        // }
+                                                                        // if (productController
+                                                                        //         .quantity ==
+                                                                        //     0) {
+                                                                        //   removeMe();
+                                                                        // }
+                                                                      }
+                                                                    });
+                                                                    if (productController
+                                                                            .quantity ==
+                                                                        0) {
+                                                                      removeMe();
+                                                                    }
+
+                                                                    productController
+                                                                        .update();
+                                                                    cartController
+                                                                        .update();
+                                                                  },
+                                                                  child:
+                                                                      Container(
+                                                                    width: 140,
+                                                                    height: 130,
+                                                                    margin: EdgeInsets.only(
+                                                                        right: Dimensions
+                                                                            .paddingSizeDefault,
+                                                                        bottom:
+                                                                            Dimensions.paddingSizeDefault),
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .center,
+                                                                    decoration:
+                                                                        BoxDecoration(
+                                                                      color: productController.addOnActiveList[
+                                                                              index]
+                                                                          ? Theme.of(context)
+                                                                              .primaryColor
+                                                                          : Theme.of(context)
+                                                                              .hintColor
+                                                                              .withOpacity(0.15),
+                                                                      borderRadius:
+                                                                          BorderRadius.circular(
+                                                                              Dimensions.radiusSmall),
+                                                                      boxShadow: productController
                                                                               .addOnActiveList[index]
                                                                           ? [
                                                                               BoxShadow(color: Colors.grey[Get.isDarkMode ? 700 : 300]!, blurRadius: 5, spreadRadius: 1)
                                                                             ]
                                                                           : null,
-                                                                ),
-                                                                child: Column(
-                                                                    children: [
-                                                                      Expanded(
-                                                                        child: Column(
-                                                                            mainAxisAlignment:
-                                                                                MainAxisAlignment.center,
-                                                                            children: [
+                                                                    ),
+                                                                    child: Column(
+                                                                        children: [
+                                                                          Expanded(
+                                                                            child:
+                                                                                Column(mainAxisAlignment: MainAxisAlignment.center, children: [
                                                                               Text(
                                                                                 overflow: TextOverflow.ellipsis,
                                                                                 widget.product.addOns![index].name ?? '',
@@ -993,49 +983,314 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                 ),
                                                                               ),
                                                                             ]),
-                                                                      ),
-                                                                      productController
-                                                                              .addOnActiveList[index]
-                                                                          ? Container(
-                                                                              padding: const EdgeInsets.symmetric(vertical: 6),
-                                                                              margin: EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
-                                                                              decoration: BoxDecoration(
-                                                                                borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
-                                                                                color: Theme.of(context).canvasColor,
-                                                                              ),
-                                                                              child: Row(children: [
-                                                                                Expanded(
-                                                                                  child: InkWell(
-                                                                                    onTap: () {
-                                                                                      if (productController.addOnQtyList[index] > 1) {
-                                                                                        productController.setAddOnQuantity(false, index);
-                                                                                      } else {
-                                                                                        productController.addAddOn(false, index);
-                                                                                      }
-                                                                                    },
-                                                                                    child: Center(child: Icon(Icons.remove, size: Dimensions.paddingSizeLarge)),
+                                                                          ),
+                                                                          productController.addOnActiveList[index]
+                                                                              ? Container(
+                                                                                  padding: const EdgeInsets.symmetric(vertical: 6),
+                                                                                  margin: EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
+                                                                                  decoration: BoxDecoration(
+                                                                                    borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+                                                                                    color: Theme.of(context).canvasColor,
                                                                                   ),
-                                                                                ),
-                                                                                Text(
-                                                                                  overflow: TextOverflow.ellipsis,
-                                                                                  productController.addOnQtyList[index].toString(),
-                                                                                  style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraLarge),
-                                                                                ),
-                                                                                Expanded(
-                                                                                  child: InkWell(
-                                                                                    onTap: () => productController.setAddOnQuantity(true, index),
-                                                                                    child: Center(child: Icon(Icons.add, size: Dimensions.paddingSizeLarge)),
-                                                                                  ),
-                                                                                ),
-                                                                              ]),
-                                                                            )
-                                                                          : const SizedBox(),
-                                                                    ]),
-                                                              ),
-                                                            );
-                                                          },
-                                                        ),
+                                                                                  child: Row(children: [
+                                                                                    Expanded(
+                                                                                      child: InkWell(
+                                                                                        onTap: () async {
+                                                                                          if (addonLimit != 0 && addoncount == addonLimit) {
+                                                                                            if (productController.addOnQtyList[index] > 1) {
+                                                                                              productController.setAddOnQuantity(false, index);
+                                                                                              //   if (productController.quantity != 1) {
+                                                                                              productController.setQuantity(false);
+                                                                                              //   }
+                                                                                            } else {
+                                                                                              productController.addAddOn(false, index);
+                                                                                              //  if (productController.quantity != 1) {
+                                                                                              productController.setQuantity(false);
+                                                                                              //  }
+                                                                                            }
+                                                                                            myChutiyaFunction(() {});
+                                                                                          } else {
+                                                                                            myChutiyaFunction(() {
+                                                                                              if (productController.addOnQtyList[index] > 1) {
+                                                                                                productController.setAddOnQuantity(false, index);
+                                                                                                //  if (productController.quantity != 1) {
+                                                                                                productController.setQuantity(false);
+                                                                                                //  }
+                                                                                              } else {
+                                                                                                productController.addAddOn(false, index);
+                                                                                                //   if (productController.quantity != 1) {
+                                                                                                productController.setQuantity(false);
+                                                                                                //    }
+                                                                                              }
+                                                                                            });
+                                                                                          }
+                                                                                          if (productController.quantity == 0) {
+                                                                                            Get.back();
+                                                                                            removeMe();
+                                                                                          }
+
+                                                                                          productController.update();
+                                                                                          cartController.update();
+                                                                                        },
+                                                                                        child: Center(child: Icon(Icons.remove, size: Dimensions.paddingSizeLarge)),
+                                                                                      ),
+                                                                                    ),
+                                                                                    Text(
+                                                                                      overflow: TextOverflow.ellipsis,
+                                                                                      productController.addOnQtyList[index].toString(),
+                                                                                      style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraLarge),
+                                                                                    ),
+                                                                                    Expanded(
+                                                                                      child: InkWell(
+                                                                                        onTap: () async {
+                                                                                          if (addonLimit != 0 && addoncount == addonLimit) {
+                                                                                            return;
+                                                                                          }
+
+                                                                                          myChutiyaFunction(() {
+                                                                                            productController.setAddOnQuantity(true, index);
+
+                                                                                            productController.setQuantity(true);
+                                                                                          });
+
+                                                                                          productController.update();
+                                                                                          cartController.update();
+                                                                                        },
+                                                                                        child: Center(
+                                                                                            child: Icon(
+                                                                                          Icons.add,
+                                                                                          size: Dimensions.paddingSizeLarge,
+                                                                                          color: (addonLimit != 0 && addoncount == addonLimit) ? Colors.transparent : null,
+                                                                                        )),
+                                                                                      ),
+                                                                                    ),
+                                                                                  ]),
+                                                                                )
+                                                                              : const SizedBox(),
+                                                                        ]),
+                                                                  ),
+                                                                )),
                                                       ),
+                                                      // ListView.builder(
+
+                                                      //   scrollDirection:
+                                                      //       Axis.horizontal,
+                                                      //   itemCount: widget
+                                                      //       .product
+                                                      //       .addOns!
+                                                      //       .length,
+                                                      //   itemBuilder:
+                                                      //       (context, index) {
+                                                      //     return
+                                                      //     InkWell(
+                                                      //       onTap: () {
+                                                      //         myChutiyaFunction(
+                                                      //             () {
+                                                      //           if (!productController
+                                                      //                   .addOnActiveList[
+                                                      //               index]) {
+                                                      //             productController
+                                                      //                 .addAddOn(
+                                                      //                     true,
+                                                      //                     index);
+
+                                                      //             productController
+                                                      //                 .setQuantity(
+                                                      //                     true);
+                                                      //           } else if (productController
+                                                      //                       .addOnQtyList[
+                                                      //                   index] ==
+                                                      //               1) {
+                                                      //             productController
+                                                      //                 .addAddOn(
+                                                      //                     false,
+                                                      //                     index);
+                                                      //             // if (productController
+                                                      //             //         .quantity !=
+                                                      //             //     1) {
+                                                      //             productController
+                                                      //                 .setQuantity(
+                                                      //                     false);
+                                                      //             // }
+                                                      //             // if (productController
+                                                      //             //         .quantity ==
+                                                      //             //     0) {
+                                                      //             //   removeMe();
+                                                      //             // }
+                                                      //           }
+                                                      //         });
+                                                      //         if (productController
+                                                      //                 .quantity ==
+                                                      //             0) {
+                                                      //           removeMe();
+                                                      //         }
+
+                                                      //         productController
+                                                      //             .update();
+                                                      //         cartController
+                                                      //             .update();
+                                                      //       },
+                                                      //       child: Container(
+                                                      //         width: 140,
+                                                      //         height: 130,
+                                                      //         margin: EdgeInsets.only(
+                                                      //             right: Dimensions
+                                                      //                 .paddingSizeDefault),
+                                                      //         alignment:
+                                                      //             Alignment
+                                                      //                 .center,
+                                                      //         decoration:
+                                                      //             BoxDecoration(
+                                                      //           color: productController
+                                                      //                       .addOnActiveList[
+                                                      //                   index]
+                                                      //               ? Theme.of(
+                                                      //                       context)
+                                                      //                   .primaryColor
+                                                      //               : Theme.of(
+                                                      //                       context)
+                                                      //                   .hintColor
+                                                      //                   .withOpacity(
+                                                      //                       0.15),
+                                                      //           borderRadius:
+                                                      //               BorderRadius.circular(
+                                                      //                   Dimensions
+                                                      //                       .radiusSmall),
+                                                      //           boxShadow:
+                                                      //               productController
+                                                      //                       .addOnActiveList[index]
+                                                      //                   ? [
+                                                      //                       BoxShadow(
+                                                      //                           color: Colors.grey[Get.isDarkMode ? 700 : 300]!,
+                                                      //                           blurRadius: 5,
+                                                      //                           spreadRadius: 1)
+                                                      //                     ]
+                                                      //                   : null,
+                                                      //         ),
+                                                      //         child: Column(
+                                                      //             children: [
+                                                      //               Expanded(
+                                                      //                 child: Column(
+                                                      //                     mainAxisAlignment:
+                                                      //                         MainAxisAlignment.center,
+                                                      //                     children: [
+                                                      //                       Text(
+                                                      //                         overflow: TextOverflow.ellipsis,
+                                                      //                         widget.product.addOns![index].name ?? '',
+                                                      //                         maxLines: 2,
+                                                      //                         // overflow: TextOverflow.ellipsis,
+                                                      //                         textAlign: TextAlign.center,
+                                                      //                         style: robotoMedium.copyWith(
+                                                      //                           color: productController.addOnActiveList[index] ? Colors.white : Theme.of(context).textTheme.bodyLarge!.color,
+                                                      //                           fontSize: Dimensions.fontSizeExtraLarge,
+                                                      //                         ),
+                                                      //                       ),
+                                                      //                       const SizedBox(height: 5),
+                                                      //                       Text(
+                                                      //                         overflow: TextOverflow.ellipsis,
+                                                      //                         widget.product.addOns![index].price! > 0 ? PriceConverter.convertPrice(widget.product.addOns![index].price!) : 'free'.tr,
+                                                      //                         maxLines: 1,
+                                                      //                         //  overflow: TextOverflow.ellipsis,
+                                                      //                         style: robotoRegular.copyWith(
+                                                      //                           color: productController.addOnActiveList[index] ? Colors.white : Theme.of(context).textTheme.bodyLarge!.color,
+                                                      //                           fontSize: Dimensions.fontSizeLarge,
+                                                      //                         ),
+                                                      //                       ),
+                                                      //                     ]),
+                                                      //               ),
+                                                      //               productController
+                                                      //                       .addOnActiveList[index]
+                                                      //                   ? Container(
+                                                      //                       padding:
+                                                      //                           const EdgeInsets.symmetric(vertical: 6),
+                                                      //                       margin:
+                                                      //                           EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
+                                                      //                       decoration:
+                                                      //                           BoxDecoration(
+                                                      //                         borderRadius: BorderRadius.circular(Dimensions.radiusSmall),
+                                                      //                         color: Theme.of(context).canvasColor,
+                                                      //                       ),
+                                                      //                       child:
+                                                      //                           Row(children: [
+                                                      //                         Expanded(
+                                                      //                           child: InkWell(
+                                                      //                             onTap: () async {
+                                                      //                               if (addonLimit != 0 && addoncount == addonLimit) {
+                                                      //                                 if (productController.addOnQtyList[index] > 1) {
+                                                      //                                   productController.setAddOnQuantity(false, index);
+                                                      //                                   //   if (productController.quantity != 1) {
+                                                      //                                   productController.setQuantity(false);
+                                                      //                                   //   }
+                                                      //                                 } else {
+                                                      //                                   productController.addAddOn(false, index);
+                                                      //                                   //  if (productController.quantity != 1) {
+                                                      //                                   productController.setQuantity(false);
+                                                      //                                   //  }
+                                                      //                                 }
+                                                      //                                 myChutiyaFunction(() {});
+                                                      //                               } else {
+                                                      //                                 myChutiyaFunction(() {
+                                                      //                                   if (productController.addOnQtyList[index] > 1) {
+                                                      //                                     productController.setAddOnQuantity(false, index);
+                                                      //                                     //  if (productController.quantity != 1) {
+                                                      //                                     productController.setQuantity(false);
+                                                      //                                     //  }
+                                                      //                                   } else {
+                                                      //                                     productController.addAddOn(false, index);
+                                                      //                                     //   if (productController.quantity != 1) {
+                                                      //                                     productController.setQuantity(false);
+                                                      //                                     //    }
+                                                      //                                   }
+                                                      //                                 });
+                                                      //                               }
+                                                      //                               if (productController.quantity == 0) {
+                                                      //                                 Get.back();
+                                                      //                                 removeMe();
+                                                      //                               }
+
+                                                      //                               productController.update();
+                                                      //                               cartController.update();
+                                                      //                             },
+                                                      //                             child: Center(child: Icon(Icons.remove, size: Dimensions.paddingSizeLarge)),
+                                                      //                           ),
+                                                      //                         ),
+                                                      //                         Text(
+                                                      //                           overflow: TextOverflow.ellipsis,
+                                                      //                           productController.addOnQtyList[index].toString(),
+                                                      //                           style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraLarge),
+                                                      //                         ),
+                                                      //                         Expanded(
+                                                      //                           child: InkWell(
+                                                      //                             onTap: () async {
+                                                      //                               if (addonLimit != 0 && addoncount == addonLimit) {
+                                                      //                                 return;
+                                                      //                               }
+
+                                                      //                               myChutiyaFunction(() {
+                                                      //                                 productController.setAddOnQuantity(true, index);
+
+                                                      //                                 productController.setQuantity(true);
+                                                      //                               });
+
+                                                      //                               productController.update();
+                                                      //                               cartController.update();
+                                                      //                             },
+                                                      //                             child: Center(
+                                                      //                                 child: Icon(
+                                                      //                               Icons.add,
+                                                      //                               size: Dimensions.paddingSizeLarge,
+                                                      //                               color: (addonLimit != 0 && addoncount == addonLimit) ? Colors.transparent : null,
+                                                      //                             )),
+                                                      //                           ),
+                                                      //                         ),
+                                                      //                       ]),
+                                                      //                     )
+                                                      //                   : const SizedBox(),
+                                                      //             ]),
+                                                      //       ),
+                                                      //     );
+                                                      //   },
+                                                      // ),
                                                     ])
                                               : const SizedBox(),
                                         ]),
@@ -1104,192 +1359,259 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                             EdgeInsets.all(Dimensions.paddingSizeExtraSmall),
                         child: Row(
                           children: [
-                            isTab
-                                ? Flexible(
-                                    flex: 2,
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Text(
-                                            overflow: TextOverflow.ellipsis,
-                                            'total'.tr,
-                                            style: robotoRegular.copyWith(
-                                                fontSize:
-                                                    Dimensions.fontSizeLarge)),
-                                        SizedBox(
-                                            width: Dimensions.paddingSizeSmall),
-                                        SizedBox(
-                                            width: Dimensions.paddingSizeSmall),
-                                        Text(
-                                            overflow: TextOverflow.ellipsis,
-                                            PriceConverter.convertPrice(
-                                                priceWithAddonsVariation),
-                                            style: robotoBold.copyWith(
-                                                color: Theme.of(context)
-                                                    .primaryColor)),
-                                        SizedBox(
-                                            width: Dimensions
-                                                .paddingSizeExtraSmall),
-                                        (priceWithAddonsVariationWithoutDiscount >
-                                                priceWithAddonsVariation)
-                                            ? Text(
-                                                overflow: TextOverflow.ellipsis,
-                                                '(${PriceConverter.convertPrice(priceWithAddonsVariationWithoutDiscount)})',
-                                                style: robotoMedium.copyWith(
-                                                    color: Theme.of(context)
-                                                        .disabledColor,
-                                                    fontSize: Dimensions
-                                                        .fontSizeSmall,
-                                                    decoration: TextDecoration
-                                                        .lineThrough),
-                                              )
-                                            : const SizedBox(),
-                                      ],
-                                    ),
-                                  )
-                                : Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal:
-                                            Dimensions.paddingSizeDefault),
-                                    child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                              overflow: TextOverflow.ellipsis,
-                                              'total'.tr,
-                                              style: robotoRegular.copyWith(
-                                                  fontSize: Dimensions
-                                                      .fontSizeLarge)),
-                                          SizedBox(
-                                              width: Dimensions
-                                                  .paddingSizeExtraSmall),
-                                          Text(
-                                              overflow: TextOverflow.ellipsis,
-                                              PriceConverter.convertPrice(
-                                                  priceWithAddonsVariation),
-                                              style: robotoBold.copyWith(
-                                                  fontSize: Dimensions
-                                                      .fontSizeExtraLarge)),
-                                          SizedBox(
-                                              width: Dimensions
-                                                  .paddingSizeExtraSmall),
-                                          (priceWithAddonsVariationWithoutDiscount >
-                                                  priceWithAddonsVariation)
-                                              ? Text(
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  '(${PriceConverter.convertPrice(priceWithAddonsVariationWithoutDiscount)})',
-                                                  style: robotoMedium.copyWith(
-                                                      color: Theme.of(context)
-                                                          .disabledColor,
-                                                      fontSize: Dimensions
-                                                          .fontSizeSmall,
-                                                      decoration: TextDecoration
-                                                          .lineThrough),
-                                                )
-                                              : const SizedBox(),
-                                        ]),
-                                  ),
-                            Flexible(
-                              flex: 3,
-                              child: CustomButton(
-                                margin: EdgeInsets.all(
-                                    ResponsiveHelper.isSmallTab()
-                                        ? 5
-                                        : Dimensions.paddingSizeSmall),
-                                buttonText: isAvailable
-                                    ? (widget.cart != null)
-                                        ? 'update_in_cart'.tr
-                                        : 'add_to_cart'.tr
-                                    : 'not_available'.tr,
-                                onPressed: isAvailable
-                                    ? () {
-                                        if (variationList.isNotEmpty) {
-                                          for (int index = 0;
-                                              index < variationList.length;
-                                              index++) {
-                                            if (!variationList[index]
-                                                    .isMultiSelect! &&
-                                                variationList[index]
-                                                    .isRequired! &&
-                                                !productController
-                                                    .selectedVariations[index]
-                                                    .contains(true)) {
-                                              showCustomSnackBar(
-                                                  '${'choose_a_variation_from'.tr} ${variationList[index].name}',
-                                                  isToast: true,
-                                                  isError: true);
-                                              return;
-                                            } else if (variationList[index]
-                                                    .isMultiSelect! &&
-                                                (variationList[index]
-                                                        .isRequired! ||
-                                                    productController
-                                                        .selectedVariations[
-                                                            index]
-                                                        .contains(true)) &&
-                                                variationList[index].min! >
-                                                    productController
-                                                        .selectedVariationLength(
-                                                            productController
-                                                                .selectedVariations,
-                                                            index)) {
-                                              showCustomSnackBar(
-                                                  '${'you_need_to_select_minimum'.tr} ${variationList[index].min} '
-                                                  '${'to_maximum'.tr} ${variationList[index].max} ${'options_from'.tr} ${variationList[index].name} ${'variation'.tr}',
-                                                  isError: true,
-                                                  isToast: true);
-                                              return;
-                                            }
+                            // isTab
+                            //     ? Flexible(
+                            //         flex: 2,
+                            //         child: Row(
+                            //           mainAxisAlignment:
+                            //               MainAxisAlignment.center,
+                            //           children: [
+                            //             Text(
+                            //                 overflow: TextOverflow.ellipsis,
+                            //                 'total'.tr,
+                            //                 style: robotoRegular.copyWith(
+                            //                     fontSize:
+                            //                         Dimensions.fontSizeLarge)),
+                            //             SizedBox(
+                            //                 width: Dimensions.paddingSizeSmall),
+                            //             SizedBox(
+                            //                 width: Dimensions.paddingSizeSmall),
+                            //             Text(
+                            //                 overflow: TextOverflow.ellipsis,
+                            //                 PriceConverter.convertPrice(
+                            //                     priceWithAddonsVariation),
+                            //                 style: robotoBold.copyWith(
+                            //                     color: Theme.of(context)
+                            //                         .primaryColor)),
+                            //             SizedBox(
+                            //                 width: Dimensions
+                            //                     .paddingSizeExtraSmall),
+                            //             (priceWithAddonsVariationWithoutDiscount >
+                            //                     priceWithAddonsVariation)
+                            //                 ? Text(
+                            //                     overflow: TextOverflow.ellipsis,
+                            //                     '(${PriceConverter.convertPrice(priceWithAddonsVariationWithoutDiscount)})',
+                            //                     style: robotoMedium.copyWith(
+                            //                         color: Theme.of(context)
+                            //                             .disabledColor,
+                            //                         fontSize: Dimensions
+                            //                             .fontSizeExtraLarge,
+                            //                         decoration: TextDecoration
+                            //                             .lineThrough),
+                            //                   )
+                            //                 : const SizedBox(),
+                            //           ],
+                            //         ),
+                            //       )
+                            //     :
+                            Padding(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: Dimensions.paddingSizeDefault),
+                              child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                        overflow: TextOverflow.ellipsis,
+                                        'total'.tr,
+                                        style: robotoRegular.copyWith(
+                                            fontSize:
+                                                Dimensions.fontSizeExtraLarge)),
+                                    SizedBox(
+                                        width:
+                                            Dimensions.paddingSizeExtraSmall),
+                                    Text(
+                                        overflow: TextOverflow.ellipsis,
+                                        PriceConverter.convertPrice((widget
+                                                        .product.addOns ==
+                                                    null ||
+                                                widget.product.addOns!.isEmpty)
+                                            ? priceWithAddonsVariationWithoutDiscount
+                                            : addonsCost + variationPrice),
+                                        style: robotoBold.copyWith(
+                                            fontSize:
+                                                Dimensions.fontSizeExtraLarge +
+                                                    4)),
+
+                                    // SizedBox(
+                                    //     width: Dimensions
+                                    //         .paddingSizeExtraSmall),
+                                    // (priceWithAddonsVariationWithoutDiscount >
+                                    //         priceWithAddonsVariation)
+                                    //     ? Text(
+                                    //         overflow:
+                                    //             TextOverflow.ellipsis,
+                                    //         '(${PriceConverter.convertPrice(priceWithAddonsVariationWithoutDiscount)})',
+                                    //         style: robotoMedium.copyWith(
+                                    //             color: Theme.of(context)
+                                    //                 .disabledColor,
+                                    //             fontSize: Dimensions
+                                    //                 .fontSizeSmall,
+                                    //             decoration: TextDecoration
+                                    //                 .lineThrough),
+                                    //       )
+                                    //     : const SizedBox(),
+                                  ]),
+                            ),
+                            if (widget.product.addOns == null ||
+                                widget.product.addOns!.isEmpty)
+                              Expanded(child: Container()),
+                            if (widget.product.addOns == null ||
+                                widget.product.addOns!.isEmpty)
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    // Expanded(child: Container()),
+                                    QuantityButton(
+                                        isIncrement: false,
+                                        onTap: () {
+                                          // int cartIndex =
+                                          //     widget.cartIndex ?? -1;
+                                          if (productController.quantity == 1) {
+                                            productController
+                                                .setQuantity(false);
+                                            removeMe();
+                                            productController.update();
+                                            cartController.update();
+                                            //   Get.back();
+                                          } else if (productController
+                                                  .quantity >
+                                              1) {
+                                            productController
+                                                .setQuantity(false);
+                                            myChutiyaFunction(() => null);
+                                            productController.update();
+                                            cartController.update();
                                           }
-                                        }
+                                        }),
+                                    SizedBox(
+                                        width:
+                                            Dimensions.paddingSizeExtraSmall),
+                                    Text(
+                                      overflow: TextOverflow.ellipsis,
+                                      productController.quantity.toString(),
+                                      style: robotoBold.copyWith(
+                                          color: Theme.of(context).primaryColor,
+                                          fontSize:
+                                              Dimensions.fontSizeExtraLarge +
+                                                  15),
+                                    ),
+                                    SizedBox(
+                                        width:
+                                            Dimensions.paddingSizeExtraSmall),
+                                    QuantityButton(
+                                        isIncrement: true,
+                                        onTap: () {
+                                          myChutiyaFunction(() {
+                                            productController.setQuantity(true);
+                                          });
+                                        }),
+                                  ]),
 
-                                        cart.CartModel cartModel = CartModel(
-                                          note: note.text.isNotEmpty
-                                              ? note.text.toString()
-                                              : null,
-                                          price: priceWithVariation,
-                                          discountedPrice: priceWithDiscount,
-                                          variation: [],
-                                          discountAmount: priceWithVariation -
-                                              PriceConverter
-                                                  .convertWithDiscount(
-                                                priceWithVariation,
-                                                discount,
-                                                discountType,
-                                              ),
-                                          quantity: productController.quantity,
-                                          taxAmount: (priceWithVariation -
-                                              PriceConverter
-                                                  .convertWithDiscount(
-                                                      priceWithVariation,
-                                                      widget.product.tax!,
-                                                      widget.product.taxType!) +
-                                              addonsTax),
-                                          addOnIds: addOnIdList,
-                                          product: widget.product,
-                                          variations: productController
-                                              .selectedVariations,
-                                        );
+                            // if (widget.product.addOns == null ||
+                            //     widget.product.addOns!.isEmpty)
+                            //   Flexible(
+                            //     flex: 3,
+                            //     child: CustomButton(
+                            //       margin: EdgeInsets.all(
+                            //           ResponsiveHelper.isSmallTab()
+                            //               ? 5
+                            //               : Dimensions.paddingSizeSmall),
+                            //       buttonText: isAvailable
+                            //           ? (widget.cart != null)
+                            //               ? 'update_in_cart'.tr
+                            //               : 'add_to_cart'.tr
+                            //           : 'not_available'.tr,
+                            //       onPressed: isAvailable
+                            //           ? () {
+                            //               if (variationList.isNotEmpty) {
+                            //                 for (int index = 0;
+                            //                     index < variationList.length;
+                            //                     index++) {
+                            //                   if (!variationList[index]
+                            //                           .isMultiSelect! &&
+                            //                       variationList[index]
+                            //                           .isRequired! &&
+                            //                       !productController
+                            //                           .selectedVariations[index]
+                            //                           .contains(true)) {
+                            //                     showCustomSnackBar(
+                            //                         '${'choose_a_variation_from'.tr} ${variationList[index].name}',
+                            //                         isToast: true,
+                            //                         isError: true);
+                            //                     return;
+                            //                   } else if (variationList[index]
+                            //                           .isMultiSelect! &&
+                            //                       (variationList[index]
+                            //                               .isRequired! ||
+                            //                           productController
+                            //                               .selectedVariations[
+                            //                                   index]
+                            //                               .contains(true)) &&
+                            //                       variationList[index].min! >
+                            //                           productController
+                            //                               .selectedVariationLength(
+                            //                                   productController
+                            //                                       .selectedVariations,
+                            //                                   index)) {
+                            //                     showCustomSnackBar(
+                            //                         '${'you_need_to_select_minimum'.tr} ${variationList[index].min} '
+                            //                         '${'to_maximum'.tr} ${variationList[index].max} ${'options_from'.tr} ${variationList[index].name} ${'variation'.tr}',
+                            //                         isError: true,
+                            //                         isToast: true);
+                            //                     return;
+                            //                   }
+                            //                 }
+                            //               }
 
-                                        cartController.addToCart(
-                                            cartModel,
-                                            widget.cart != null
-                                                ? widget.cartIndex!
-                                                : productController.cartIndex);
+                            //               cartController.addToCart(
+                            //                   CartModel(
+                            //                     note: note.text.isNotEmpty
+                            //                         ? note.text.toString()
+                            //                         : null,
+                            //                     price: priceWithVariation,
+                            //                     discountedPrice:
+                            //                         priceWithDiscount,
+                            //                     variation: [],
+                            //                     discountAmount:
+                            //                         priceWithVariation -
+                            //                             PriceConverter
+                            //                                 .convertWithDiscount(
+                            //                               priceWithVariation,
+                            //                               discount,
+                            //                               discountType,
+                            //                             ),
+                            //                     quantity:
+                            //                         productController.quantity,
+                            //                     taxAmount: (priceWithVariation -
+                            //                         PriceConverter
+                            //                             .convertWithDiscount(
+                            //                                 priceWithVariation,
+                            //                                 widget.product.tax!,
+                            //                                 widget.product
+                            //                                     .taxType!) +
+                            //                         addonsTax),
+                            //                     addOnIds: addOnIdList,
+                            //                     product: widget.product,
+                            //                     variations: productController
+                            //                         .selectedVariations,
+                            //                   ),
+                            //                   widget.cart != null
+                            //                       ? widget.cartIndex!
+                            //                       : productController
+                            //                           .cartIndex);
 
-                                        showCustomSnackBar('Item added to cart',
-                                            isError: false, isToast: true);
+                            //               showCustomSnackBar(
+                            //                   'Item added to cart',
+                            //                   isError: false,
+                            //                   isToast: true);
 
-                                        productController.update();
-                                        cartController.update();
-                                        Get.back();
-                                      }
-                                    : null,
-                              ),
-                            )
+                            //               productController.update();
+                            //               cartController.update();
+                            //               Get.back();
+                            //             }
+                            //           : null,
+                            //     ),
+                            //   )
                           ],
                         ),
                       ),

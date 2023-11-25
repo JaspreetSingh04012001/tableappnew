@@ -19,6 +19,7 @@ import 'package:efood_table_booking/view/screens/order/widget/order_success_scre
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:number_text_input_formatter/number_text_input_formatter.dart';
 
 class PaymentScreen extends StatefulWidget {
@@ -36,6 +37,14 @@ class _PaymentScreenState extends State<PaymentScreen> {
   double _currentAmount = 0;
   double _payableAmount = 0;
   int? selectedindex;
+  var logger = Logger();
+  final ScrollController scrollController = ScrollController();
+
+  void scrollToBottom() {
+    scrollController.animateTo(scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 300), curve: Curves.easeInOut);
+  }
+
   @override
   void dispose() {
     _amountTextController.dispose();
@@ -113,11 +122,34 @@ class _PaymentScreenState extends State<PaymentScreen> {
     BuildContext context,
     void Function(bool isSuccess, String message, String orderID) callback,
   ) {
+    List<int> x = [10, 20, 50, 70, 100];
+    void amountCheck() {
+      double total = Get.find<CartController>().totalAmount;
+      double cashAmount = double.parse(_amountTextController.text.isEmpty
+          ? "0"
+          : _amountTextController.text);
+      double cardAmount = double.parse(
+          _splitCardamountTextController.text.isEmpty
+              ? "0"
+              : _splitCardamountTextController.text);
+      if ((cashAmount + cardAmount) > total) {
+        _changeAmount = (cashAmount + cardAmount) - total;
+      } else {
+        _splitCardamountTextController.text = (total - cashAmount).toString();
+        _changeAmount = 0;
+      }
+    }
+
+    if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
+      scrollToBottom();
+    }
+
     return orderController.isLoading
         ? Center(
             child: CustomLoader(color: Theme.of(context).primaryColor),
           )
         : SingleChildScrollView(
+            controller: scrollController,
             child: Column(
               children: [
                 SizedBox(height: Dimensions.paddingSizeExtraLarge),
@@ -149,6 +181,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                             PriceConverter.convertPrice(
                                 orderController.placeOrderBody!.orderAmount!);
                       } else {
+                        selectedindex = null;
                         _splitCardamountTextController.clear();
                         _amountTextController.clear();
                         _changeAmount = 0;
@@ -201,42 +234,53 @@ class _PaymentScreenState extends State<PaymentScreen> {
                         if (orderController.selectedMethod == 'cash' ||
                             orderController.selectedMethod == 'split')
                           Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 10),
+                            padding: const EdgeInsets.symmetric(vertical: 15),
                             child: Wrap(
                                 children: List.generate(
-                                    20,
+                                    x.length,
                                     (index) => InkWell(
                                           onTap: () {
-                                            setState(() {
-                                              // if (selectedindex != null) {
-                                              // selectedindex = null;
-                                              //  _amountTextController.
-                                              // _amountTextController
-                                              //     .text = (double.parse(
-                                              //             _amountTextController
-                                              //                 .text) +
-                                              //         double.parse(
-                                              //             "${(index + 1) * 10}"))
-                                              //     .toString();
-                                              // if (double.parse(
-                                              //         _amountTextController.text) >
-                                              //     Get.find<CartController>()
-                                              //         .totalAmount) {
-                                              //   _changeAmount = (Get.find<
-                                              //                   CartController>()
-                                              //               .totalAmount -
-                                              //           double.parse(
-                                              //               _amountTextController
-                                              //                   .text)) *
-                                              //       -1.0;
-                                              // } else {
-                                              //   _changeAmount = 0;
-                                              // }
-                                              // orderController.update();
-                                              //   } else {
-                                              selectedindex = index;
-                                              _amountTextController.text =
-                                                  "${(index + 1) * 5}";
+                                            if (orderController
+                                                        .selectedMethod ==
+                                                    'split' &&
+                                                x[index] >
+                                                    Get.find<CartController>()
+                                                        .totalAmount) {
+                                              showCustomSnackBar(
+                                                  "Cash amount cannot exceed total in Split method");
+                                              return;
+                                            }
+                                            if (orderController
+                                                        .selectedMethod ==
+                                                    'cash' &&
+                                                x[index] <
+                                                    Get.find<CartController>()
+                                                        .totalAmount) {
+                                              showCustomSnackBar(
+                                                  "Please select more than price");
+                                              return;
+                                            }
+                                            if (selectedindex == index) {
+                                              setState(() {
+                                                _amountTextController.clear();
+                                                _splitCardamountTextController
+                                                    .clear();
+                                                _changeAmount = 0;
+                                                selectedindex = null;
+                                              });
+                                              return;
+                                            }
+
+                                            selectedindex = index;
+                                            _amountTextController.text =
+                                                "${x[index]}.0";
+                                            if (orderController
+                                                    .selectedMethod ==
+                                                'split') {
+                                              _splitCardamountTextController
+                                                  .clear();
+                                              amountCheck();
+                                            } else {
                                               if (double.parse(
                                                       _amountTextController
                                                           .text) >
@@ -252,8 +296,10 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                               } else {
                                                 _changeAmount = 0;
                                               }
-                                              orderController.update();
-                                            });
+                                            }
+
+                                            orderController.update();
+                                            //  });
                                           },
                                           child: Padding(
                                             padding: const EdgeInsets.symmetric(
@@ -278,7 +324,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                       horizontal: 12,
                                                       vertical: 8),
                                                   child: Text(
-                                                    "\$${(index + 1) * 5}",
+                                                    "\$${x[index]}",
                                                     style:
                                                         robotoRegular.copyWith(
                                                             color: (index ==
@@ -331,7 +377,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                         inputFormatter: [
                                           NumberTextInputFormatter(
                                             integerDigits: 10,
-                                            decimalDigits: 2,
+                                            decimalDigits: 1,
                                             maxValue: '1000000000.00',
                                             decimalSeparator: '.',
                                             groupDigits: 3,
@@ -345,6 +391,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                         hintStyle: robotoRegular.copyWith(
                                             fontSize: Dimensions.fontSizeSmall),
                                         onChanged: (value) {
+                                          selectedindex = null;
                                           if (double.parse(value) >
                                               Get.find<CartController>()
                                                   .totalAmount) {
@@ -398,7 +445,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                       inputFormatter: [
                                         NumberTextInputFormatter(
                                           integerDigits: 10,
-                                          decimalDigits: 2,
+                                          decimalDigits: 1,
                                           maxValue: '1000000000.00',
                                           decimalSeparator: '.',
                                           groupDigits: 3,
@@ -415,23 +462,9 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                       hintStyle: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeSmall),
                                       onChanged: (value) {
-                                        if ((double.parse(value) +
-                                                double.parse(
-                                                    _splitCardamountTextController
-                                                        .text)) >
-                                            Get.find<CartController>()
-                                                .totalAmount) {
-                                          _changeAmount = (Get.find<
-                                                          CartController>()
-                                                      .totalAmount -
-                                                  (double.parse(value) +
-                                                      double.parse(
-                                                          _splitCardamountTextController
-                                                              .text))) *
-                                              -1.0;
-                                        } else {
-                                          _changeAmount = 0;
-                                        }
+                                             selectedindex = null;
+                                        _splitCardamountTextController.clear();
+                                        amountCheck();
                                         orderController.update();
                                       },
                                     ),
@@ -475,7 +508,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                       inputFormatter: [
                                         NumberTextInputFormatter(
                                           integerDigits: 10,
-                                          decimalDigits: 2,
+                                          decimalDigits: 1,
                                           maxValue: '1000000000.00',
                                           decimalSeparator: '.',
                                           groupDigits: 3,
@@ -489,23 +522,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                       hintStyle: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeSmall),
                                       onChanged: (value) {
-                                        if ((double.parse(value) +
-                                                double.parse(
-                                                    _amountTextController
-                                                        .text)) >
-                                            Get.find<CartController>()
-                                                .totalAmount) {
-                                          _changeAmount = (Get.find<
-                                                          CartController>()
-                                                      .totalAmount -
-                                                  (double.parse(value) +
-                                                      double.parse(
-                                                          _amountTextController
-                                                              .text))) *
-                                              -1.0;
-                                        } else {
-                                          _changeAmount = 0;
-                                        }
+                                             selectedindex = null;
+                                        amountCheck();
                                         orderController.update();
                                       },
                                     ),
@@ -693,79 +711,173 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                       buttonText: 'confirm_payment'.tr,
                                       fontSize: Get.width < 390 ? 12 : null,
                                       onPressed: () {
-                                        if ((orderController.selectedMethod ==
-                                                    'cash' ||
-                                                orderController
-                                                        .selectedMethod ==
-                                                    'split') &&
+                                        if (orderController.selectedMethod ==
+                                            'card') {
+                                          orderController.placeOrder(
+                                            orderController.placeOrderBody!
+                                                .copyWith(
+                                              paymentStatus: 'paid',
+                                              paymentMethod: orderController
+                                                  .selectedMethod,
+                                              card: _amountTextController.text
+                                                  .replaceAll("\$", ""),
+                                              // cash: _amountTextController.text,
+                                              previousDue: orderController
+                                                  .previousDueAmount(),
+                                            ),
+                                            callback,
+                                            _amountTextController.text,
+                                            _changeAmount,
+                                          );
+                                          return;
+                                        }
+                                        if (orderController.selectedMethod ==
+                                                'cash' &&
                                             _amountTextController
                                                 .text.isEmpty) {
                                           showCustomSnackBar(
                                               'please_enter_your_amount'.tr);
-                                        } else if (orderController
-                                                    .selectedMethod ==
+                                          return;
+                                        }
+                                        if (orderController.selectedMethod ==
+                                                'split' &&
+                                            (_amountTextController
+                                                    .text.isEmpty ||
+                                                _splitCardamountTextController
+                                                    .text.isEmpty)) {
+                                          showCustomSnackBar(
+                                              'please_enter_your_amount'.tr);
+                                          return;
+                                        }
+                                        double cashAmount = double.parse(
+                                            _amountTextController.text.isEmpty
+                                                ? "0"
+                                                : _amountTextController.text);
+                                        double cardAmount = double.parse(
+                                            _splitCardamountTextController
+                                                    .text.isEmpty
+                                                ? "0"
+                                                : _splitCardamountTextController
+                                                    .text);
+
+                                        logger.i(orderController
+                                            .placeOrderBody!.orderAmount!);
+
+                                        if (orderController.selectedMethod ==
                                                 'cash' &&
                                             orderController.placeOrderBody!
                                                     .orderAmount! >
-                                                int.parse(_amountTextController
-                                                    .text)) {
+                                                cashAmount) {
                                           showCustomSnackBar(
                                               'you_need_pay_more_amount'.tr);
-                                        } else {
-                                          // orderController.placeOrderBody!
-                                          //     .copyWith(
-                                          //   paymentStatus: 'paid',
-                                          //   paymentMethod:
-                                          //       orderController.selectedMethod,
-                                          //   card: _splitCardamountTextController
-                                          //       .text,
-                                          //   cash: _amountTextController.text,
-                                          //   previousDue: orderController
-                                          //       .previousDueAmount(),
-                                          // );
-                                          // //  orderController.update();
-
-                                          // print(orderController.placeOrderBody!
-                                          //     .toJson());
-                                          if (orderController.selectedMethod ==
-                                              'card') {
-                                            orderController.placeOrder(
-                                              orderController.placeOrderBody!
-                                                  .copyWith(
-                                                paymentStatus: 'paid',
-                                                paymentMethod: orderController
-                                                    .selectedMethod,
-                                                card: _amountTextController.text
-                                                    .replaceAll("\$", ""),
-                                                // cash: _amountTextController.text,
-                                                previousDue: orderController
-                                                    .previousDueAmount(),
-                                              ),
-                                              callback,
-                                              _amountTextController.text,
-                                              _changeAmount,
-                                            );
-                                          } else {
-                                            orderController.placeOrder(
-                                              orderController.placeOrderBody!
-                                                  .copyWith(
-                                                paymentStatus: 'paid',
-                                                paymentMethod: orderController
-                                                    .selectedMethod,
-                                                card:
-                                                    _splitCardamountTextController
-                                                        .text,
-                                                cash:
-                                                    _amountTextController.text,
-                                                previousDue: orderController
-                                                    .previousDueAmount(),
-                                              ),
-                                              callback,
-                                              _amountTextController.text,
-                                              _changeAmount,
-                                            );
-                                          }
+                                          return;
                                         }
+                                        if (orderController.selectedMethod ==
+                                            'cash') {
+                                          orderController.placeOrder(
+                                            orderController.placeOrderBody!
+                                                .copyWith(
+                                              paymentStatus: 'paid',
+                                              paymentMethod: orderController
+                                                  .selectedMethod,
+                                              cash: cashAmount.toString(),
+                                              previousDue: orderController
+                                                  .previousDueAmount(),
+                                            ),
+                                            callback,
+                                            _amountTextController.text,
+                                            _changeAmount,
+                                          );
+                                          return;
+                                        }
+                                        if (orderController.selectedMethod ==
+                                                'split' &&
+                                            orderController.placeOrderBody!
+                                                    .orderAmount! >
+                                                (cashAmount + cardAmount)) {
+                                          showCustomSnackBar(
+                                              'you_need_pay_more_amount'.tr);
+                                          return;
+                                        }
+                                        if (orderController.selectedMethod ==
+                                            'split') {
+                                          orderController.placeOrder(
+                                            orderController.placeOrderBody!
+                                                .copyWith(
+                                              paymentStatus: 'paid',
+                                              paymentMethod: orderController
+                                                  .selectedMethod,
+                                              cash: cashAmount.toString(),
+                                              card: cardAmount.toString(),
+                                              previousDue: orderController
+                                                  .previousDueAmount(),
+                                            ),
+                                            callback,
+                                            _amountTextController.text,
+                                            _changeAmount,
+                                          );
+                                          return;
+                                        }
+
+                                        // if ((orderController.selectedMethod ==
+                                        //             'cash' ||
+                                        //         orderController
+                                        //                 .selectedMethod ==
+                                        //             'split') &&
+                                        //     _amountTextController
+                                        //         .text.isEmpty) {
+                                        //   showCustomSnackBar(
+                                        //       'please_enter_your_amount'.tr);
+                                        // } else if (orderController
+                                        //             .selectedMethod ==
+                                        //         'cash' &&
+                                        //     orderController.placeOrderBody!
+                                        //             .orderAmount! >
+                                        //         double.parse(
+                                        //             _amountTextController
+                                        //                 .text)) {
+                                        //   showCustomSnackBar(
+                                        //       'you_need_pay_more_amount'.tr);
+                                        // } else {
+                                        //   if (orderController.selectedMethod ==
+                                        //       'card') {
+                                        //     orderController.placeOrder(
+                                        //       orderController.placeOrderBody!
+                                        //           .copyWith(
+                                        //         paymentStatus: 'paid',
+                                        //         paymentMethod: orderController
+                                        //             .selectedMethod,
+                                        //         card: _amountTextController.text
+                                        //             .replaceAll("\$", ""),
+                                        //         // cash: _amountTextController.text,
+                                        //         previousDue: orderController
+                                        //             .previousDueAmount(),
+                                        //       ),
+                                        //       callback,
+                                        //       _amountTextController.text,
+                                        //       _changeAmount,
+                                        //     );
+                                        //   } else {
+                                        //     orderController.placeOrder(
+                                        //       orderController.placeOrderBody!
+                                        //           .copyWith(
+                                        //         paymentStatus: 'paid',
+                                        //         paymentMethod: orderController
+                                        //             .selectedMethod,
+                                        //         card:
+                                        //             _splitCardamountTextController
+                                        //                 .text,
+                                        //         cash:
+                                        //             _amountTextController.text,
+                                        //         previousDue: orderController
+                                        //             .previousDueAmount(),
+                                        //       ),
+                                        //       callback,
+                                        //       _amountTextController.text,
+                                        //       _changeAmount,
+                                        //     );
+                                        //   }
+                                        // }
                                       },
                                     ),
                                   ),
@@ -782,6 +894,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                 SizedBox(
                   height: MediaQuery.of(context).viewInsets.bottom,
                 ),
+                if (MediaQuery.of(context).viewInsets.bottom != 0.0)
+                  const Gap(120),
               ],
             ),
           );

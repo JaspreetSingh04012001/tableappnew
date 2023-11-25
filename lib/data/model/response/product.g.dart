@@ -17,6 +17,7 @@ class ProductAdapter extends TypeAdapter<Product> {
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
     return Product(
+      addonlimit: fields[24] as int?,
       id: fields[0] as int?,
       name: fields[1] as String?,
       description: fields[2] as String?,
@@ -41,13 +42,14 @@ class ProductAdapter extends TypeAdapter<Product> {
       rating: (fields[21] as List?)?.cast<Rating>(),
       productType: fields[22] as String?,
       branchProduct: fields[23] as BranchProduct?,
+      addonssecondary: fields[25] as dynamic,
     );
   }
 
   @override
   void write(BinaryWriter writer, Product obj) {
     writer
-      ..writeByte(24)
+      ..writeByte(26)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -95,7 +97,11 @@ class ProductAdapter extends TypeAdapter<Product> {
       ..writeByte(22)
       ..write(obj.productType)
       ..writeByte(23)
-      ..write(obj.branchProduct);
+      ..write(obj.branchProduct)
+      ..writeByte(24)
+      ..write(obj.addonlimit)
+      ..writeByte(25)
+      ..write(obj.addonssecondary);
   }
 
   @override

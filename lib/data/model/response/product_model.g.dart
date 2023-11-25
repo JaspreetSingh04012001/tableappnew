@@ -22,13 +22,14 @@ class AddOnAdapter extends TypeAdapter<AddOn> {
       price: fields[2] as double?,
       quantity: fields[3] as int?,
       tax: fields[4] as double?,
+      is_product: fields[5] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, AddOn obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -38,7 +39,9 @@ class AddOnAdapter extends TypeAdapter<AddOn> {
       ..writeByte(3)
       ..write(obj.quantity)
       ..writeByte(4)
-      ..write(obj.tax);
+      ..write(obj.tax)
+      ..writeByte(5)
+      ..write(obj.is_product);
   }
 
   @override

@@ -20,8 +20,10 @@ import 'package:efood_table_booking/view/base/custom_snackbar.dart';
 import 'package:efood_table_booking/view/screens/cart/widget/order_note_view.dart';
 import 'package:efood_table_booking/view/screens/home/widget/cart_bottom_sheet.dart';
 import 'package:efood_table_booking/view/screens/order/payment_screen.dart';
+import 'package:efood_table_booking/view/screens/order/widget/order_success_screen.dart';
 import 'package:efood_table_booking/view/screens/root/no_data_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -29,10 +31,11 @@ import '../../../../controller/printer_controller.dart';
 import '../../../base/custom_text_field.dart';
 
 class CartDetails extends StatefulWidget {
-  int itemsCount;
   final bool showButton;
-  CartDetails({Key? key, required this.showButton, this.itemsCount = 0})
-      : super(key: key);
+  const CartDetails({
+    Key? key,
+    required this.showButton,
+  }) : super(key: key);
 
   @override
   State<CartDetails> createState() => _CartDetailsState();
@@ -43,6 +46,28 @@ class _CartDetailsState extends State<CartDetails> {
   final TextEditingController _emailController = TextEditingController();
   bool isNumeric(String s) {
     return double.tryParse(s) != null;
+  }
+
+  void callBack(bool isSuccess, String message, String orderID) async {
+    //    orderDetailsModel = orderDetailsModel.copyWith(id: orderID);
+    if (isSuccess) {
+      Get.find<CartController>().clearCartData();
+      Get.find<OrderController>().updateOrderNote(null);
+      Get.find<OrderController>().setSelectedMethod(
+          Get.find<OrderController>().paymentMethodList.first);
+      if (Get.find<OrderController>().getOrderSuccessModel() != null) {
+        Get.find<OrderController>()
+            .getCurrentOrder(
+                Get.find<OrderController>().orderSuccessModel!.orderId!)
+            .then((value) {
+          Get.find<PrinterController>().printTest();
+
+          Get.off(() => const OrderSuccessScreen(fromPlaceOrder: true));
+        });
+      }
+    } else {
+      showCustomSnackBar(message);
+    }
   }
 
   String replaceNumbersInRange(String input, int start, int end) {
@@ -78,17 +103,21 @@ class _CartDetailsState extends State<CartDetails> {
             List<List<AddOn>> addOnsList = [];
             List<bool> availableList = [];
             double itemPrice = 0;
+            int itemsCount = 0;
             double discount = 0;
             double tax = 0;
             double addOns = 0;
+            double variationsPrice = 0;
             String customerName = "";
             String customerEmail = "";
             final orderController = Get.find<OrderController>();
 
             List<CartModel> cartList = cartController.cartList;
-
+            itemsCount = 0;
             for (var cartModel in cartList) {
               List<AddOn> addOnList = [];
+              itemsCount += cartModel.quantity ?? 0;
+
               cartModel.addOnIds?.forEach((addOnId) {
                 if (cartModel.product != null &&
                     cartModel.product?.addOns! != null) {
@@ -111,7 +140,8 @@ class _CartDetailsState extends State<CartDetails> {
                     (addOnList[index].price! *
                         cartModel.addOnIds![index].quantity!.toDouble());
               }
-              itemPrice = itemPrice + (cartModel.price! * cartModel.quantity!);
+              // itemPrice = itemPrice + (cartModel.price! * cartModel.quantity!);
+              itemPrice = itemPrice + (cartModel.price!);
               discount = discount +
                   (cartModel.discountAmount! * cartModel.quantity!.toDouble());
               tax =
@@ -120,19 +150,20 @@ class _CartDetailsState extends State<CartDetails> {
 
             // cartController.customerName
             // double _subTotal = _itemPrice + _tax + _addOns;
-            double total = itemPrice -
-                discount +
-                //  orderController.previousDueAmount() +
-                tax +
-                addOns;
+            double total = itemPrice;
+            // itemPrice -
+            //     discount +
+            //     //  orderController.previousDueAmount() +
+            //     tax +
+            //addOns;
 
             cartController.setTotalAmount = total;
             if (cartController.customerName != null) {
               customerName = cartController.customerName.toString();
             }
-            if (cartList.isNotEmpty) {
-              widget.itemsCount = cartList.length;
-            }
+            // if (cartList.isNotEmpty) {
+            //   itemsCount = cartList.length;
+            // }
 
             return cartController.cartList.isEmpty
                 ? NoDataScreen(
@@ -230,6 +261,179 @@ class _CartDetailsState extends State<CartDetails> {
                               children: [
                                 Row(
                                   children: [
+                                    IconButton(
+                                        icon: Icon(
+                                          Icons.back_hand,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
+                                        onPressed: () {
+                                          if (cartController.cartList.isEmpty) {
+                                            showCustomSnackBar(
+                                                'please_add_food_to_order'.tr);
+                                          } else {
+                                            List<Cart> carts = [];
+                                            for (int index = 0;
+                                                index <
+                                                    cartController
+                                                        .cartList.length;
+                                                index++) {
+                                              CartModel cart = cartController
+                                                  .cartList[index];
+                                              List<int> addOnIdList = [];
+                                              List<int> addOnQtyList = [];
+                                              List<OrderVariation> variations =
+                                                  [];
+                                              cart.addOnIds?.forEach((addOn) {
+                                                addOnIdList.add(addOn.id!);
+                                                addOnQtyList
+                                                    .add(addOn.quantity!);
+                                              });
+
+                                              if (cart.product != null &&
+                                                  cart.product!.variations !=
+                                                      null &&
+                                                  cart.variations != null) {
+                                                for (int i = 0;
+                                                    i <
+                                                        cart.product!
+                                                            .variations!.length;
+                                                    i++) {
+                                                  if (cart.variations![i]
+                                                      .contains(true)) {
+                                                    variations
+                                                        .add(OrderVariation(
+                                                      name: cart.product!
+                                                          .variations![i].name,
+                                                      values:
+                                                          OrderVariationValue(
+                                                              label: []),
+                                                    ));
+
+                                                    if (cart
+                                                            .product!
+                                                            .variations![i]
+                                                            .variationValues !=
+                                                        null) {
+                                                      for (int j = 0;
+                                                          j <
+                                                              cart
+                                                                  .product!
+                                                                  .variations![
+                                                                      i]
+                                                                  .variationValues!
+                                                                  .length;
+                                                          j++) {
+                                                        if (cart.variations![i]
+                                                            [j]) {
+                                                          variations[variations
+                                                                      .length -
+                                                                  1]
+                                                              .values
+                                                              ?.label
+                                                              ?.add(cart
+                                                                      .product!
+                                                                      .variations![
+                                                                          i]
+                                                                      .variationValues?[
+                                                                          j]
+                                                                      .level ??
+                                                                  '');
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+
+                                              carts.add(Cart(
+                                                  cart.product!.id!.toString(),
+                                                  cart.discountedPrice
+                                                      .toString(),
+                                                  '',
+                                                  variations,
+                                                  cart.discountAmount!,
+                                                  cart.quantity!,
+                                                  cart.taxAmount!,
+                                                  addOnIdList,
+                                                  addOnQtyList,
+                                                  cart.note));
+                                            }
+
+                                            PlaceOrderBody placeOrderBody =
+                                                PlaceOrderBody(
+                                              carts,
+                                              total,
+                                              orderController.selectedMethod,
+                                              orderController.orderNote ?? '',
+                                              'now',
+                                              DateFormat('yyyy-MM-dd')
+                                                  .format(dateTime),
+                                              0,
+                                              0,
+                                              cartController.customerName,
+                                              cartController.customerEmail,
+                                              '${splashController.getBranchId()}',
+                                              '',
+                                              orderController
+                                                      .getOrderSuccessModel()
+                                                      ?.first
+                                                      .branchTableToken ??
+                                                  '',
+                                            );
+
+                                            orderController.setPlaceOrderBody =
+                                                placeOrderBody;
+
+                                            orderController.placeOrder(
+                                              orderController.placeOrderBody!
+                                                  .copyWith(
+                                                paymentStatus: 'unpaid',
+                                                paymentMethod: '',
+                                                previousDue: orderController
+                                                    .previousDueAmount(),
+                                              ),
+                                              (bool isSuccess, String message,
+                                                  String orderID) async {
+                                                //    orderDetailsModel = orderDetailsModel.copyWith(id: orderID);
+                                                if (isSuccess) {
+                                                  cartController
+                                                      .clearCartData();
+                                                  orderController
+                                                      .updateOrderNote(null);
+                                                  orderController
+                                                      .setSelectedMethod(
+                                                          orderController
+                                                              .paymentMethodList
+                                                              .first);
+                                                  if (orderController
+                                                          .getOrderSuccessModel() !=
+                                                      null) {
+                                                    orderController
+                                                        .getCurrentOrder(
+                                                            orderController
+                                                                .orderSuccessModel!
+                                                                .orderId!)
+                                                        .then((value) {
+                                                      Get.find<
+                                                              PrinterController>()
+                                                          .printTest();
+
+                                                      Get.off(() =>
+                                                          const OrderSuccessScreen(
+                                                              fromPlaceOrder:
+                                                                  true));
+                                                    });
+                                                  }
+                                                } else {
+                                                  showCustomSnackBar(message);
+                                                }
+                                              },
+                                              '0',
+                                              0,
+                                            );
+                                          }
+                                          //cartController.clearCartData();
+                                        }),
                                     Expanded(
                                       flex: 1,
                                       child: CustomTextField(
@@ -336,8 +540,6 @@ class _CartDetailsState extends State<CartDetails> {
                         child: ListView.builder(
                             itemCount: cartController.cartList.length,
                             itemBuilder: (context, index) {
-                              widget.itemsCount =
-                                  cartController.cartList.length;
                               CartModel cartItem =
                                   cartController.cartList[index];
                               List<Variation>? variationList;
@@ -361,9 +563,7 @@ class _CartDetailsState extends State<CartDetails> {
                                 addonsName =
                                     '$addonsName${addOn.name} (${addOn.quantity}), ';
 
-                                addOnWidgetList.add(
-                                  
-                                    Row(
+                                addOnWidgetList.add(Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
@@ -679,33 +879,33 @@ class _CartDetailsState extends State<CartDetails> {
                                                           .color!),
                                                 ),
                                               )),
-                                              Expanded(
-                                                  flex: 2,
-                                                  child: Padding(
-                                                    padding: EdgeInsets.symmetric(
-                                                        horizontal: Dimensions
-                                                            .paddingSizeExtraSmall),
-                                                    child: Text(
-                                                      overflow:
-                                                          TextOverflow.ellipsis,
-                                                      PriceConverter
-                                                          .convertPrice(
-                                                        cartItem.price! *
-                                                            cartItem.quantity!,
-                                                      ),
-                                                      textAlign: TextAlign.end,
-                                                      style: robotoRegular
-                                                          .copyWith(
-                                                              fontSize: Dimensions
-                                                                  .fontSizeLarge,
-                                                              color: Theme.of(
-                                                                      context)
-                                                                  .textTheme
-                                                                  .titleLarge!
-                                                                  .color!),
-                                                      maxLines: 1,
-                                                    ),
-                                                  )),
+                                              // Expanded(
+                                              //     flex: 2,
+                                              //     child: Padding(
+                                              //       padding: EdgeInsets.symmetric(
+                                              //           horizontal: Dimensions
+                                              //               .paddingSizeExtraSmall),
+                                              //       child: Text(
+                                              //         overflow:
+                                              //             TextOverflow.ellipsis,
+                                              //         PriceConverter
+                                              //             .convertPrice(
+                                              //           cartItem.price! *
+                                              //               cartItem.quantity!,
+                                              //         ),
+                                              //         textAlign: TextAlign.end,
+                                              //         style: robotoRegular
+                                              //             .copyWith(
+                                              //                 fontSize: Dimensions
+                                              //                     .fontSizeLarge,
+                                              //                 color: Theme.of(
+                                              //                         context)
+                                              //                     .textTheme
+                                              //                     .titleLarge!
+                                              //                     .color!),
+                                              //         maxLines: 1,
+                                              //       ),
+                                              //     )),
                                               Expanded(
                                                   child: IconButton(
                                                 onPressed: () {
@@ -796,7 +996,7 @@ class _CartDetailsState extends State<CartDetails> {
                                                   addOns,
                                                   orderController,
                                                   total,
-                                                )
+                                                  itemsCount)
                                               : const SizedBox();
                                     }),
                                   ],
@@ -807,16 +1007,10 @@ class _CartDetailsState extends State<CartDetails> {
                       Column(
                         children: [
                           if (!ResponsiveHelper.isSmallTab())
-                            _calculationView(
-                              context,
-                              itemPrice,
-                              discount,
-                              tax,
-                              addOns,
-                              orderController,
-                              total,
-                            ),
-                          if (widget.showButton)
+                            _calculationView(context, itemPrice, discount, tax,
+                                addOns, orderController, total, itemsCount),
+                          if (cartController.cartList.isNotEmpty &&
+                              widget.showButton)
                             Row(
                               children: [
                                 GetBuilder<PrinterController>(
@@ -832,38 +1026,31 @@ class _CartDetailsState extends State<CartDetails> {
                                           ))
                                       : Container();
                                 }),
-                                if (cartController.cartList.isNotEmpty)
-                                  Expanded(
-                                      child: CustomButton(
-                                    height:
-                                        ResponsiveHelper.isSmallTab() ? 40 : 50,
-                                    transparent: true,
-                                    buttonText: 'clear_cart'.tr,
-                                    onPressed: () {
-                                      RouteHelper.openDialog(
-                                        context,
-                                        ConfirmationDialog(
-                                          title: '${'clear_cart'.tr} !',
-                                          icon: Icons.cleaning_services_rounded,
-                                          description:
-                                              'are_you_want_to_clear'.tr,
-                                          onYesPressed: () {
-                                            cartController.clearCartData();
-                                            Get.back();
-                                          },
-                                          onNoPressed: () => Get.back(),
-                                        ),
-                                      );
+                                Expanded(
+                                    child: CustomButton(
+                                  height:
+                                      ResponsiveHelper.isSmallTab() ? 40 : 50,
+                                  transparent: true,
+                                  buttonText: 'clear_cart'.tr,
+                                  onPressed: () {
+                                    RouteHelper.openDialog(
+                                      context,
+                                      ConfirmationDialog(
+                                        title: '${'clear_cart'.tr} !',
+                                        icon: Icons.cleaning_services_rounded,
+                                        description: 'are_you_want_to_clear'.tr,
+                                        onYesPressed: () {
+                                          cartController.clearCartData();
+                                          Get.back();
+                                        },
+                                        onNoPressed: () => Get.back(),
+                                      ),
+                                    );
 
-                                      //cartController.clearCartData();
-                                    },
-                                  )),
-
-                                if (cartController.cartList.isNotEmpty)
-                                  SizedBox(
-                                    width: Dimensions.paddingSizeDefault,
-                                  ),
-
+                                    //cartController.clearCartData();
+                                  },
+                                )),
+                                const Gap(6),
                                 Expanded(
                                   child: CustomButton(
                                     height:
@@ -991,8 +1178,6 @@ class _CartDetailsState extends State<CartDetails> {
                                     },
                                   ),
                                 ),
-
-                                // CustomRoundedButton(onTap: (){}, image: Images.edit_icon, widget: Icon(Icons.delete)),
                               ],
                             ),
                         ],
@@ -1006,14 +1191,14 @@ class _CartDetailsState extends State<CartDetails> {
   }
 
   Column _calculationView(
-    BuildContext context,
-    double itemPrice,
-    double discount,
-    double tax,
-    double addOns,
-    OrderController orderController,
-    double total,
-  ) {
+      BuildContext context,
+      double itemPrice,
+      double discount,
+      double tax,
+      double addOns,
+      OrderController orderController,
+      double total,
+      int itemsCount) {
     return Column(
       children: [
         SizedBox(
@@ -1105,7 +1290,7 @@ class _CartDetailsState extends State<CartDetails> {
           ),
           Text(
             overflow: TextOverflow.ellipsis,
-            '${widget.itemsCount}',
+            '$itemsCount',
             style: robotoBold.copyWith(
               fontSize: Dimensions.fontSizeLarge,
             ),

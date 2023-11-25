@@ -52,18 +52,41 @@ class _ProductWidgetState extends State<ProductWidget> {
             currentTime.isAfter(startTime) && currentTime.isBefore(endTime);
 
         cartIndex = cartController.getCartIndex(widget.product);
-        double productPrice = widget.product.price ?? 0;
-        if (widget.product.branchProduct != null) {
-          productPrice = widget.product.branchProduct?.price ?? 0;
+        double productPrice = 0;
+        int? myIndex = cartController.getmyCartIndex(widget.product);
+        if (myIndex != null) {
+          // cartController.cartList[myIndex ?? 0].addOnIds?.forEach((element) {
+          //   productPrice += element.price ?? 0;
+          // });
+          productPrice = cartController.cartList[myIndex ?? 0].price ?? 0;
+        } else {
+          productPrice = widget.product.price ?? 0;
         }
 
+        // if (widget.product.branchProduct != null) {
+        //   productPrice = widget.product.branchProduct?.price ?? 0;
+        // }
+
         return InkWell(
-          onTap: () => RouteHelper.openDialog(
-              alignment: Alignment.centerLeft,
-              context,
-              ProductBottomSheet(
-                product: widget.product,
-              )),
+          onTap: () {
+            if (myIndex != null) {
+              RouteHelper.openDialog(
+                  alignment: Alignment.centerLeft,
+                  context,
+                  ProductBottomSheet(
+                    product: cartController.cartList[myIndex ?? 0].product!,
+                    cart: cartController.cartList[myIndex],
+                    cartIndex: myIndex,
+                  ));
+            } else {
+              RouteHelper.openDialog(
+                  alignment: Alignment.centerLeft,
+                  context,
+                  ProductBottomSheet(
+                    product: widget.product,
+                  ));
+            }
+          },
           child: Stack(
             children: [
               if (productController.listView)
