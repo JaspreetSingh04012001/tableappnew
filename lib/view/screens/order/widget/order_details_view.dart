@@ -12,6 +12,7 @@ import 'package:efood_table_booking/view/screens/order/widget/invoice_print_scre
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 
 import '../../../../controller/printer_controller.dart';
 import '../../../../helper/price_converter.dart';
@@ -214,7 +215,7 @@ class OrderDetailsView extends StatelessWidget {
                                 //     .currentOrderDetails?.details[0].variations;
                                 late Details details;
                                 String variationText = '';
-                                int a = 0;
+                                // int a = 0;
                                 if (orderController
                                         .currentOrderDetails?.details !=
                                     null) {
@@ -238,102 +239,122 @@ class OrderDetailsView extends StatelessWidget {
                                 List<int> addQty = details.addOnQtys ?? [];
                                 List<int> ids = details.addOnIds ?? [];
 
+                                // if (ids.length == details.addOnPrices?.length &&
+                                //     ids.length == details.addOnQtys?.length) {
+                                //   for (int i = 0; i < ids.length; i++) {
+                                //     addOnsPrice = addOnsPrice +
+                                //         (details.addOnPrices![i] *
+                                //             details.addOnQtys![i]);
+                                //   }
+                                // }
                                 if (ids.length == details.addOnPrices?.length &&
                                     ids.length == details.addOnQtys?.length) {
-                                  for (int i = 0; i < ids.length; i++) {
-                                    addOnsPrice = addOnsPrice +
-                                        (details.addOnPrices![i] *
-                                            details.addOnQtys![i]);
-                                  }
-                                }
+                                  for (int j = 0; j < ids.length; j++) {
+                                    int id = ids[j];
 
-                                try {
-                                  for (AddOns addOn in addons) {
-                                    if (ids.contains(addOn.id)) {
-                                      addOnWidgetList.add(Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        children: [
-                                          Expanded(
-                                              flex: 5,
-                                              child: Text(
-                                                overflow: TextOverflow.ellipsis,
-                                                addOn.name.toString(),
-                                                style: robotoRegular.copyWith(
-                                                  fontSize:
-                                                      Dimensions.fontSizeLarge,
-                                                  color: Theme.of(context)
-                                                      .textTheme
-                                                      .titleLarge!
-                                                      .color!,
-                                                ),
-                                                maxLines: 1,
-                                                // overflow: TextOverflow
-                                                //     .ellipsis,
-                                              )),
-                                          Expanded(
-                                              // flex: 5,
-                                              child: Padding(
-                                            padding: EdgeInsets.symmetric(
-                                                horizontal: Dimensions
-                                                    .paddingSizeExtraSmall),
-                                            child: Text(
-                                              overflow: TextOverflow.ellipsis,
-                                              addQty[a].toString(),
-                                              textAlign: TextAlign.center,
-                                              style: robotoRegular.copyWith(
-                                                  fontSize:
-                                                      Dimensions.fontSizeLarge,
-                                                  color: Theme.of(context)
-                                                      .textTheme
-                                                      .titleLarge!
-                                                      .color!),
-                                            ),
-                                          )),
-                                          Expanded(
-                                              flex: 2,
-                                              child: Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: Dimensions
-                                                        .paddingSizeExtraSmall),
+                                    for (var addOn in addons) {
+                                      if (addOn.id == id) {
+                                        Logger().i(
+                                            "$id ${addOn.name} ${addQty[j]}");
+                                        addOnWidgetList.add(Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Expanded(
+                                                flex: 5,
                                                 child: Text(
                                                   overflow:
                                                       TextOverflow.ellipsis,
-                                                  // "lmm",
-                                                  PriceConverter.convertPrice(
-                                                          (addOn.price! *
-                                                                  addQty[a]) ??
-                                                              0)
-                                                      .trim(),
-                                                  textAlign: TextAlign.end,
+                                                  addOn.name.toString(),
                                                   style: robotoRegular.copyWith(
-                                                      fontSize: Dimensions
-                                                          .fontSizeLarge,
-                                                      color: Theme.of(context)
-                                                          .textTheme
-                                                          .titleLarge!
-                                                          .color!),
-                                                  maxLines: 2,
-                                                ),
-                                              )),
-                                        ],
-                                      ));
-
-                                      addonsName = addonsName +
-                                          ('${addOn.name} (${(addQty[a])}), ');
-                                      a++;
+                                                    fontSize: Dimensions
+                                                        .fontSizeLarge,
+                                                    color: Theme.of(context)
+                                                        .textTheme
+                                                        .titleLarge!
+                                                        .color!,
+                                                  ),
+                                                  maxLines: 1,
+                                                  // overflow: TextOverflow
+                                                  //     .ellipsis,
+                                                )),
+                                            Expanded(
+                                                // flex: 5,
+                                                child: Padding(
+                                              padding: EdgeInsets.symmetric(
+                                                  horizontal: Dimensions
+                                                      .paddingSizeExtraSmall),
+                                              child: Text(
+                                                overflow: TextOverflow.ellipsis,
+                                                addQty[j].toString(),
+                                                textAlign: TextAlign.center,
+                                                style: robotoRegular.copyWith(
+                                                    fontSize: Dimensions
+                                                        .fontSizeLarge,
+                                                    color: Theme.of(context)
+                                                        .textTheme
+                                                        .titleLarge!
+                                                        .color!),
+                                              ),
+                                            )),
+                                            Expanded(
+                                                flex: 2,
+                                                child: Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: Dimensions
+                                                          .paddingSizeExtraSmall),
+                                                  child: Text(
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    // "lmm",
+                                                    PriceConverter.convertPrice(
+                                                            (addOn.price! *
+                                                                    addQty[
+                                                                        j]) ??
+                                                                0)
+                                                        .trim(),
+                                                    textAlign: TextAlign.end,
+                                                    style:
+                                                        robotoRegular.copyWith(
+                                                            fontSize: Dimensions
+                                                                .fontSizeLarge,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .titleLarge!
+                                                                .color!),
+                                                    maxLines: 2,
+                                                  ),
+                                                )),
+                                          ],
+                                        ));
+                                      }
                                     }
+                                    // if(){}
                                   }
-                                } catch (e) {
-                                  debugPrint('order details view -$e');
                                 }
 
-                                if (addonsName.isNotEmpty) {
-                                  addonsName = addonsName.substring(
-                                      0, addonsName.length - 2);
-                                }
+                                //  ids.forEach((id) {    });
+
+                                // try {
+                                //   for (AddOns addOn in addons) {
+                                //     if (ids.contains(addOn.id)) {
+
+                                //       // addonsName = addonsName +
+                                //       //     ('${addOn.name} (${(addQty[a])}), ');
+                                //       // a++;
+                                //     }
+                                //   }
+                                // } catch (e) {
+                                //   debugPrint('order details view -$e');
+                                // }
+
+                                // if (addonsName.isNotEmpty) {
+                                //   addonsName = addonsName.substring(
+                                //       0, addonsName.length - 2);
+                                // }
                                 // orderDetails!.productDetails.;
                                 if (orderDetails != null &&
                                     orderDetails.variations != null &&
@@ -456,42 +477,6 @@ class OrderDetailsView extends StatelessWidget {
                                                         ),
                                                         maxLines: 2,
                                                       ),
-                                                      // SizedBox(
-                                                      //   height: Dimensions
-                                                      //       .paddingSizeExtraSmall,
-                                                      // ),
-                                                      // Text(
-                                                      //   overflow: TextOverflow
-                                                      //       .ellipsis,
-                                                      //   PriceConverter
-                                                      //       .convertPrice(details
-                                                      //           .productDetails!
-                                                      //           .price!),
-                                                      //   style: robotoRegular
-                                                      //       .copyWith(
-                                                      //     color:
-                                                      //         Theme.of(context)
-                                                      //             .hintColor,
-                                                      //   ),
-                                                      // ),
-
-                                                      // SizedBox(
-                                                      //   height: Dimensions
-                                                      //       .paddingSizeExtraSmall,
-                                                      // ),
-
-                                                      // Text(
-                                                      //     textAlign: TextAlign.left,
-                                                      //     overflow:
-                                                      //         TextOverflow.ellipsis,
-                                                      //     'Note: ${orderController.currentOrderDetails!.details![index].productDetails?.printType}',
-                                                      //     style: robotoRegular
-                                                      //         .copyWith(
-                                                      //       fontSize: Dimensions
-                                                      //           .fontSizeLarge,
-                                                      //       color: Theme.of(context)
-                                                      //           .primaryColor,
-                                                      //     )),
                                                     ],
                                                   )),
                                               Expanded(
@@ -513,47 +498,6 @@ class OrderDetailsView extends StatelessWidget {
                                                           .color!),
                                                 ),
                                               )),
-                                              // Expanded(
-                                              //     flex: 2,
-                                              //     child: Column(
-                                              //       crossAxisAlignment:
-                                              //           CrossAxisAlignment.end,
-                                              //       children: [
-                                              //         Padding(
-                                              //           padding: EdgeInsets.symmetric(
-                                              //               horizontal: Dimensions
-                                              //                   .paddingSizeExtraSmall),
-                                              //           child: Text(
-                                              //             overflow: TextOverflow
-                                              //                 .ellipsis,
-                                              //             PriceConverter
-                                              //                 .convertPrice(
-                                              //               details.price! *
-                                              //                   details
-                                              //                       .quantity!,
-                                              //             ),
-                                              //             textAlign:
-                                              //                 TextAlign.end,
-                                              //             style: robotoRegular.copyWith(
-                                              //                 fontSize: Dimensions
-                                              //                     .fontSizeLarge,
-                                              //                 color: Theme.of(
-                                              //                         context)
-                                              //                     .textTheme
-                                              //                     .titleLarge!
-                                              //                     .color!),
-                                              //             maxLines: 1,
-                                              //           ),
-                                              //         ),
-                                              //         SizedBox(
-                                              //             height: Dimensions
-                                              //                 .paddingSizeSmall),
-                                              //         ProductTypeView(
-                                              //             productType: details
-                                              //                 .productDetails
-                                              //                 ?.productType),
-                                              //       ],
-                                              //     )),
                                             ],
                                           ),
                                           if (variationText != '')
@@ -572,7 +516,7 @@ class OrderDetailsView extends StatelessWidget {
                                                         .hintColor,
                                                   )),
                                             ),
-                                          if (addonsName.isNotEmpty)
+                                          if (ids.isNotEmpty)
                                             Column(
                                               children: [
                                                 Row(

@@ -760,8 +760,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                 : _splitCardamountTextController
                                                     .text);
 
-                                        logger.i(orderController
-                                            .placeOrderBody!.orderAmount!);
 
                                         if (orderController.selectedMethod ==
                                                 'cash' &&
@@ -819,65 +817,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                           return;
                                         }
 
-                                        // if ((orderController.selectedMethod ==
-                                        //             'cash' ||
-                                        //         orderController
-                                        //                 .selectedMethod ==
-                                        //             'split') &&
-                                        //     _amountTextController
-                                        //         .text.isEmpty) {
-                                        //   showCustomSnackBar(
-                                        //       'please_enter_your_amount'.tr);
-                                        // } else if (orderController
-                                        //             .selectedMethod ==
-                                        //         'cash' &&
-                                        //     orderController.placeOrderBody!
-                                        //             .orderAmount! >
-                                        //         double.parse(
-                                        //             _amountTextController
-                                        //                 .text)) {
-                                        //   showCustomSnackBar(
-                                        //       'you_need_pay_more_amount'.tr);
-                                        // } else {
-                                        //   if (orderController.selectedMethod ==
-                                        //       'card') {
-                                        //     orderController.placeOrder(
-                                        //       orderController.placeOrderBody!
-                                        //           .copyWith(
-                                        //         paymentStatus: 'paid',
-                                        //         paymentMethod: orderController
-                                        //             .selectedMethod,
-                                        //         card: _amountTextController.text
-                                        //             .replaceAll("\$", ""),
-                                        //         // cash: _amountTextController.text,
-                                        //         previousDue: orderController
-                                        //             .previousDueAmount(),
-                                        //       ),
-                                        //       callback,
-                                        //       _amountTextController.text,
-                                        //       _changeAmount,
-                                        //     );
-                                        //   } else {
-                                        //     orderController.placeOrder(
-                                        //       orderController.placeOrderBody!
-                                        //           .copyWith(
-                                        //         paymentStatus: 'paid',
-                                        //         paymentMethod: orderController
-                                        //             .selectedMethod,
-                                        //         card:
-                                        //             _splitCardamountTextController
-                                        //                 .text,
-                                        //         cash:
-                                        //             _amountTextController.text,
-                                        //         previousDue: orderController
-                                        //             .previousDueAmount(),
-                                        //       ),
-                                        //       callback,
-                                        //       _amountTextController.text,
-                                        //       _changeAmount,
-                                        //     );
-                                        //   }
-                                        // }
+                                     
                                       },
                                     ),
                                   ),

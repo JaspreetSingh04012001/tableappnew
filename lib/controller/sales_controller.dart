@@ -100,7 +100,7 @@ class SalesController extends GetxController {
       sevenMonthsAgo = sevenMonthsAgo.subtract(const Duration(days: 1));
     }
 
-    // Print the new date.
+    // print the new date.
     print("jassDaee$sevenMonthsAgo");
 
     final DateFormat formatter = DateFormat('MM/dd/yyyy');

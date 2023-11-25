@@ -22,7 +22,7 @@ class AddOnAdapter extends TypeAdapter<AddOn> {
       price: fields[2] as double?,
       quantity: fields[3] as int?,
       tax: fields[4] as double?,
-      is_product: fields[5] as String?,
+      is_product: fields[5] as bool?,
     );
   }
 

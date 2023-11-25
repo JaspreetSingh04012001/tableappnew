@@ -65,7 +65,7 @@ class AddOn extends HiveObject {
   @HiveField(4)
   double? tax;
   @HiveField(5)
-  String? is_product;
+  bool? is_product;
 
   factory AddOn.fromRawJson(String str) => AddOn.fromJson(json.decode(str));
 

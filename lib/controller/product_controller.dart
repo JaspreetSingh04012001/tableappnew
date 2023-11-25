@@ -85,6 +85,7 @@ class ProductController extends GetxController implements GetxService {
     _isSearch = vale;
     update();
   }
+
   void setQty(int vale) {
     _quantity = vale;
     update();
@@ -266,8 +267,6 @@ class ProductController extends GetxController implements GetxService {
 
   void setCartVariationIndex(
       int index, int i, Product product, bool isMultiSelect) {
-
-        
     if (!isMultiSelect) {
       for (int j = 0; j < _selectedVariations[index].length; j++) {
         if (product.variations != null) {
@@ -310,9 +309,9 @@ class ProductController extends GetxController implements GetxService {
     _addOnActiveList[index] = isAdd;
     update();
   }
+
   void setaddAddOnList(List<bool> add) {
-    _addOnActiveList  = add;
-  
+    _addOnActiveList = add;
   }
 
   void setAddOnQuantity(bool isIncrement, int index) {
@@ -323,11 +322,9 @@ class ProductController extends GetxController implements GetxService {
     }
     update();
   }
+
   void setAddOnQuantityList(List<int> x) {
-
-      _addOnQtyList = x;
-  
-
+    _addOnQtyList = x;
   }
 
   void setQuantity(bool isIncrement) {

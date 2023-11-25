@@ -5,9 +5,11 @@ import 'package:efood_table_booking/data/model/response/order_success_model.dart
 import 'package:efood_table_booking/data/model/response/place_order_body.dart';
 import 'package:efood_table_booking/util/app_constants.dart';
 import 'package:get/get.dart';
+import 'package:logger/logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class OrderRepo {
+  var logger = Logger();
   final ApiClient apiClient;
   final SharedPreferences sharedPreferences;
   OrderRepo({required this.apiClient, required this.sharedPreferences});
@@ -27,7 +29,8 @@ class OrderRepo {
 
   //
   Future<Response> placeOrder(PlaceOrderBody orderBody) async {
-    print("jassPlace ${orderBody.toJson()}");
+    // print("jassPlace ${orderBody.toJson()}");
+    logger.i(orderBody.toJson());
     return await apiClient.postData(
         AppConstants.placeOrderUri, orderBody.toJson());
   }

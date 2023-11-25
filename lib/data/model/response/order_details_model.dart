@@ -426,13 +426,12 @@ class AddOns {
     this.price,
     this.createdAt,
     this.updatedAt,
-
   });
 
   AddOns.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
-  
+
     price = double.parse('${json['price']}');
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];

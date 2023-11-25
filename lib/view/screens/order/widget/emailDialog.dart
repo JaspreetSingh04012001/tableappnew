@@ -192,7 +192,7 @@ class _EmailDialogState extends State<EmailDialog> {
                           customer_email: nameController.text)
                       .whenComplete(() => null)
                       .then((value) {
-                  //  print(value.body.toString());
+                    //  print(value.body.toString());
 
                     if (value.body["email_status"] == "sent") {
                       setState(() {
@@ -213,7 +213,7 @@ class _EmailDialogState extends State<EmailDialog> {
                               : null)
                       .whenComplete(() => null)
                       .then((value) {
-               //     print(value.body.toString());
+                    //     print(value.body.toString());
                   });
                 }
               }

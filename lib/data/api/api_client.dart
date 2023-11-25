@@ -48,8 +48,8 @@ class ApiClient extends GetxService {
           )
           .timeout(Duration(seconds: timeoutInSeconds));
       Response response = handleResponse(response0);
-      debugPrint(
-          '====> API Response: [${response.statusCode}] $uri\n${response.body}');
+      // debugPrint(
+      //     '====> API Response: [${response.statusCode}] $uri\n${response.body}');
 
       return response;
     } catch (e) {

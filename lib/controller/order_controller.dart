@@ -9,6 +9,7 @@ import 'package:efood_table_booking/data/repository/order_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 
 class OrderController extends GetxController implements GetxService {
   final OrderRepo orderRepo;
@@ -82,6 +83,7 @@ class OrderController extends GetxController implements GetxService {
       String paidAmount, double changeAmount) async {
     _isLoading = true;
     update();
+    
     Response response = await orderRepo.placeOrder(placeOrderBody);
     _isLoading = false;
 
@@ -185,7 +187,7 @@ class OrderController extends GetxController implements GetxService {
       _isLoading = true;
     }
     _currentOrderDetails = null;
-
+    var logger = Logger();
     update();
 
     if (orderId != null) {
@@ -197,6 +199,7 @@ class OrderController extends GetxController implements GetxService {
       if (response.statusCode == 200) {
         // print("byJass");
         // print(response.body);
+       // logger.i(response.body);
         _currentOrderDetails = OrderDetails.fromJson(response.body);
         update();
       } else {

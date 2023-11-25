@@ -320,11 +320,12 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                   'percent'));
 
                       addOnIdList.add(AddOn(
+                        is_product: widget.product.addOns![index].is_product,
                         id: widget.product.addOns![index].id,
                         price: (widget.product.addOns![index].price != null)
                             ? (widget.product.addOns![index].price! *
                                 productController.addOnQtyList[index])
-                            : null,
+                            : 0,
                         quantity: productController.addOnQtyList[index],
                         name: widget.product.addOns![index].name,
                       ));
@@ -892,8 +893,11 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                             true,
                                                                             index);
 
-                                                                        productController
-                                                                            .setQuantity(true);
+                                                                        if (widget.product.addOns![index].is_product ==
+                                                                            true) {
+                                                                          productController
+                                                                              .setQuantity(true);
+                                                                        }
                                                                       } else if (productController
                                                                               .addOnQtyList[index] ==
                                                                           1) {
@@ -903,8 +907,11 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                         // if (productController
                                                                         //         .quantity !=
                                                                         //     1) {
-                                                                        productController
-                                                                            .setQuantity(false);
+                                                                        if (widget.product.addOns![index].is_product ==
+                                                                            true) {
+                                                                          productController
+                                                                              .setQuantity(false);
+                                                                        }
                                                                         // }
                                                                         // if (productController
                                                                         //         .quantity ==
@@ -996,16 +1003,20 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                     Expanded(
                                                                                       child: InkWell(
                                                                                         onTap: () async {
+                                                                                          // if(widget.product.addOns![index].is_product == false){
+                                                                                          //   myChutiyaFunction(() => null);
+                                                                                          //   return ;
+                                                                                          // }
                                                                                           if (addonLimit != 0 && addoncount == addonLimit) {
                                                                                             if (productController.addOnQtyList[index] > 1) {
                                                                                               productController.setAddOnQuantity(false, index);
                                                                                               //   if (productController.quantity != 1) {
-                                                                                              productController.setQuantity(false);
+                                                                                              if (widget.product.addOns![index].is_product == true) productController.setQuantity(false);
                                                                                               //   }
                                                                                             } else {
                                                                                               productController.addAddOn(false, index);
                                                                                               //  if (productController.quantity != 1) {
-                                                                                              productController.setQuantity(false);
+                                                                                              if (widget.product.addOns![index].is_product == true) productController.setQuantity(false);
                                                                                               //  }
                                                                                             }
                                                                                             myChutiyaFunction(() {});
@@ -1014,12 +1025,12 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                               if (productController.addOnQtyList[index] > 1) {
                                                                                                 productController.setAddOnQuantity(false, index);
                                                                                                 //  if (productController.quantity != 1) {
-                                                                                                productController.setQuantity(false);
+                                                                                                if (widget.product.addOns![index].is_product == true) productController.setQuantity(false);
                                                                                                 //  }
                                                                                               } else {
                                                                                                 productController.addAddOn(false, index);
                                                                                                 //   if (productController.quantity != 1) {
-                                                                                                productController.setQuantity(false);
+                                                                                                if (widget.product.addOns![index].is_product == true) productController.setQuantity(false);
                                                                                                 //    }
                                                                                               }
                                                                                             });
@@ -1050,7 +1061,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                           myChutiyaFunction(() {
                                                                                             productController.setAddOnQuantity(true, index);
 
-                                                                                            productController.setQuantity(true);
+                                                                                            if (widget.product.addOns![index].is_product == true) productController.setQuantity(true);
                                                                                           });
 
                                                                                           productController.update();

@@ -26,6 +26,7 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 
 import '../../../../controller/printer_controller.dart';
 import '../../../base/custom_text_field.dart';
@@ -172,78 +173,6 @@ class _CartDetailsState extends State<CartDetails> {
                   )
                 : Column(
                     children: [
-                      // Row(
-                      //   children: [
-                      //     Expanded(
-                      //       child: Column(
-                      //         crossAxisAlignment: CrossAxisAlignment.center,
-                      //         children: [
-                      //           splashController
-                      //                       .getTable(
-                      //                           splashController.getTableId())
-                      //                       ?.number ==
-                      //                   null
-                      //               ? Center(
-                      //                   child: Text(
-                      // overflow: TextOverflow.ellipsis,
-                      //                     'add_table_number'.tr,
-                      //                     style: robotoRegular.copyWith(
-                      //                       fontSize: Dimensions.fontSizeLarge,
-                      //                       color: Theme.of(context)
-                      //                           .secondaryHeaderColor,
-                      //                     ),
-                      //                   ),
-                      //                 )
-                      //               : Text.rich(
-                      //                   TextSpan(
-                      //                     children: [
-                      //                       TextSpan(
-                      //                         text:
-                      //                             '${'table'.tr} ${splashController.getTable(splashController.getTableId())?.number} | ',
-                      //                         style: robotoMedium.copyWith(
-                      //                           fontSize:
-                      //                               Dimensions.fontSizeLarge,
-                      //                           color: Theme.of(context)
-                      //                               .textTheme
-                      //                               .bodyLarge!
-                      //                               .color,
-                      //                         ),
-                      //                       ),
-                      //                       TextSpan(
-                      //                         text:
-                      //                             '${cartController.peopleNumber ?? 'add'.tr} ${'people'.tr}',
-                      //                         style: robotoRegular.copyWith(
-                      //                           fontSize:
-                      //                               Dimensions.fontSizeLarge,
-                      //                           color: Theme.of(context)
-                      //                               .textTheme
-                      //                               .bodyLarge!
-                      //                               .color,
-                      //                         ),
-                      //                       ),
-                      //                     ],
-                      //                   ),
-                      //                 ),
-                      //         ],
-                      //       ),
-                      //     ),
-                      //     InkWell(
-                      //       onTap: () {
-                      //         RouteHelper.openDialog(
-                      //           context,
-                      //           const TableInputView(),
-                      //         );
-                      //       },
-                      //       child: Image.asset(
-                      //         Images.editIcon,
-                      //         color: Theme.of(context).secondaryHeaderColor,
-                      //         width: Dimensions.paddingSizeExtraLarge * 2,
-                      //         height: Dimensions.paddingSizeExtraLarge * 2,
-                      //       ),
-                      //     )
-                      //   ],
-                      // ),
-                      //  SizedBox(height: ResponsiveHelper.isSmallTab() ? 10 : 20),
                       !widget.showButton
                           ? Text(
                               overflow: TextOverflow.ellipsis,
@@ -558,11 +487,12 @@ class _CartDetailsState extends State<CartDetails> {
                               String? note = cartItem.note;
                               String variationText = '';
                               String addonsName = '';
-
+                              var logger = Logger();
                               cartItem.addOnIds?.forEach((addOn) {
                                 addonsName =
                                     '$addonsName${addOn.name} (${addOn.quantity}), ';
-
+                                // logger.i(
+                                //     "${addOn.name} qty:${addOn.quantity} price:${addOn.price}");
                                 addOnWidgetList.add(Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   mainAxisAlignment: MainAxisAlignment.center,
