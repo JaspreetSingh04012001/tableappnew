@@ -565,7 +565,166 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                 ),
                                                               ]),
                                                         if (isTab)
-                                                          _productDescription(),
+                                                          SizedBox(
+                                                               height: ResponsiveHelper
+                                                                    .isSmallTab()
+                                                                ? 100
+                                                                : isTab
+                                                                    ? 170
+                                                                    : 100,
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .start,
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .end,
+                                                              mainAxisSize:
+                                                                  MainAxisSize
+                                                                      .min,
+                                                              children: [
+                                                                _productDescription(),
+                                                                Expanded(child: Container()),
+                                                                SizedBox(
+                                                                    width: 150,
+                                                                    child: Text.rich(
+                                                                        maxLines:
+                                                                            2,
+                                                                        overflow:
+                                                                            TextOverflow
+                                                                                .ellipsis,
+                                                                        TextSpan(
+                                                                            text: variationList[0].name ??
+                                                                                "",
+                                                                            style:
+                                                                                robotoMedium.copyWith(fontSize: Dimensions.fontSizeSmall),
+                                                                            children: const <InlineSpan>[]))),
+                                                                SizedBox(
+                                                                  // width: 150,
+                                                                  child: Row(
+                                                                    mainAxisAlignment:
+                                                                        MainAxisAlignment
+                                                                            .start,
+                                                                    children: [
+                                                                      if (variationList[0]
+                                                                              .isRequired ??
+                                                                          false)
+                                                                        Text(
+                                                                          ' (${'required'.tr})',
+                                                                          style: robotoMedium.copyWith(
+                                                                              color:
+                                                                                  Theme.of(context).primaryColor,
+                                                                              fontSize: Dimensions.fontSizeSmall),
+                                                                        ),
+                                                                      (variationList[0]
+                                                                              .isMultiSelect!)
+                                                                          ? Text(
+                                                                              overflow:
+                                                                                  TextOverflow.ellipsis,
+                                                                              '${'you_need_to_select_minimum'.tr} ${'${variationList[0].min}'
+                                                                                  ' ${'to_maximum'.tr} ${variationList[0].max}'}',
+                                                                              style:
+                                                                                  robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor),
+                                                                            )
+                                                                          : Text(
+                                                                              overflow:
+                                                                                  TextOverflow.ellipsis,
+                                                                              '',
+                                                                              style:
+                                                                                  robotoMedium.copyWith(
+                                                                                fontSize: Dimensions.fontSizeExtraSmall,
+                                                                              ),
+                                                                            ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                if (variationList[
+                                                                            0]
+                                                                        .variationValues !=
+                                                                    null)
+                                                                  Row(
+                                                                    //     MainAxisSize
+                                                                    //         .min,
+                                                                    children: List
+                                                                        .generate(
+                                                                            variationList[0].variationValues?.length ??
+                                                                                0,
+                                                                            (i) {
+                                                                      return Padding(
+                                                                        padding: const EdgeInsets
+                                                                            .symmetric(
+                                                                            horizontal:
+                                                                                2,
+                                                                            vertical:
+                                                                                0),
+                                                                        child:
+                                                                            InkWell(
+                                                                          onTap:
+                                                                              () {
+                                                                            if (variationList[0].name == "Order Type" ||
+                                                                                variationList[0].name == "Order type") {
+                                                                              sharedPreferences.setInt("lastOrderType",
+                                                                                  i);
+                                                                            }
+                                                                            productController.setCartVariationIndex(
+                                                                                0,
+                                                                                i,
+                                                                                widget.product,
+                                                                                variationList[0].isMultiSelect!);
+                                                                            if (productController.quantity >
+                                                                                0) {
+                                                                              myChutiyaFunction(() =>
+                                                                                  null);
+                                                                            }
+                                                                            if (productController.quantity ==
+                                                                                0) {
+                                                                              myChutiyaFunction(() {
+                                                                                //   productController.setQuantity(true);
+                                                                              });
+                                                                            }
+                                                                            //    myChutiyaFunction();
+                                                                          },
+                                                                          child:
+                                                                              Stack(
+                                                                            alignment:
+                                                                                Alignment.topRight,
+                                                                            children: [
+                                                                              Container(
+                                                                                constraints: const BoxConstraints(minWidth: 110, maxWidth: 150),
+                                                                                alignment: Alignment.center,
+                                                                                // width: 110,
+                                                                                decoration: BoxDecoration(border: Border.all(width: 1.5, color: Theme.of(context).disabledColor), borderRadius: BorderRadius.circular(4), color: productController.selectedVariations[0][i] ? Theme.of(context).primaryColor : null),
+                                                                                child: Padding(
+                                                                                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+                                                                                  child: Text(
+                                                                                    overflow: TextOverflow.ellipsis,
+                                                                                    variationList[0].variationValues![i].level != null ? variationList[0].variationValues![i].level!.trim() : '',
+                                                                                    maxLines: 1,
+                                                                                    //  overflow: TextOverflow.ellipsis,
+                                                                                    style: productController.selectedVariations[0][i] ? robotoMedium.copyWith(color: Colors.white, fontSize: Dimensions.fontSizeLarge) : robotoRegular.copyWith(fontSize: Dimensions.fontSizeLarge),
+                                                                                  ),
+                                                                                ),
+                                                                              ),
+                                                                              Padding(
+                                                                                padding: const EdgeInsets.only(top: 3, right: 3),
+                                                                                child: Text(
+                                                                                  overflow: TextOverflow.ellipsis,
+                                                                                  variationList[0].variationValues![i].optionPrice! > 0 ? '+${PriceConverter.convertPrice(variationList[0].variationValues![i].optionPrice ?? 0)}' : 'free'.tr,
+                                                                                  maxLines: 1,
+                                                                                  // overflow:
+                                                                                  //     TextOverflow.ellipsis,
+                                                                                  style: productController.selectedVariations[0][i] ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeDefault, color: Colors.white) : robotoRegular.copyWith(fontSize: Dimensions.fontSizeDefault, color: Theme.of(context).disabledColor),
+                                                                                ),
+                                                                              ),
+                                                                            ],
+                                                                          ),
+                                                                        ),
+                                                                      );
+                                                                    }),
+                                                                  )
+                                                              ],
+                                                            ),
+                                                          ),
                                                       ]),
                                                 ),
                                               ]),
@@ -584,79 +743,88 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                               ? Wrap(
                                                   children: List.generate(
                                                       variationList.length,
-                                                      (index) => Padding(
-                                                            padding:
-                                                                const EdgeInsets
-                                                                    .symmetric(
-                                                                    horizontal:
-                                                                        2),
-                                                            child: Column(
-                                                                mainAxisSize:
-                                                                    MainAxisSize
-                                                                        .min,
-                                                                crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
-                                                                children: [
-                                                                  SizedBox(
-                                                                      width:
-                                                                          150,
-                                                                      child: Text.rich(
-                                                                          maxLines:
-                                                                              2,
-                                                                          overflow: TextOverflow
+                                                      (index) {
+                                                    if (isTab == true &&
+                                                        index == 0) {
+                                                      return Container();
+                                                    } else {
+                                                      return Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal: 2),
+                                                        child: Column(
+                                                            mainAxisSize:
+                                                                MainAxisSize
+                                                                    .min,
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .start,
+                                                            children: [
+                                                              SizedBox(
+                                                                  width: 150,
+                                                                  child: Text.rich(
+                                                                      maxLines:
+                                                                          2,
+                                                                      overflow:
+                                                                          TextOverflow
                                                                               .ellipsis,
-                                                                          TextSpan(
-                                                                              text: variationList[index].name ?? "",
-                                                                              style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
-                                                                              children: const <InlineSpan>[]))),
-                                                                  SizedBox(
-                                                                    // width: 150,
-                                                                    child: Row(
-                                                                      children: [
-                                                                        if (variationList[index].isRequired ??
-                                                                            false)
-                                                                          Text(
-                                                                            ' (${'required'.tr})',
+                                                                      TextSpan(
+                                                                          text: variationList[index].name ??
+                                                                              "",
+                                                                          style:
+                                                                              robotoMedium.copyWith(fontSize: Dimensions.fontSizeLarge),
+                                                                          children: const <InlineSpan>[]))),
+                                                              SizedBox(
+                                                                // width: 150,
+                                                                child: Row(
+                                                                  children: [
+                                                                    if (variationList[index]
+                                                                            .isRequired ??
+                                                                        false)
+                                                                      Text(
+                                                                        ' (${'required'.tr})',
+                                                                        style: robotoMedium.copyWith(
+                                                                            color:
+                                                                                Theme.of(context).primaryColor,
+                                                                            fontSize: Dimensions.fontSizeSmall),
+                                                                      ),
+                                                                    (variationList[index]
+                                                                            .isMultiSelect!)
+                                                                        ? Text(
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                            '${'you_need_to_select_minimum'.tr} ${'${variationList[index].min}'
+                                                                                ' ${'to_maximum'.tr} ${variationList[index].max}'}',
                                                                             style:
-                                                                                robotoMedium.copyWith(color: Theme.of(context).primaryColor, fontSize: Dimensions.fontSizeSmall),
+                                                                                robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor),
+                                                                          )
+                                                                        : Text(
+                                                                            overflow:
+                                                                                TextOverflow.ellipsis,
+                                                                            '',
+                                                                            style:
+                                                                                robotoMedium.copyWith(
+                                                                              fontSize: Dimensions.fontSizeExtraSmall,
+                                                                            ),
                                                                           ),
-                                                                        (variationList[index].isMultiSelect!)
-                                                                            ? Text(
-                                                                                overflow: TextOverflow.ellipsis,
-                                                                                '${'you_need_to_select_minimum'.tr} ${'${variationList[index].min}'
-                                                                                    ' ${'to_maximum'.tr} ${variationList[index].max}'}',
-                                                                                style: robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor),
-                                                                              )
-                                                                            : Text(
-                                                                                overflow: TextOverflow.ellipsis,
-                                                                                '',
-                                                                                style: robotoMedium.copyWith(
-                                                                                  fontSize: Dimensions.fontSizeExtraSmall,
-                                                                                ),
-                                                                              ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-
-                                                                  // SizedBox(
-                                                                  //     height: (variationList[index]
-                                                                  //             .isMultiSelect!)
-                                                                  //         ? Dimensions
-                                                                  //             .paddingSizeExtraSmall
-                                                                  //         : 0),
-
-                                                                  if (variationList[
-                                                                              index]
-                                                                          .variationValues !=
-                                                                      null)
-                                                                    Wrap(
-                                                                      // mainAxisSize:
-                                                                      //     MainAxisSize
-                                                                      //         .min,
-                                                                      children: List.generate(
-                                                                          variationList[index].variationValues?.length ?? 0,
-                                                                          (i) => Padding(
+                                                                  ],
+                                                                ),
+                                                              ),
+                                                              if (variationList[
+                                                                          index]
+                                                                      .variationValues !=
+                                                                  null)
+                                                                Wrap(
+                                                                  // mainAxisSize:
+                                                                  //     MainAxisSize
+                                                                  //         .min,
+                                                                  children: List
+                                                                      .generate(
+                                                                          variationList[index].variationValues?.length ??
+                                                                              0,
+                                                                          (i) =>
+                                                                              Padding(
                                                                                 padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 6),
                                                                                 child: InkWell(
                                                                                   onTap: () {
@@ -708,107 +876,18 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                   ),
                                                                                 ),
                                                                               )),
-                                                                    ),
-                                                                  // ListView.builder(
-                                                                  //   // scrollDirection:
-                                                                  //   //     Axis.horizontal,
-                                                                  //   shrinkWrap: true,
-                                                                  //   physics:
-                                                                  //       const NeverScrollableScrollPhysics(),
-                                                                  //   padding:
-                                                                  //       EdgeInsets
-                                                                  //           .zero,
-                                                                  //   itemCount:
-                                                                  //       variationList[
-                                                                  //               index]
-                                                                  //           .variationValues
-                                                                  //           ?.length,
-                                                                  //   itemBuilder:
-                                                                  //       (context, i) {
-                                                                  //     return
-                                                                  //     InkWell(
-                                                                  //       onTap: () {
-                                                                  //         productController.setCartVariationIndex(
-                                                                  //             index,
-                                                                  //             i,
-                                                                  //             widget
-                                                                  //                 .product,
-                                                                  //             variationList[index]
-                                                                  //                 .isMultiSelect!);
-                                                                  //       },
-                                                                  //       child: Row(
-                                                                  //           children: [
-                                                                  //             Row(
-                                                                  //                 crossAxisAlignment:
-                                                                  //                     CrossAxisAlignment.center,
-                                                                  //                 children: [
-                                                                  //                   // variationList[index].isMultiSelect!
-                                                                  //                   //     ? Checkbox(
-                                                                  //                   //         value: productController.selectedVariations[index][i],
-                                                                  //                   //         activeColor: Theme.of(context).primaryColor,
-                                                                  //                   //         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
-                                                                  //                   //         onChanged: (bool? newValue) {
-                                                                  //                   //           productController.setCartVariationIndex(
-                                                                  //                   //             index,
-                                                                  //                   //             i,
-                                                                  //                   //             widget.product,
-                                                                  //                   //             variationList[index].isMultiSelect!,
-                                                                  //                   //           );
-                                                                  //                   //         },
-                                                                  //                   //         visualDensity: const VisualDensity(horizontal: -3, vertical: -3),
-                                                                  //                   //       )
-                                                                  //                   //     : Radio(
-                                                                  //                   //         value: i,
-                                                                  //                   //         groupValue: productController.selectedVariations[index].indexOf(true),
-                                                                  //                   //         onChanged: (value) {
-                                                                  //                   //           productController.setCartVariationIndex(
-                                                                  //                   //             index,
-                                                                  //                   //             i,
-                                                                  //                   //             widget.product,
-                                                                  //                   //             variationList[index].isMultiSelect!,
-                                                                  //                   //           );
-                                                                  //                   //         },
-                                                                  //                   //         activeColor: Theme.of(context).primaryColor,
-                                                                  //                   //         toggleable: false,
-                                                                  //                   //         visualDensity: const VisualDensity(horizontal: -3, vertical: -3),
-                                                                  //                   //       ),
-                                                                  //                   Text(
-                                                                  //                     overflow: TextOverflow.ellipsis,
-                                                                  //                     variationList[index].variationValues![i].level != null ? variationList[index].variationValues![i].level!.trim() : '',
-                                                                  //                     maxLines: 1,
-                                                                  //                     //  overflow: TextOverflow.ellipsis,
-                                                                  //                     style: productController.selectedVariations[index][i] ? robotoMedium : robotoRegular,
-                                                                  //                   ),
-                                                                  //                 ]),
-                                                                  //             //const Spacer(),
-                                                                  //             Text(
-                                                                  //               overflow:
-                                                                  //                   TextOverflow.ellipsis,
-                                                                  //               variationList[index].variationValues![i].optionPrice! > 0
-                                                                  //                   ? '+${PriceConverter.convertPrice(variationList[index].variationValues![i].optionPrice ?? 0)}'
-                                                                  //                   : 'free'.tr,
-                                                                  //               maxLines:
-                                                                  //                   1,
-                                                                  //               // overflow:
-                                                                  //               //     TextOverflow.ellipsis,
-                                                                  //               style: productController.selectedVariations[index][i]
-                                                                  //                   ? robotoMedium.copyWith(fontSize: Dimensions.fontSizeExtraSmall)
-                                                                  //                   : robotoRegular.copyWith(fontSize: Dimensions.fontSizeExtraSmall, color: Theme.of(context).disabledColor),
-                                                                  //             ),
-                                                                  //           ]),
-                                                                  //     );
-                                                                  //   },
-                                                                  // ),
-
-                                                                  SizedBox(
-                                                                      height: index !=
-                                                                              variationList.length -
-                                                                                  1
-                                                                          ? Dimensions
-                                                                              .paddingSizeLarge
-                                                                          : 0),
-                                                                ]),
-                                                          )),
+                                                                ),
+                                                              SizedBox(
+                                                                  height: index !=
+                                                                          variationList.length -
+                                                                              1
+                                                                      ? Dimensions
+                                                                          .paddingSizeLarge
+                                                                      : 0),
+                                                            ]),
+                                                      );
+                                                    }
+                                                  }),
                                                 )
                                               : Row(
                                                   mainAxisAlignment:
@@ -1666,7 +1745,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
           ],
         ),
         SizedBox(
-          height: Dimensions.paddingSizeSmall,
+          height: Dimensions.paddingSizeExtraSmall,
         ),
         Align(
           alignment: Alignment.topLeft,

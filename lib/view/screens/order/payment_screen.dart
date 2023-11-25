@@ -128,6 +128,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
       double cashAmount = double.parse(_amountTextController.text.isEmpty
           ? "0"
           : _amountTextController.text);
+
       double cardAmount = double.parse(
           _splitCardamountTextController.text.isEmpty
               ? "0"
@@ -138,6 +139,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
         _splitCardamountTextController.text = (total - cashAmount).toString();
         _changeAmount = 0;
       }
+      cashAmount = cashAmount.toPrecision(2);
+      cardAmount = cardAmount.toPrecision(2);
     }
 
     if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
@@ -462,7 +465,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                       hintStyle: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeSmall),
                                       onChanged: (value) {
-                                             selectedindex = null;
+                                        selectedindex = null;
                                         _splitCardamountTextController.clear();
                                         amountCheck();
                                         orderController.update();
@@ -522,7 +525,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                       hintStyle: robotoRegular.copyWith(
                                           fontSize: Dimensions.fontSizeSmall),
                                       onChanged: (value) {
-                                             selectedindex = null;
+                                        selectedindex = null;
                                         amountCheck();
                                         orderController.update();
                                       },
@@ -760,7 +763,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                                 : _splitCardamountTextController
                                                     .text);
 
-
                                         if (orderController.selectedMethod ==
                                                 'cash' &&
                                             orderController.placeOrderBody!
@@ -816,8 +818,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                           );
                                           return;
                                         }
-
-                                     
                                       },
                                     ),
                                   ),
