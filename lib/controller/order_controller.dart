@@ -187,7 +187,7 @@ class OrderController extends GetxController implements GetxService {
       _isLoading = true;
     }
     _currentOrderDetails = null;
-    var logger = Logger();
+  
     update();
 
     if (orderId != null) {

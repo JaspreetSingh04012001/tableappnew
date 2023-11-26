@@ -3,7 +3,6 @@ import 'package:efood_table_booking/controller/splash_controller.dart';
 import 'package:efood_table_booking/data/model/response/product_model.dart';
 import 'package:efood_table_booking/helper/price_converter.dart';
 import 'package:esc_pos_utils/esc_pos_utils.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -356,7 +355,7 @@ class PrinterController extends GetxController {
     orderController.currentOrderDetails?.details?.forEach((details) {
       String variationText = '';
       String? note = details.note;
-      int a = 0;
+      // int a = 0;
       //  String addonsName = '';
       bool takeAway = false;
 
@@ -374,20 +373,35 @@ class PrinterController extends GetxController {
       //     addOnsPrice =
       //         addOnsPrice + (details.addOnPrices![i] * details.addOnQtys![i]);
       //   }
-      // }
-      try {
-        for (AddOns addOn in addons) {
-          if (ids.contains(addOn.id)) {
-            // "${details.quantity} x ${details.productDetails?.name ?? ''}:${PriceConverter.convertPrice(details.price! * details.quantity!)}",
-            //  addonsName = addonsName + ('${addOn.name} (${(addQty[a])}), ');
-            myAdddonData.add(
-                "${addQty[a]} x ${addOn.name}:${PriceConverter.convertPrice(addOn.price! * addQty[a])}");
-            a++;
+      // }\\
+
+      if (ids.length == details.addOnPrices?.length &&
+          ids.length == details.addOnQtys?.length) {
+        for (int j = 0; j < ids.length; j++) {
+          int id = ids[j];
+
+          for (var addOn in addons) {
+            if (addOn.id == id) {
+              myAdddonData.add(
+                  "${addQty[j]} x ${addOn.name}:${PriceConverter.convertPrice(addOn.price! * addQty[j])}");
+            }
           }
+          // if(){}
         }
-      } catch (e) {
-        debugPrint('order details view -$e');
       }
+      // try {
+      //   for (AddOns addOn in addons) {
+      //     if (ids.contains(addOn.id)) {
+      //       // "${details.quantity} x ${details.productDetails?.name ?? ''}:${PriceConverter.convertPrice(details.price! * details.quantity!)}",
+      //       //  addonsName = addonsName + ('${addOn.name} (${(addQty[a])}), ');
+      //       myAdddonData.add(
+      //           "${addQty[a]} x ${addOn.name}:${PriceConverter.convertPrice(addOn.price! * addQty[a])}");
+      //       a++;
+      //     }
+      //   }
+      // } catch (e) {
+      //   debugPrint('order details view -$e');
+      // }
       if (details.variations != null && details.variations!.isNotEmpty) {
         for (Variation variation in details.variations!) {
           variationText +=

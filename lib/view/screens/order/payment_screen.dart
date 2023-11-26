@@ -136,7 +136,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
       if ((cashAmount + cardAmount) > total) {
         _changeAmount = (cashAmount + cardAmount) - total;
       } else {
-        _splitCardamountTextController.text = (total - cashAmount).toString();
+        _splitCardamountTextController.text =
+            (total - cashAmount).toPrecision(2).toString();
         _changeAmount = 0;
       }
       cashAmount = cashAmount.toPrecision(2);
@@ -380,7 +381,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                         inputFormatter: [
                                           NumberTextInputFormatter(
                                             integerDigits: 10,
-                                            decimalDigits: 1,
+                                            decimalDigits: 2,
                                             maxValue: '1000000000.00',
                                             decimalSeparator: '.',
                                             groupDigits: 3,
@@ -448,7 +449,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                       inputFormatter: [
                                         NumberTextInputFormatter(
                                           integerDigits: 10,
-                                          decimalDigits: 1,
+                                          decimalDigits: 2,
                                           maxValue: '1000000000.00',
                                           decimalSeparator: '.',
                                           groupDigits: 3,
@@ -511,7 +512,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                       inputFormatter: [
                                         NumberTextInputFormatter(
                                           integerDigits: 10,
-                                          decimalDigits: 1,
+                                          decimalDigits: 2,
                                           maxValue: '1000000000.00',
                                           decimalSeparator: '.',
                                           groupDigits: 3,
@@ -777,6 +778,8 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                           orderController.placeOrder(
                                             orderController.placeOrderBody!
                                                 .copyWith(
+
+                                                  
                                               paymentStatus: 'paid',
                                               paymentMethod: orderController
                                                   .selectedMethod,

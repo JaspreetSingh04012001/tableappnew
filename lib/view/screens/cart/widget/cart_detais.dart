@@ -1079,7 +1079,8 @@ class _CartDetailsState extends State<CartDetails> {
                                           Get.find<OrderController>()
                                                   .orderNote ??
                                               '',
-                                          'now',
+                                          DateFormat('hh:mm:ss')
+                                              .format(dateTime),
                                           DateFormat('yyyy-MM-dd')
                                               .format(dateTime),
                                           0,

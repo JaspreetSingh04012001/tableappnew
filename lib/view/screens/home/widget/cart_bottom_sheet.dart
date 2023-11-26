@@ -1376,13 +1376,15 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                     .withOpacity(0.4),
                                 controller: note,
                                 onChanged: (value) {
-                                  setState(() {
-                                    // customerName = value;
-                                    // cartController.setCustomerName =
-                                    //     customerName;
-                                  });
+                                  myChutiyaFunction(() {});
+                                  // setState(() {
+                                  //   // customerName = value;
+                                  //   // cartController.setCustomerName =
+                                  //   //     customerName;
+                                  // });
                                 },
                                 onSubmit: (value) {
+                                  myChutiyaFunction(() {});
                                   // setState(() {
                                   //   customerName = value;
                                   //   cartController.setCustomerName =

@@ -256,6 +256,10 @@ class OrderDetailsView extends StatelessWidget {
                                       if (addOn.id == id) {
                                         Logger().i(
                                             "$id ${addOn.name} ${addQty[j]}");
+                                      
+                                      
+                                      
+                                      
                                         addOnWidgetList.add(Row(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
