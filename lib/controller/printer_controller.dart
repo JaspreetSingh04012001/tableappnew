@@ -608,8 +608,6 @@ class PrinterController extends GetxController {
     if (orderController.currentOrderDetails?.order?.paymentMethod == "split") {
       bytes += generator.text(
           "Cash : +${PriceConverter.convertPrice(double.parse(orderController.currentOrderDetails?.order?.cash ?? "0"))}");
-    }
-    if (orderController.currentOrderDetails?.order?.paymentMethod == "split") {
       bytes += generator.text(
           "Card : +${PriceConverter.convertPrice(double.parse(orderController.currentOrderDetails?.order?.card ?? "0"))}");
     }
@@ -618,12 +616,12 @@ class PrinterController extends GetxController {
       bytes += generator.text(
           "Card : +${PriceConverter.convertPrice(double.parse(orderController.currentOrderDetails?.order?.card ?? "0"))}");
     }
-    if (orderController.currentOrderDetails?.order?.paymentMethod == "split") {
-      bytes += generator.text(
-          styles: const PosStyles(
-              height: PosTextSize.size1, width: PosTextSize.size1, bold: true),
-          "${'change'.tr} : ${PriceConverter.convertPrice(((double.parse(orderController.currentOrderDetails?.order?.card ?? "0") + double.parse(orderController.currentOrderDetails?.order?.card ?? "0")) - (orderController.currentOrderDetails?.order?.orderAmount ?? 0)))}");
-    }
+    // if (orderController.currentOrderDetails?.order?.paymentMethod == "split") {
+    //   bytes += generator.text(
+    //       styles: const PosStyles(
+    //           height: PosTextSize.size1, width: PosTextSize.size1, bold: true),
+    //       "${'change'.tr} : ${PriceConverter.convertPrice(((double.parse(orderController.currentOrderDetails?.order?.card ?? "0") + double.parse(orderController.currentOrderDetails?.order?.card ?? "0")) - (orderController.currentOrderDetails?.order?.orderAmount ?? 0)))}");
+    // }
     if (orderController.currentOrderDetails?.order?.paymentMethod == "cash") {
       bytes += generator.text(
           styles: const PosStyles(
