@@ -126,22 +126,22 @@ class _PaymentScreenState extends State<PaymentScreen> {
     void amountCheck() {
       double total = Get.find<CartController>().totalAmount;
       double cashAmount = double.parse(_amountTextController.text.isEmpty
-          ? "0"
+          ? "0.00"
           : _amountTextController.text);
 
       double cardAmount = double.parse(
           _splitCardamountTextController.text.isEmpty
-              ? "0"
+              ? "0.00"
               : _splitCardamountTextController.text);
       if ((cashAmount + cardAmount) > total) {
         _changeAmount = (cashAmount + cardAmount) - total;
       } else {
         _splitCardamountTextController.text =
-            (total - cashAmount).toPrecision(2).toString();
+            (total - cashAmount).toStringAsFixed(2);
         _changeAmount = 0;
       }
-      cashAmount = cashAmount.toPrecision(2);
-      cardAmount = cardAmount.toPrecision(2);
+      cashAmount = cashAmount;
+      cardAmount = cardAmount;
     }
 
     if (MediaQuery.of(context).viewInsets.bottom != 0.0) {
@@ -277,7 +277,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
 
                                             selectedindex = index;
                                             _amountTextController.text =
-                                                "${x[index]}.0";
+                                                "${x[index]}.00";
                                             if (orderController
                                                     .selectedMethod ==
                                                 'split') {
@@ -778,8 +778,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
                                           orderController.placeOrder(
                                             orderController.placeOrderBody!
                                                 .copyWith(
-
-                                                  
                                               paymentStatus: 'paid',
                                               paymentMethod: orderController
                                                   .selectedMethod,

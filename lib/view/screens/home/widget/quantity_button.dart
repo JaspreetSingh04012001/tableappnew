@@ -37,8 +37,9 @@ class QuantityButton extends StatelessWidget {
         ),
         alignment: Alignment.center,
         child: Icon(
-          size: Dimensions.paddingSizeDefault,
+          size: Dimensions.fontSizeOverLarge,
           isIncrement ? Icons.add : Icons.remove,
+          //  opticalSize: 2,
         ),
       ),
     );
