@@ -243,7 +243,11 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                   }
                 }
 
+                double totalprice = 0;
+
                 void myChutiyaFunction(Function() onTap) {
+                  int myquantity = 0;
+                  totalprice = 0;
                   addonsCost = 0;
                   addOnIdList.clear();
                   addoncount = 0;
@@ -259,7 +263,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                         isToast: true, isError: true);
                     return;
                   }
-
+                  // loop for varaiation  and addons to get price and quantity
                   if (variationList.isNotEmpty) {
                     for (int index = 0; index < variationList.length; index++) {
                       if (!variationList[index].isMultiSelect! &&
@@ -304,8 +308,10 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                       }
                     }
                   }
+                  totalprice += variationPrice;
 
                   //if (addonLen > addonLimit) return;
+                  bool addonasproductfound = false;
                   for (int index = 0; index < addonLen; index++) {
                     if (productController.addOnActiveList[index]) {
                       double addonItemPrice =
@@ -318,6 +324,16 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                   (addonItemPrice),
                                   widget.product.addOns![index].tax ?? 0,
                                   'percent'));
+                      if (widget.product.addOns![index].is_product == true) {
+                        addonasproductfound = true;
+
+                        myquantity += productController.addOnQtyList[index];
+                      }
+                      totalprice +=
+                          ((widget.product.addOns![index].price != null)
+                              ? (widget.product.addOns![index].price! *
+                                  productController.addOnQtyList[index])
+                              : 0);
 
                       addOnIdList.add(AddOn(
                         is_product: widget.product.addOns![index].is_product,
@@ -331,9 +347,13 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                       ));
                     }
                   }
+                  if (addonasproductfound == false) {
+                    totalprice += widget.product.price ?? 0;
+                    myquantity += 1;
+                  }
 
                   bool found = false;
-                  if (addonsCost == 0) productController.setQuantity(true);
+                  //  if (addonsCost == 0) productController.setQuantity(true);
                   if (cartController.cartList.isNotEmpty) {
                     for (var cartItem in cartController.cartList) {
                       if (cartItem.product!.id == widget.product.id) {
@@ -343,13 +363,14 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                               note: note.text.isNotEmpty
                                   ? note.text.toString()
                                   : null,
-                              price: addonsCost == 0
-                                  ? ((productController.quantity != null ||
-                                          productController.quantity > 0)
-                                      ? widget.product.price! *
-                                          productController.quantity
-                                      : widget.product.price)
-                                  : addonsCost + variationPrice,
+                              price: totalprice,
+                              // price: addonsCost == 0
+                              //     ? ((productController.quantity != null ||
+                              //             productController.quantity > 0)
+                              //         ? widget.product.price! *
+                              //             productController.quantity
+                              //         : widget.product.price)
+                              //     : addonsCost + variationPrice,
                               discountedPrice: priceWithDiscount,
                               variation: [],
                               discountAmount: priceWithVariation -
@@ -358,7 +379,8 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                     discount,
                                     discountType,
                                   ),
-                              quantity: productController.quantity,
+                              quantity: myquantity,
+                              //  quantity: productController.quantity,
                               // : addOnIdList
                               //     .map((e) => e.quantity)
                               //     .toList()
@@ -385,13 +407,14 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                           note: note.text.isNotEmpty
                               ? note.text.toString()
                               : null,
-                          price: addonsCost == 0
-                              ? ((productController.quantity != null ||
-                                      productController.quantity > 0)
-                                  ? widget.product.price! *
-                                      productController.quantity
-                                  : widget.product.price)
-                              : addonsCost + variationPrice,
+                          price: totalprice,
+                          // price: addonsCost == 0
+                          //     ? ((productController.quantity != null ||
+                          //             productController.quantity > 0)
+                          //         ? widget.product.price! *
+                          //             productController.quantity
+                          //         : widget.product.price)
+                          //     : addonsCost + variationPrice,
                           discountedPrice: priceWithDiscount,
                           variation: [],
                           discountAmount: priceWithVariation -
@@ -400,7 +423,8 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                 discount,
                                 discountType,
                               ),
-                          quantity: productController.quantity,
+                          quantity: myquantity,
+                          //  quantity: productController.quantity,
                           taxAmount: (priceWithVariation -
                               PriceConverter.convertWithDiscount(
                                   priceWithVariation,
@@ -950,11 +974,11 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                             true,
                                                                             index);
 
-                                                                        if (widget.product.addOns![index].is_product ==
-                                                                            true) {
-                                                                          productController
-                                                                              .setQuantity(true);
-                                                                        }
+                                                                        // if (widget.product.addOns![index].is_product ==
+                                                                        //     true) {
+                                                                        //   productController
+                                                                        //       .setQuantity(true);
+                                                                        // }
                                                                       } else if (productController
                                                                               .addOnQtyList[index] ==
                                                                           1) {
@@ -964,11 +988,11 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                         // if (productController
                                                                         //         .quantity !=
                                                                         //     1) {
-                                                                        if (widget.product.addOns![index].is_product ==
-                                                                            true) {
-                                                                          productController
-                                                                              .setQuantity(false);
-                                                                        }
+                                                                        // if (widget.product.addOns![index].is_product ==
+                                                                        //     true) {
+                                                                        //   productController
+                                                                        //       .setQuantity(false);
+                                                                        // }
                                                                         // }
                                                                         // if (productController
                                                                         //         .quantity ==
@@ -977,11 +1001,11 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                         // }
                                                                       }
                                                                     });
-                                                                    if (productController
-                                                                            .quantity ==
-                                                                        0) {
-                                                                      removeMe();
-                                                                    }
+                                                                    // if (productController
+                                                                    //         .quantity ==
+                                                                    //     0) {
+                                                                    //   removeMe();
+                                                                    // }
 
                                                                     productController
                                                                         .update();
@@ -1068,12 +1092,12 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                             if (productController.addOnQtyList[index] > 1) {
                                                                                               productController.setAddOnQuantity(false, index);
                                                                                               //   if (productController.quantity != 1) {
-                                                                                              if (widget.product.addOns![index].is_product == true) productController.setQuantity(false);
+                                                                                              // if (widget.product.addOns![index].is_product == true) productController.setQuantity(false);
                                                                                               //   }
                                                                                             } else {
                                                                                               productController.addAddOn(false, index);
                                                                                               //  if (productController.quantity != 1) {
-                                                                                              if (widget.product.addOns![index].is_product == true) productController.setQuantity(false);
+                                                                                              // if (widget.product.addOns![index].is_product == true) productController.setQuantity(false);
                                                                                               //  }
                                                                                             }
                                                                                             myChutiyaFunction(() {});
@@ -1082,20 +1106,20 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                               if (productController.addOnQtyList[index] > 1) {
                                                                                                 productController.setAddOnQuantity(false, index);
                                                                                                 //  if (productController.quantity != 1) {
-                                                                                                if (widget.product.addOns![index].is_product == true) productController.setQuantity(false);
+                                                                                                //  if (widget.product.addOns![index].is_product == true) productController.setQuantity(false);
                                                                                                 //  }
                                                                                               } else {
                                                                                                 productController.addAddOn(false, index);
                                                                                                 //   if (productController.quantity != 1) {
-                                                                                                if (widget.product.addOns![index].is_product == true) productController.setQuantity(false);
+                                                                                                //  if (widget.product.addOns![index].is_product == true) productController.setQuantity(false);
                                                                                                 //    }
                                                                                               }
                                                                                             });
                                                                                           }
-                                                                                          if (productController.quantity == 0) {
-                                                                                            Get.back();
-                                                                                            removeMe();
-                                                                                          }
+                                                                                          // if (productController.quantity == 0) {
+                                                                                          //   Get.back();
+                                                                                          //   removeMe();
+                                                                                          // }
 
                                                                                           productController.update();
                                                                                           cartController.update();
@@ -1118,7 +1142,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                                                                           myChutiyaFunction(() {
                                                                                             productController.setAddOnQuantity(true, index);
 
-                                                                                            if (widget.product.addOns![index].is_product == true) productController.setQuantity(true);
+                                                                                            //if (widget.product.addOns![index].is_product == true) productController.setQuantity(true);
                                                                                           });
 
                                                                                           productController.update();
@@ -1491,12 +1515,14 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                             Dimensions.paddingSizeExtraSmall),
                                     Text(
                                         overflow: TextOverflow.ellipsis,
-                                        PriceConverter.convertPrice((widget
-                                                        .product.addOns ==
-                                                    null ||
-                                                widget.product.addOns!.isEmpty)
-                                            ? priceWithAddonsVariationWithoutDiscount
-                                            : addonsCost + variationPrice),
+
+                                        // PriceConverter.convertPrice((widget
+                                        //                 .product.addOns ==
+                                        //             null ||
+                                        //         widget.product.addOns!.isEmpty)
+                                        //     ? priceWithAddonsVariationWithoutDiscount
+                                        //     : addonsCost + variationPrice),
+                                        PriceConverter.convertPrice(totalprice),
                                         style: robotoBold.copyWith(
                                             fontSize:
                                                 Dimensions.fontSizeExtraLarge +

@@ -81,6 +81,11 @@ class ProductController extends GetxController implements GetxService {
   String get selectedProductType => _selectedProductType;
   List<List<bool>> get selectedVariations => _selectedVariations;
 
+
+
+  double totalPrice = 0 ;
+  int myquantity = 0 ;
+
   void isSearchChange(bool vale) {
     _isSearch = vale;
     update();
