@@ -246,6 +246,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                 double totalprice = 0;
 
                 void myChutiyaFunction(Function() onTap) {
+                  productController.totalPrice = 0;
                   int myquantity = 0;
                   totalprice = 0;
                   addonsCost = 0;
@@ -448,7 +449,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                     // productController.setQty(addoncount);
                   }
                   if (addonsCost == 0) productController.setQuantity(false);
-
+                  productController.totalPrice = totalprice;
                   showCustomSnackBar('Item added to cart',
                       isError: false, isToast: true);
                 }
@@ -1522,7 +1523,8 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                         //         widget.product.addOns!.isEmpty)
                                         //     ? priceWithAddonsVariationWithoutDiscount
                                         //     : addonsCost + variationPrice),
-                                        PriceConverter.convertPrice(totalprice),
+                                        PriceConverter.convertPrice(
+                                            productController.totalPrice),
                                         style: robotoBold.copyWith(
                                             fontSize:
                                                 Dimensions.fontSizeExtraLarge +
