@@ -34,7 +34,7 @@ class _ProductWidgetState extends State<ProductWidget> {
 
     return GetBuilder<CartController>(builder: (cartController) {
       return GetBuilder<ProductController>(builder: (productController) {
-        late int cartIndex;
+        int cartIndex = -1;
 
         DateTime currentTime = Get.find<SplashController>().currentTime;
         DateTime start =
@@ -51,17 +51,18 @@ class _ProductWidgetState extends State<ProductWidget> {
         bool isAvailable =
             currentTime.isAfter(startTime) && currentTime.isBefore(endTime);
 
-        cartIndex = cartController.getCartIndex(widget.product);
+        // cartIndex = cartController.getCartIndex(widget.product);
         double productPrice = 0;
-        int? myIndex = cartController.getmyCartIndex(widget.product);
-        if (myIndex != null) {
-          // cartController.cartList[myIndex ?? 0].addOnIds?.forEach((element) {
-          //   productPrice += element.price ?? 0;
-          // });
-          productPrice = cartController.cartList[myIndex ?? 0].price ?? 0;
-        } else {
-          productPrice = widget.product.price ?? 0;
-        }
+        int? myIndex;
+        //cartController.getmyCartIndex(widget.product);
+        // if (myIndex != null) {
+        // cartController.cartList[myIndex ?? 0].addOnIds?.forEach((element) {
+        //   productPrice += element.price ?? 0;
+        // });
+        // productPrice = cartController.cartList[myIndex ?? 0].price ?? 0;
+        // } else {
+        productPrice = widget.product.price ?? 0;
+        //  }
 
         // if (widget.product.branchProduct != null) {
         //   productPrice = widget.product.branchProduct?.price ?? 0;

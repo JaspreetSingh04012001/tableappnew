@@ -35,6 +35,8 @@ class ProductBottomSheet extends StatefulWidget {
 }
 
 class _ProductBottomSheetState extends State<ProductBottomSheet> {
+  late int tempIndex;
+  bool added = false;
   TextEditingController note = TextEditingController();
   late SharedPreferences sharedPreferences;
   var logger = Logger();
@@ -62,7 +64,8 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
     super.initState();
     // initVariation();
     Get.find<ProductController>().initData(widget.product, widget.cart);
-    logger.i(widget.product.toJson());
+    tempIndex = Get.find<CartController>().cartList.length;
+    // logger.i(widget.product.toJson());
     if (widget.cart?.note != null) note.text = widget.cart?.note ?? '';
   }
 
@@ -324,25 +327,20 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                     myquantity += 1;
                   }
 
-                  bool found = false;
+                  // bool found = false;
+
                   //  if (addonsCost == 0) productController.setQuantity(true);
-                  if (cartController.cartList.isNotEmpty) {
+                  if (widget.cartIndex != null) {
                     for (var cartItem in cartController.cartList) {
                       if (cartItem.product!.id == widget.product.id) {
-                        found = true;
+                        // found = true;
                         cartController.addToCart(
                             CartModel(
                               note: note.text.isNotEmpty
                                   ? note.text.toString()
                                   : null,
                               price: totalprice,
-                              // price: addonsCost == 0
-                              //     ? ((productController.quantity != null ||
-                              //             productController.quantity > 0)
-                              //         ? widget.product.price! *
-                              //             productController.quantity
-                              //         : widget.product.price)
-                              //     : addonsCost + variationPrice,
+
                               discountedPrice: priceWithDiscount,
                               variation: [],
                               discountAmount: priceWithVariation -
@@ -368,48 +366,85 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                               product: widget.product,
                               variations: productController.selectedVariations,
                             ),
-                            cartController.cartList.indexOf(cartItem));
+                            widget.cartIndex ?? 0);
                       }
                     }
-                  }
-
-                  if (found == false) {
-                    cartController.addToCart(
-                        CartModel(
-                          note: note.text.isNotEmpty
-                              ? note.text.toString()
-                              : null,
-                          price: totalprice,
-                          // price: addonsCost == 0
-                          //     ? ((productController.quantity != null ||
-                          //             productController.quantity > 0)
-                          //         ? widget.product.price! *
-                          //             productController.quantity
-                          //         : widget.product.price)
-                          //     : addonsCost + variationPrice,
-                          discountedPrice: priceWithDiscount,
-                          variation: [],
-                          discountAmount: priceWithVariation -
-                              PriceConverter.convertWithDiscount(
-                                priceWithVariation,
-                                discount,
-                                discountType,
-                              ),
-                          quantity: myquantity,
-                          //  quantity: productController.quantity,
-                          taxAmount: (priceWithVariation -
-                              PriceConverter.convertWithDiscount(
+                  } else {
+                    if (added == true) {
+                      cartController.addToCart(
+                          CartModel(
+                            note: note.text.isNotEmpty
+                                ? note.text.toString()
+                                : null,
+                            price: totalprice,
+                            // price: addonsCost == 0
+                            //     ? ((productController.quantity != null ||
+                            //             productController.quantity > 0)
+                            //         ? widget.product.price! *
+                            //             productController.quantity
+                            //         : widget.product.price)
+                            //     : addonsCost + variationPrice,
+                            discountedPrice: priceWithDiscount,
+                            variation: [],
+                            discountAmount: priceWithVariation -
+                                PriceConverter.convertWithDiscount(
                                   priceWithVariation,
-                                  widget.product.tax!,
-                                  widget.product.taxType!) +
-                              addonsTax),
-                          addOnIds: addOnIdList,
-                          product: widget.product,
-                          variations: productController.selectedVariations,
-                        ),
-                        widget.cart != null
-                            ? widget.cartIndex!
-                            : productController.cartIndex);
+                                  discount,
+                                  discountType,
+                                ),
+                            quantity: myquantity,
+                            //  quantity: productController.quantity,
+                            taxAmount: (priceWithVariation -
+                                PriceConverter.convertWithDiscount(
+                                    priceWithVariation,
+                                    widget.product.tax!,
+                                    widget.product.taxType!) +
+                                addonsTax),
+                            addOnIds: addOnIdList,
+                            product: widget.product,
+                            variations: productController.selectedVariations,
+                          ),
+                          tempIndex);
+                    } else {
+                      cartController.addToCart(
+                          CartModel(
+                            note: note.text.isNotEmpty
+                                ? note.text.toString()
+                                : null,
+                            price: totalprice,
+                            // price: addonsCost == 0
+                            //     ? ((productController.quantity != null ||
+                            //             productController.quantity > 0)
+                            //         ? widget.product.price! *
+                            //             productController.quantity
+                            //         : widget.product.price)
+                            //     : addonsCost + variationPrice,
+                            discountedPrice: priceWithDiscount,
+                            variation: [],
+                            discountAmount: priceWithVariation -
+                                PriceConverter.convertWithDiscount(
+                                  priceWithVariation,
+                                  discount,
+                                  discountType,
+                                ),
+                            quantity: myquantity,
+                            //  quantity: productController.quantity,
+                            taxAmount: (priceWithVariation -
+                                PriceConverter.convertWithDiscount(
+                                    priceWithVariation,
+                                    widget.product.tax!,
+                                    widget.product.taxType!) +
+                                addonsTax),
+                            addOnIds: addOnIdList,
+                            product: widget.product,
+                            variations: productController.selectedVariations,
+                          ),
+                          widget.cart != null
+                              ? widget.cartIndex!
+                              : productController.cartIndex);
+
+                      added = true;
+                    }
 
                     // for (int index = 0; index < addonLen; index++) {
                     //   if (productController.addOnActiveList[index]) {
