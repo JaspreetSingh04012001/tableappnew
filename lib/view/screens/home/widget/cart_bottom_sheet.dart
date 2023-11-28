@@ -99,6 +99,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                 initVariation();
               }, builder: (productController) {
                 double variationPrice = 0;
+                double totalprice = 0;
                 double price = widget.product.price ?? 0;
                 double discount = widget.product.discount ?? 0;
                 String discountType = widget.product.discountType ?? 'percent';
@@ -144,6 +145,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                     ? widget.product.addOns!.length
                     : 0;
                 int addoncount = 0;
+
                 for (int index = 0; index < addonLen; index++) {
                   if (productController.addOnActiveList[index]) {
                     addoncount =
@@ -158,6 +160,10 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                 (addonItemPrice),
                                 widget.product.addOns![index].tax ?? 0,
                                 'percent'));
+                    totalprice += ((widget.product.addOns![index].price != null)
+                        ? (widget.product.addOns![index].price! *
+                            productController.addOnQtyList[index])
+                        : 0);
 
                     addOnIdList.add(AddOn(
                       id: widget.product.addOns![index].id,
@@ -184,55 +190,6 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                     widget.product.availableTimeStarts,
                     widget.product.availableTimeEnds);
 
-                void updateAddon() {
-                  variationPrice = 0;
-                  for (int index = 0; index < variationList.length; index++) {
-                    if (variationList[index].variationValues != null) {
-                      for (int i = 0;
-                          i < variationList[index].variationValues!.length;
-                          i++) {
-                        if (productController.selectedVariations[index][i]) {
-                          variationPrice += variationList[index]
-                                  .variationValues![i]
-                                  .optionPrice ??
-                              0;
-                        }
-                      }
-                    }
-                  }
-
-                  addonsCost = 0;
-                  addOnIdList.clear();
-                  int addonLen = widget.product.addOns != null
-                      ? widget.product.addOns!.length
-                      : 0;
-
-                  for (int index = 0; index < addonLen; index++) {
-                    if (productController.addOnActiveList[index]) {
-                      double addonItemPrice =
-                          widget.product.addOns![index].price! *
-                              productController.addOnQtyList[index];
-                      addonsCost = addonsCost + (addonItemPrice);
-                      addonsTax = addonsTax +
-                          (addonItemPrice -
-                              PriceConverter.convertWithDiscount(
-                                  (addonItemPrice),
-                                  widget.product.addOns![index].tax ?? 0,
-                                  'percent'));
-
-                      addOnIdList.add(AddOn(
-                        id: widget.product.addOns![index].id,
-                        price: (widget.product.addOns![index].price != null)
-                            ? (widget.product.addOns![index].price! *
-                                productController.addOnQtyList[index])
-                            : null,
-                        quantity: productController.addOnQtyList[index],
-                        name: widget.product.addOns![index].name,
-                      ));
-                    }
-                  }
-                }
-
                 void removeMe() {
                   for (var cartItem in cartController.cartList) {
                     if (cartItem.product!.id == widget.product.id) {
@@ -243,10 +200,24 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                   }
                 }
 
-                double totalprice = 0;
+                variationPrice = 0;
+                for (int index = 0; index < variationList.length; index++) {
+                  if (variationList[index].variationValues != null) {
+                    for (int i = 0;
+                        i < variationList[index].variationValues!.length;
+                        i++) {
+                      if (productController.selectedVariations[index][i]) {
+                        variationPrice += variationList[index]
+                                .variationValues![i]
+                                .optionPrice ??
+                            0;
+                      }
+                    }
+                  }
+                }
 
                 void myChutiyaFunction(Function() onTap) {
-                  productController.totalPrice = 0;
+                  //  productController.totalPrice = 0;
                   int myquantity = 0;
                   totalprice = 0;
                   addonsCost = 0;
@@ -449,7 +420,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                     // productController.setQty(addoncount);
                   }
                   if (addonsCost == 0) productController.setQuantity(false);
-                  productController.totalPrice = totalprice;
+                  // productController.totalPrice = totalprice;
                   showCustomSnackBar('Item added to cart',
                       isError: false, isToast: true);
                 }
@@ -1523,8 +1494,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                         //         widget.product.addOns!.isEmpty)
                                         //     ? priceWithAddonsVariationWithoutDiscount
                                         //     : addonsCost + variationPrice),
-                                        PriceConverter.convertPrice(
-                                            productController.totalPrice),
+                                        PriceConverter.convertPrice(totalprice),
                                         style: robotoBold.copyWith(
                                             fontSize:
                                                 Dimensions.fontSizeExtraLarge +
