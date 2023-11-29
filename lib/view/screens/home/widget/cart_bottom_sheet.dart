@@ -46,7 +46,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
       // variationList = widget.product.variations ?? [];
       j:
       for (Variation element in widget.product.variations ?? []) {
-        logger.i(element.name);
+        //  logger.i(element.name);
         if (element.name == "Order Type" || element.name == "Order type") {
           Get.find<ProductController>().setCartVariationIndex(
               widget.product.variations!.indexOf(element),
@@ -193,15 +193,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                     widget.product.availableTimeStarts,
                     widget.product.availableTimeEnds);
 
-                void removeMe() {
-                  for (var cartItem in cartController.cartList) {
-                    if (cartItem.product!.id == widget.product.id) {
-                      cartController.cartList
-                          .removeAt(cartController.cartList.indexOf(cartItem));
-                      //  cartController.update();
-                    }
-                  }
-                }
+              
 
                 variationPrice = 0;
                 for (int index = 0; index < variationList.length; index++) {
@@ -287,6 +279,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
 
                   //if (addonLen > addonLimit) return;
                   bool addonasproductfound = false;
+                  double addonPrice = 0;
                   for (int index = 0; index < addonLen; index++) {
                     if (productController.addOnActiveList[index]) {
                       double addonItemPrice =
@@ -304,7 +297,13 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
 
                         myquantity += productController.addOnQtyList[index];
                       }
+
                       totalprice +=
+                          ((widget.product.addOns![index].price != null)
+                              ? (widget.product.addOns![index].price! *
+                                  productController.addOnQtyList[index])
+                              : 0);
+                      addonPrice +=
                           ((widget.product.addOns![index].price != null)
                               ? (widget.product.addOns![index].price! *
                                   productController.addOnQtyList[index])
@@ -334,6 +333,7 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                     for (var cartItem in cartController.cartList) {
                       if (cartItem.product!.id == widget.product.id) {
                         // found = true;
+
                         cartController.addToCart(
                             CartModel(
                               note: note.text.isNotEmpty
@@ -367,6 +367,8 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                               variations: productController.selectedVariations,
                             ),
                             widget.cartIndex ?? 0);
+                        showCustomSnackBar('Item added to cart',
+                            isError: false, isToast: true);
                       }
                     }
                   } else {
@@ -445,7 +447,8 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
 
                       added = true;
                     }
-
+                    showCustomSnackBar('Item added to cart',
+                        isError: false, isToast: true);
                     // for (int index = 0; index < addonLen; index++) {
                     //   if (productController.addOnActiveList[index]) {
                     //     addoncount =
@@ -454,10 +457,38 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                     // }
                     // productController.setQty(addoncount);
                   }
-                  if (addonsCost == 0) productController.setQuantity(false);
+
+                  // logger.i(productController.selectedVariations.toString());
+                  // logger.d(addOnIdList.length);
+                  int count = 0;
+
+                  for (List<bool> innerList
+                      in productController.selectedVariations) {
+                    for (bool value in innerList) {
+                      if (value) {
+                        count++;
+                      }
+                    }
+                  }
+                  //logger.d(count);
+                  if (count == 1 && addOnIdList.isEmpty) {
+                    if (widget.cartIndex != null) {
+                      logger.d("Fuck product");
+                      cartController.removeFromCart(widget.cartIndex as int);
+                      cartController.update();
+                      return;
+                    } else {
+                      if (added == true) {
+                        added = false;
+                        cartController.removeFromCart(tempIndex);
+                        cartController.update();
+                        return;
+                      }
+                    }
+                  }
+                  cartController.update();
+                  //   if (addonsCost == 0) productController.setQuantity(false);
                   // productController.totalPrice = totalprice;
-                  showCustomSnackBar('Item added to cart',
-                      isError: false, isToast: true);
                 }
 
                 return Column(
@@ -1555,60 +1586,60 @@ class _ProductBottomSheetState extends State<ProductBottomSheet> {
                                     //     : const SizedBox(),
                                   ]),
                             ),
-                            if (widget.product.addOns == null ||
-                                widget.product.addOns!.isEmpty)
-                              Expanded(child: Container()),
-                            if (widget.product.addOns == null ||
-                                widget.product.addOns!.isEmpty)
-                              Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    // Expanded(child: Container()),
-                                    QuantityButton(
-                                        isIncrement: false,
-                                        onTap: () {
-                                          // int cartIndex =
-                                          //     widget.cartIndex ?? -1;
-                                          if (productController.quantity == 1) {
-                                            productController
-                                                .setQuantity(false);
-                                            removeMe();
-                                            productController.update();
-                                            cartController.update();
-                                            //   Get.back();
-                                          } else if (productController
-                                                  .quantity >
-                                              1) {
-                                            productController
-                                                .setQuantity(false);
-                                            myChutiyaFunction(() => null);
-                                            productController.update();
-                                            cartController.update();
-                                          }
-                                        }),
-                                    SizedBox(
-                                        width:
-                                            Dimensions.paddingSizeExtraSmall),
-                                    Text(
-                                      overflow: TextOverflow.ellipsis,
-                                      productController.quantity.toString(),
-                                      style: robotoBold.copyWith(
-                                          color: Theme.of(context).primaryColor,
-                                          fontSize:
-                                              Dimensions.fontSizeExtraLarge +
-                                                  15),
-                                    ),
-                                    SizedBox(
-                                        width:
-                                            Dimensions.paddingSizeExtraSmall),
-                                    QuantityButton(
-                                        isIncrement: true,
-                                        onTap: () {
-                                          myChutiyaFunction(() {
-                                            productController.setQuantity(true);
-                                          });
-                                        }),
-                                  ]),
+                            // if (widget.product.addOns == null ||
+                            //     widget.product.addOns!.isEmpty)
+                            //   Expanded(child: Container()),
+                            // if (widget.product.addOns == null ||
+                            //     widget.product.addOns!.isEmpty)
+                            //   Row(
+                            //       mainAxisAlignment: MainAxisAlignment.end,
+                            //       children: [
+                            //         // Expanded(child: Container()),
+                            //         QuantityButton(
+                            //             isIncrement: false,
+                            //             onTap: () {
+                            //               // int cartIndex =
+                            //               //     widget.cartIndex ?? -1;
+                            //               if (productController.quantity == 1) {
+                            //                 productController
+                            //                     .setQuantity(false);
+                            //                 removeMe();
+                            //                 productController.update();
+                            //                 cartController.update();
+                            //                 //   Get.back();
+                            //               } else if (productController
+                            //                       .quantity >
+                            //                   1) {
+                            //                 productController
+                            //                     .setQuantity(false);
+                            //                 myChutiyaFunction(() => null);
+                            //                 productController.update();
+                            //                 cartController.update();
+                            //               }
+                            //             }),
+                            //         SizedBox(
+                            //             width:
+                            //                 Dimensions.paddingSizeExtraSmall),
+                            //         Text(
+                            //           overflow: TextOverflow.ellipsis,
+                            //           productController.quantity.toString(),
+                            //           style: robotoBold.copyWith(
+                            //               color: Theme.of(context).primaryColor,
+                            //               fontSize:
+                            //                   Dimensions.fontSizeExtraLarge +
+                            //                       15),
+                            //         ),
+                            //         SizedBox(
+                            //             width:
+                            //                 Dimensions.paddingSizeExtraSmall),
+                            //         QuantityButton(
+                            //             isIncrement: true,
+                            //             onTap: () {
+                            //               myChutiyaFunction(() {
+                            //                 productController.setQuantity(true);
+                            //               });
+                            //             }),
+                            //       ]),
 
                             // if (widget.product.addOns == null ||
                             //     widget.product.addOns!.isEmpty)

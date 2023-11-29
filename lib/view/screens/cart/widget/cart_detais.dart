@@ -26,7 +26,6 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:logger/logger.dart';
 
 import '../../../../controller/printer_controller.dart';
 import '../../../base/custom_text_field.dart';
@@ -487,7 +486,7 @@ class _CartDetailsState extends State<CartDetails> {
                               String? note = cartItem.note;
                               String variationText = '';
                               String addonsName = '';
-                              var logger = Logger();
+                              // var logger = Logger();
                               cartItem.addOnIds?.forEach((addOn) {
                                 addonsName =
                                     '$addonsName${addOn.name} (${addOn.quantity}), ';
@@ -521,7 +520,7 @@ class _CartDetailsState extends State<CartDetails> {
                                               Dimensions.paddingSizeExtraSmall),
                                       child: Text(
                                         overflow: TextOverflow.ellipsis,
-                                        addOn.quantity.toString(),
+                                        "x ${addOn.quantity}",
                                         textAlign: TextAlign.center,
                                         style: robotoRegular.copyWith(
                                             fontSize: Dimensions.fontSizeLarge,
@@ -790,25 +789,25 @@ class _CartDetailsState extends State<CartDetails> {
                                                       ),
                                                     ],
                                                   )),
-                                              Expanded(
-                                                  child: Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: Dimensions
-                                                        .paddingSizeExtraSmall),
-                                                child: Text(
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  '${cartItem.quantity}',
-                                                  textAlign: TextAlign.center,
-                                                  style: robotoRegular.copyWith(
-                                                      fontSize: Dimensions
-                                                          .fontSizeLarge,
-                                                      color: Theme.of(context)
-                                                          .textTheme
-                                                          .titleLarge!
-                                                          .color!),
-                                                ),
-                                              )),
+                                              // Expanded(
+                                              //     child: Padding(
+                                              //   padding: EdgeInsets.symmetric(
+                                              //       horizontal: Dimensions
+                                              //           .paddingSizeExtraSmall),
+                                              //   child: Text(
+                                              //     overflow:
+                                              //         TextOverflow.ellipsis,
+                                              //     '${cartItem.quantity}',
+                                              //     textAlign: TextAlign.center,
+                                              //     style: robotoRegular.copyWith(
+                                              //         fontSize: Dimensions
+                                              //             .fontSizeLarge,
+                                              //         color: Theme.of(context)
+                                              //             .textTheme
+                                              //             .titleLarge!
+                                              //             .color!),
+                                              //   ),
+                                              // )),
                                               // Expanded(
                                               //     flex: 2,
                                               //     child: Padding(
