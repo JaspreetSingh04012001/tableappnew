@@ -243,6 +243,7 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
 
               widget.ismobile
                   ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
@@ -267,6 +268,41 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                             ),
                           ],
                         ),
+                        if (printerController.seperateByFront)
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "Front Copies",
+                                style: robotoMedium.copyWith(
+                                    fontSize: Dimensions.fontSizeLarge + 4),
+                              ),
+                              QuantityButton(
+                                  isIncrement: true,
+                                  onTap: () {
+                                    printerController.frontprintCount =
+                                        printerController.frontprintCount + 1;
+                                    printerController.update();
+                                  }),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "${printerController.frontprintCount}",
+                                  style: robotoMedium.copyWith(
+                                      fontSize: Dimensions.fontSizeLarge + 4),
+                                ),
+                              ),
+                              QuantityButton(
+                                  isIncrement: false,
+                                  onTap: () {
+                                    if (printerController.frontprintCount > 1) {
+                                      printerController.frontprintCount =
+                                          printerController.frontprintCount - 1;
+                                      printerController.update();
+                                    }
+                                  }),
+                            ],
+                          ),
                         Row(
                           children: [
                             Text(
@@ -289,7 +325,43 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                               ),
                             )
                           ],
-                        )
+                        ),
+                        if (printerController.seperateByBack)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "Back Copies",
+                                style: robotoMedium.copyWith(
+                                    fontSize: Dimensions.fontSizeLarge + 4),
+                              ),
+                              QuantityButton(
+                                  isIncrement: true,
+                                  onTap: () {
+                                    printerController.backprintCount =
+                                        printerController.backprintCount + 1;
+                                    printerController.update();
+                                  }),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "${printerController.backprintCount}",
+                                  style: robotoMedium.copyWith(
+                                      fontSize: Dimensions.fontSizeLarge + 4),
+                                ),
+                              ),
+                              QuantityButton(
+                                  isIncrement: false,
+                                  onTap: () {
+                                    if (printerController.backprintCount > 1) {
+                                      printerController.backprintCount =
+                                          printerController.backprintCount - 1;
+                                      printerController.update();
+                                    }
+                                  }),
+                            ],
+                          ),
                       ],
                     )
                   : Row(
