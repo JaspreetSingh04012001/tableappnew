@@ -49,6 +49,8 @@ class PrinterController extends GetxController {
   String msjprogress = "";
   String? lastConnectDeviceAddress;
   int printCount = 1;
+  int frontprintCount = 1;
+  int backprintCount = 1;
   String optionprinttype = "58 mm";
   List<String> options = ["58 mm", "80 mm"];
 
@@ -64,9 +66,12 @@ class PrinterController extends GetxController {
 
     optionprinttype = sharedPreferences.getString("optionprinttype") ?? "58 mm";
     printCount = sharedPreferences.getInt("printCount") ?? 1;
+
     openDrawer = sharedPreferences.getBool("openDrawer") ?? false;
     seperateByFront = sharedPreferences.getBool("seperateByFront") ?? false;
     seperateByBack = sharedPreferences.getBool("seperateByBack") ?? false;
+    frontprintCount = sharedPreferences.getInt("frontprintCount") ?? 1;
+    backprintCount = sharedPreferences.getInt("backprintCount") ?? 1;
     update();
     if (lastConnectDeviceAddress != null) {
       initPlatformState();
@@ -83,6 +88,8 @@ class PrinterController extends GetxController {
           "lastConnectDeviceAddress", lastConnectDeviceAddress ?? "");
     }
     sharedPreferences.setInt("printCount", printCount);
+    sharedPreferences.setInt("frontprintCount", frontprintCount);
+    sharedPreferences.setInt("backprintCount", backprintCount);
     sharedPreferences.setBool("openDrawer", openDrawer);
     sharedPreferences.setBool("seperateByFront", seperateByFront);
     sharedPreferences.setBool("seperateByBack", seperateByBack);
@@ -182,7 +189,7 @@ class PrinterController extends GetxController {
   }
 
   Future<void> printTest({bool byWaitor = false}) async {
-    if (byWaitor) {}
+    //  if (byWaitor) {}
 
     SharedPreferences pref = await SharedPreferences.getInstance();
 
@@ -199,21 +206,38 @@ class PrinterController extends GetxController {
           optionprinttype == "58 mm" ? PaperSize.mm58 : PaperSize.mm80,
           profile);
 
-      List<int> ticket = generator.reset() +
-          generator.drawer() +
-          await testTicket(
+      List<int> ticket = generator.reset() + generator.drawer();
+      await testTicket(
               generator: generator,
               splashController: Get.find<SplashController>(),
-              orderController: Get.find<OrderController>());
-      for (int i = 0; i < printCount; i++) {
-        PrintBluetoothThermal.writeBytes(ticket);
-      }
+              orderController: Get.find<OrderController>())
+          .whenComplete(() => null)
+          .then((value) {
+        for (int i = 0; i < printCount; i++) {
+          ticket += value[0];
+          ticket += generator.cut();
+        }
+        if (seperateByFront) {
+          for (int i = 0; i < frontprintCount; i++) {
+            ticket += value[1];
+            ticket += generator.cut();
+          }
+        }
+        if (seperateByBack) {
+          for (int i = 0; i < backprintCount; i++) {
+            ticket += value[2];
+            ticket += generator.cut();
+          }
+        }
+      });
+
+      PrintBluetoothThermal.writeBytes(ticket);
     } else {
       //no conectado, reconecte
     }
   }
 
-  Future<List<int>> testTicket(
+  Future<List<List<int>>> testTicket(
       {bool byWaitor = false,
       required Generator generator,
       required OrderController orderController,
@@ -489,7 +513,7 @@ class PrinterController extends GetxController {
         Backbytes += generator.text(
             myAdddonData.isNotEmpty
                 ? "${details.productDetails?.name ?? ''} x ${details.quantity}"
-                : "${details.quantity} x ${details.productDetails?.name ?? ''}:${PriceConverter.convertPrice(details.price! * details.quantity!)}",
+                : "${details.quantity} x ${details.productDetails?.name ?? ''}",
             styles: const PosStyles(
               bold: true,
               height: PosTextSize.size1,
@@ -557,15 +581,6 @@ class PrinterController extends GetxController {
     bytes += generator.text("${'Item Count'} : $itemCount",
         styles: const PosStyles(
             height: PosTextSize.size1, width: PosTextSize.size2));
-    // bytes += generator.text(
-    //     "${'item_price'.tr} : ${PriceConverter.convertPrice(itemsPrice)}");
-    // bytes += generator
-    //     .text("${'discount'.tr} : -${PriceConverter.convertPrice(discount)}");
-
-    // bytes += generator
-    //     .text("${'vat_tax'.tr} : +${PriceConverter.convertPrice(tax)}");
-    // bytes += generator
-    //     .text("${'add_ons'.tr} : +${PriceConverter.convertPrice(addOnsPrice)}");
 
     bytes += generator.text(
         "${'total'.tr} : ${PriceConverter.convertPrice(orderController.currentOrderDetails?.order?.orderAmount ?? 0)}",
@@ -632,14 +647,12 @@ class PrinterController extends GetxController {
     bytes += generator.feed(2);
 
     if (seperateByFront) {
-      bytes += generator.cut();
       bytes += Frontbytes;
     }
     if (seperateByBack) {
-      bytes += generator.cut();
       bytes += Backbytes;
     }
-    bytes += generator.cut();
-    return bytes;
+
+    return [bytes, Frontbytes, Backbytes];
   }
 }
