@@ -225,6 +225,7 @@ class OrderDetailsView extends StatelessWidget {
 
                                 String addonsName = '';
                                 List<Widget> addOnWidgetList = [];
+                                List<Widget> variationWidgetList = [];
                                 bool takeAway = false;
                                 //orderController.currentOrderDetails.details.
                                 Details? orderDetails = orderController
@@ -239,14 +240,6 @@ class OrderDetailsView extends StatelessWidget {
                                 List<int> addQty = details.addOnQtys ?? [];
                                 List<int> ids = details.addOnIds ?? [];
 
-                                // if (ids.length == details.addOnPrices?.length &&
-                                //     ids.length == details.addOnQtys?.length) {
-                                //   for (int i = 0; i < ids.length; i++) {
-                                //     addOnsPrice = addOnsPrice +
-                                //         (details.addOnPrices![i] *
-                                //             details.addOnQtys![i]);
-                                //   }
-                                // }
                                 if (ids.length == details.addOnPrices?.length &&
                                     ids.length == details.addOnQtys?.length) {
                                   for (int j = 0; j < ids.length; j++) {
@@ -254,12 +247,6 @@ class OrderDetailsView extends StatelessWidget {
 
                                     for (var addOn in addons) {
                                       if (addOn.id == id) {
-                                        Logger().i(
-                                            "$id ${addOn.name} ${addQty[j]}");
-                                      
-                                      
-                                      
-                                      
                                         addOnWidgetList.add(Row(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -340,38 +327,83 @@ class OrderDetailsView extends StatelessWidget {
                                   }
                                 }
 
-                                //  ids.forEach((id) {    });
-
-                                // try {
-                                //   for (AddOns addOn in addons) {
-                                //     if (ids.contains(addOn.id)) {
-
-                                //       // addonsName = addonsName +
-                                //       //     ('${addOn.name} (${(addQty[a])}), ');
-                                //       // a++;
-                                //     }
-                                //   }
-                                // } catch (e) {
-                                //   debugPrint('order details view -$e');
-                                // }
-
-                                // if (addonsName.isNotEmpty) {
-                                //   addonsName = addonsName.substring(
-                                //       0, addonsName.length - 2);
-                                // }
-                                // orderDetails!.productDetails.;
                                 if (orderDetails != null &&
                                     orderDetails.variations != null &&
                                     orderDetails.variations!.isNotEmpty) {
                                   for (Variation variation
                                       in orderDetails.variations!) {
+                                    Logger().d(variation.toJson());
+                                    variation.variationValues
+                                        ?.forEach((element) {
+                                      element.level;
+                                      element.optionPrice;
+                                      if (element.level != "Dine in" &&
+                                          element.level != "Take away") {
+                                        variationWidgetList.add(Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          children: [
+                                            Expanded(
+                                                flex: 5,
+                                                child: Text(
+                                                  overflow:
+                                                      TextOverflow.ellipsis,
+                                                  element.level.toString(),
+                                                  style: robotoRegular.copyWith(
+                                                    fontSize: Dimensions
+                                                        .fontSizeLarge,
+                                                    color: Theme.of(context)
+                                                        .textTheme
+                                                        .titleLarge!
+                                                        .color!,
+                                                  ),
+                                                  maxLines: 1,
+                                                  // overflow: TextOverflow
+                                                  //     .ellipsis,
+                                                )),
+                                            Expanded(
+                                                flex: 1,
+                                                child: Padding(
+                                                  padding: EdgeInsets.symmetric(
+                                                      horizontal: Dimensions
+                                                          .paddingSizeExtraSmall),
+                                                  child: Text(
+                                                    overflow:
+                                                        TextOverflow.ellipsis,
+                                                    // "lmm",
+                                                    PriceConverter.convertPrice(
+                                                            element.optionPrice ??
+                                                                0)
+                                                        .trim(),
+                                                    textAlign: TextAlign.end,
+                                                    style:
+                                                        robotoRegular.copyWith(
+                                                            fontSize: Dimensions
+                                                                .fontSizeLarge,
+                                                            color: Theme.of(
+                                                                    context)
+                                                                .textTheme
+                                                                .titleLarge!
+                                                                .color!),
+                                                    maxLines: 2,
+                                                  ),
+                                                )),
+                                          ],
+                                        ));
+                                      }
+                                    });
+
                                     variationText +=
                                         '${variationText.isNotEmpty ? ',' : ''}${variation.name} (';
                                     for (VariationValue value
                                         in variation.variationValues!) {
                                       variationText += '${value.level}';
+
                                       //   '${variationText.endsWith('(') ? '' : ', '}${value.level}';
                                     }
+                                    // Logger().d(variationText);
                                     variationText += ')';
                                   }
                                 } else if (orderDetails != null &&
@@ -483,42 +515,48 @@ class OrderDetailsView extends StatelessWidget {
                                                       ),
                                                     ],
                                                   )),
-                                              Expanded(
-                                                  child: Padding(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: Dimensions
-                                                        .paddingSizeExtraSmall),
-                                                child: Text(
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  '${details.quantity}',
-                                                  textAlign: TextAlign.center,
-                                                  style: robotoRegular.copyWith(
-                                                      fontSize: Dimensions
-                                                          .fontSizeLarge,
-                                                      color: Theme.of(context)
-                                                          .textTheme
-                                                          .titleLarge!
-                                                          .color!),
-                                                ),
-                                              )),
+                                              // Expanded(
+                                              //     child: Padding(
+                                              //   padding: EdgeInsets.symmetric(
+                                              //       horizontal: Dimensions
+                                              //           .paddingSizeExtraSmall),
+                                              //   child: Text(
+                                              //     overflow:
+                                              //         TextOverflow.ellipsis,
+                                              //     '${details.quantity}',
+                                              //     textAlign: TextAlign.center,
+                                              //     style: robotoRegular.copyWith(
+                                              //         fontSize: Dimensions
+                                              //             .fontSizeLarge,
+                                              //         color: Theme.of(context)
+                                              //             .textTheme
+                                              //             .titleLarge!
+                                              //             .color!),
+                                              //   ),
+                                              // )),
                                             ],
                                           ),
-                                          if (variationText != '')
-                                            Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Text(
-                                                  textAlign: TextAlign.left,
-                                                  maxLines: 10,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                  variationText,
-                                                  style: robotoRegular.copyWith(
-                                                    fontSize: Dimensions
-                                                        .fontSizeDefault,
-                                                    color: Theme.of(context)
-                                                        .hintColor,
-                                                  )),
+                                          if (variationWidgetList.isNotEmpty)
+                                            Column(
+                                              children: [
+                                                Row(
+                                                  children: [
+                                                    Text(
+                                                      "Variations :",
+                                                      style: robotoRegular
+                                                          .copyWith(
+                                                        fontSize: Dimensions
+                                                            .fontSizeLarge,
+                                                        color: Theme.of(context)
+                                                            .textTheme
+                                                            .titleLarge!
+                                                            .color!,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                ...variationWidgetList
+                                              ],
                                             ),
                                           if (ids.isNotEmpty)
                                             Column(

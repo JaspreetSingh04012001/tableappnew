@@ -389,21 +389,10 @@ class PrinterController extends GetxController {
           // if(){}
         }
       }
-      // try {
-      //   for (AddOns addOn in addons) {
-      //     if (ids.contains(addOn.id)) {
-      //       // "${details.quantity} x ${details.productDetails?.name ?? ''}:${PriceConverter.convertPrice(details.price! * details.quantity!)}",
-      //       //  addonsName = addonsName + ('${addOn.name} (${(addQty[a])}), ');
-      //       myAdddonData.add(
-      //           "${addQty[a]} x ${addOn.name}:${PriceConverter.convertPrice(addOn.price! * addQty[a])}");
-      //       a++;
-      //     }
-      //   }
-      // } catch (e) {
-      //   debugPrint('order details view -$e');
-      // }
+   
       if (details.variations != null && details.variations!.isNotEmpty) {
         for (Variation variation in details.variations!) {
+
           variationText +=
               '${variationText.isNotEmpty ? ',' : ''}${variation.name} (';
           for (VariationValue value in variation.variationValues!) {
