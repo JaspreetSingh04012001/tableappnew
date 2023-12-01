@@ -385,6 +385,8 @@ class PrinterController extends GetxController {
       List<int> ids = details.addOnIds ?? [];
       List<String> myAdddonData = [];
       List<String> myAdddonDataWithoutPrice = [];
+      List<String> myVaronData = [];
+      List<String> myVaronDataWithoutPrice = [];
       // if (ids.length == details.addOnPrices?.length &&
       //     ids.length == details.addOnQtys?.length) {
       //   for (int i = 0; i < ids.length; i++) {
@@ -408,9 +410,16 @@ class PrinterController extends GetxController {
           // if(){}
         }
       }
-   
+
       if (details.variations != null && details.variations!.isNotEmpty) {
         for (Variation variation in details.variations!) {
+          variation.variationValues?.forEach((element) {
+            if (element.level != "Dine in" && element.level != "Take away") {
+              myVaronData.add(
+                  "${element.level}:${PriceConverter.convertPrice(element.optionPrice ?? 0)}");
+              myVaronDataWithoutPrice.add("${element.level}");
+            }
+          });
 
           variationText +=
               '${variationText.isNotEmpty ? ',' : ''}${variation.name} (';
@@ -474,13 +483,22 @@ class PrinterController extends GetxController {
         if (myAdddonDataWithoutPrice.isNotEmpty) {
           for (var element in myAdddonDataWithoutPrice) {
             Frontbytes += generator.text(element,
-                styles: const PosStyles(bold: true, height: PosTextSize.size1));
+                styles: const PosStyles(
+                    bold: true,
+                    height: PosTextSize.size1,
+                    width: PosTextSize.size2));
           }
         }
-        if (variationText != '') {
-          Frontbytes += generator.text("$variationText)",
-              styles: const PosStyles(bold: true, height: PosTextSize.size1));
+        if (myVaronDataWithoutPrice.isNotEmpty) {
+          for (var element in myVaronDataWithoutPrice) {
+            Frontbytes += generator.text(element,
+                styles: const PosStyles(
+                    bold: true,
+                    height: PosTextSize.size1,
+                    width: PosTextSize.size2));
+          }
         }
+
         if (note != null && note != "null" && note != "") {
           Frontbytes += generator.text(note,
               styles: const PosStyles(bold: true, height: PosTextSize.size1));
@@ -507,12 +525,21 @@ class PrinterController extends GetxController {
         if (myAdddonDataWithoutPrice.isNotEmpty) {
           for (var element in myAdddonDataWithoutPrice) {
             Backbytes += generator.text(element,
-                styles: const PosStyles(bold: true, height: PosTextSize.size1));
+                styles: const PosStyles(
+                  bold: true,
+                  height: PosTextSize.size1,
+                  width: PosTextSize.size2,
+                ));
           }
         }
-        if (variationText != '') {
-          Backbytes += generator.text(variationText,
-              styles: const PosStyles(bold: true, height: PosTextSize.size1));
+        if (myVaronDataWithoutPrice.isNotEmpty) {
+          for (var element in myVaronDataWithoutPrice) {
+            Backbytes += generator.text(element,
+                styles: const PosStyles(
+                    bold: true,
+                    height: PosTextSize.size1,
+                    width: PosTextSize.size2));
+          }
         }
         if (note != null && note != "null" && note != "") {
           Backbytes += generator.text(note,
@@ -540,13 +567,23 @@ class PrinterController extends GetxController {
       if (myAdddonData.isNotEmpty) {
         for (var element in myAdddonData) {
           bytes += generator.text(element,
-              styles: const PosStyles(bold: true, height: PosTextSize.size1));
+              styles: const PosStyles(
+                  bold: true,
+                  height: PosTextSize.size1,
+                  width: PosTextSize.size2));
         }
       }
-      if (variationText != '') {
-        bytes += generator.text("$variationText)",
-            styles: const PosStyles(bold: true, height: PosTextSize.size1));
+      if (myVaronData.isNotEmpty) {
+        for (var element in myVaronData) {
+          bytes += generator.text(element,
+              styles: const PosStyles(
+                bold: true,
+                height: PosTextSize.size1,
+                width: PosTextSize.size2,
+              ));
+        }
       }
+
       if (note != null && note != "null" && note != "") {
         bytes += generator.text(note,
             styles: const PosStyles(bold: true, height: PosTextSize.size1));

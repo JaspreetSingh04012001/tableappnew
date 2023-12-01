@@ -332,7 +332,7 @@ class OrderDetailsView extends StatelessWidget {
                                     orderDetails.variations!.isNotEmpty) {
                                   for (Variation variation
                                       in orderDetails.variations!) {
-                                    Logger().d(variation.toJson());
+                                   // Logger().d(variation.toJson());
                                     variation.variationValues
                                         ?.forEach((element) {
                                       element.level;
