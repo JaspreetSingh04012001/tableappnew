@@ -214,17 +214,20 @@ class PrinterController extends GetxController {
           .whenComplete(() => null)
           .then((value) {
         for (int i = 0; i < printCount; i++) {
+          //  ticket += generator.cut();
           ticket += value[0];
           ticket += generator.cut();
         }
         if (seperateByFront) {
           for (int i = 0; i < frontprintCount; i++) {
+            //     ticket += generator.cut();
             ticket += value[1];
             ticket += generator.cut();
           }
         }
         if (seperateByBack) {
           for (int i = 0; i < backprintCount; i++) {
+            //      ticket += generator.cut();
             ticket += value[2];
             ticket += generator.cut();
           }
@@ -304,17 +307,7 @@ class PrinterController extends GetxController {
     bytes += generator.text(date,
         styles: const PosStyles(
             bold: true, align: PosAlign.center, height: PosTextSize.size1));
-    // bytes += generator.text(
-    //     '${'table'.tr} ${Get.find<SplashController>().getTable(
-    //           orderController.currentOrderDetails?.order?.tableId,
-    //           branchId: orderController.currentOrderDetails?.order?.branchId,
-    //         )?.number} |',
-    //     styles: const PosStyles(
-    //         bold: true, align: PosAlign.center, height: PosTextSize.size1));
-    // bytes += generator.text(
-    //     '${orderController.currentOrderDetails?.order?.numberOfPeople ?? 'add'.tr} ${'people'.tr}',
-    //     styles: const PosStyles(
-    //         bold: true, align: PosAlign.center, height: PosTextSize.size1));
+
     bytes += generator.text(
         orderController.currentOrderDetails?.order?.customer_name ?? '',
         styles: const PosStyles(
@@ -391,6 +384,7 @@ class PrinterController extends GetxController {
       List<int> addQty = details.addOnQtys ?? [];
       List<int> ids = details.addOnIds ?? [];
       List<String> myAdddonData = [];
+      List<String> myAdddonDataWithoutPrice = [];
       // if (ids.length == details.addOnPrices?.length &&
       //     ids.length == details.addOnQtys?.length) {
       //   for (int i = 0; i < ids.length; i++) {
@@ -408,6 +402,7 @@ class PrinterController extends GetxController {
             if (addOn.id == id) {
               myAdddonData.add(
                   "${addQty[j]} x ${addOn.name}:${PriceConverter.convertPrice(addOn.price! * addQty[j])}");
+              myAdddonDataWithoutPrice.add("${addQty[j]} x ${addOn.name}");
             }
           }
           // if(){}
@@ -478,17 +473,17 @@ class PrinterController extends GetxController {
                 align: PosAlign.center));
 
         Frontbytes += generator.text(
-            myAdddonData.isNotEmpty
+            myAdddonDataWithoutPrice.isNotEmpty
                 ? "${details.productDetails?.name ?? ''} x ${details.quantity}"
-                : "${details.quantity} x ${details.productDetails?.name ?? ''}:${PriceConverter.convertPrice(details.price! * details.quantity!)}",
+                : "${details.quantity} x ${details.productDetails?.name ?? ''}",
             styles: const PosStyles(
               bold: true,
               height: PosTextSize.size1,
               width: PosTextSize.size2,
             ));
 
-        if (myAdddonData.isNotEmpty) {
-          for (var element in myAdddonData) {
+        if (myAdddonDataWithoutPrice.isNotEmpty) {
+          for (var element in myAdddonDataWithoutPrice) {
             Frontbytes += generator.text(element,
                 styles: const PosStyles(bold: true, height: PosTextSize.size1));
           }
@@ -511,7 +506,7 @@ class PrinterController extends GetxController {
                 align: PosAlign.center));
 
         Backbytes += generator.text(
-            myAdddonData.isNotEmpty
+            myAdddonDataWithoutPrice.isNotEmpty
                 ? "${details.productDetails?.name ?? ''} x ${details.quantity}"
                 : "${details.quantity} x ${details.productDetails?.name ?? ''}",
             styles: const PosStyles(
@@ -520,8 +515,8 @@ class PrinterController extends GetxController {
               width: PosTextSize.size2,
             ));
 
-        if (myAdddonData.isNotEmpty) {
-          for (var element in myAdddonData) {
+        if (myAdddonDataWithoutPrice.isNotEmpty) {
+          for (var element in myAdddonDataWithoutPrice) {
             Backbytes += generator.text(element,
                 styles: const PosStyles(bold: true, height: PosTextSize.size1));
           }
@@ -646,12 +641,12 @@ class PrinterController extends GetxController {
 
     bytes += generator.feed(2);
 
-    if (seperateByFront) {
-      bytes += Frontbytes;
-    }
-    if (seperateByBack) {
-      bytes += Backbytes;
-    }
+    // if (seperateByFront) {
+    //   bytes += Frontbytes;
+    // }
+    // if (seperateByBack) {
+    //   bytes += Backbytes;
+    // }
 
     return [bytes, Frontbytes, Backbytes];
   }
