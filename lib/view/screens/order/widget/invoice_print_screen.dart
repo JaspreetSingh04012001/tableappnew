@@ -243,6 +243,7 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
 
               widget.ismobile
                   ? Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Row(
                           children: [
@@ -267,6 +268,41 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                             ),
                           ],
                         ),
+                        if (printerController.seperateByFront)
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "Front Copies",
+                                style: robotoMedium.copyWith(
+                                    fontSize: Dimensions.fontSizeLarge + 4),
+                              ),
+                              QuantityButton(
+                                  isIncrement: true,
+                                  onTap: () {
+                                    printerController.frontprintCount =
+                                        printerController.frontprintCount + 1;
+                                    printerController.update();
+                                  }),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "${printerController.frontprintCount}",
+                                  style: robotoMedium.copyWith(
+                                      fontSize: Dimensions.fontSizeLarge + 4),
+                                ),
+                              ),
+                              QuantityButton(
+                                  isIncrement: false,
+                                  onTap: () {
+                                    if (printerController.frontprintCount > 1) {
+                                      printerController.frontprintCount =
+                                          printerController.frontprintCount - 1;
+                                      printerController.update();
+                                    }
+                                  }),
+                            ],
+                          ),
                         Row(
                           children: [
                             Text(
@@ -289,7 +325,43 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                               ),
                             )
                           ],
-                        )
+                        ),
+                        if (printerController.seperateByBack)
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                "Back Copies",
+                                style: robotoMedium.copyWith(
+                                    fontSize: Dimensions.fontSizeLarge + 4),
+                              ),
+                              QuantityButton(
+                                  isIncrement: true,
+                                  onTap: () {
+                                    printerController.backprintCount =
+                                        printerController.backprintCount + 1;
+                                    printerController.update();
+                                  }),
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  "${printerController.backprintCount}",
+                                  style: robotoMedium.copyWith(
+                                      fontSize: Dimensions.fontSizeLarge + 4),
+                                ),
+                              ),
+                              QuantityButton(
+                                  isIncrement: false,
+                                  onTap: () {
+                                    if (printerController.backprintCount > 1) {
+                                      printerController.backprintCount =
+                                          printerController.backprintCount - 1;
+                                      printerController.update();
+                                    }
+                                  }),
+                            ],
+                          ),
                       ],
                     )
                   : Row(
@@ -298,49 +370,149 @@ class _InvoicePrintScreenState extends State<InvoicePrintScreen> {
                         const SizedBox(
                           width: 25,
                         ),
-                        Text(
-                          "Print Front Items Separate",
-                          style: robotoMedium.copyWith(
-                              fontSize: Dimensions.fontSizeLarge + 4),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: CupertinoSwitch(
-                            // This bool value toggles the switch.
-                            value: printerController.seperateByFront,
-                            activeColor: Theme.of(context).primaryColor,
-                            onChanged: (bool value) {
-                              // This is called when the user toggles the switch.
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "Print Front Items Separate",
+                                  style: robotoMedium.copyWith(
+                                      fontSize: Dimensions.fontSizeLarge + 4),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: CupertinoSwitch(
+                                    // This bool value toggles the switch.
+                                    value: printerController.seperateByFront,
+                                    activeColor: Theme.of(context).primaryColor,
+                                    onChanged: (bool value) {
+                                      // This is called when the user toggles the switch.
 
-                              printerController.seperateByFront = value;
-                              printerController.update();
-                            },
-                          ),
+                                      printerController.seperateByFront = value;
+                                      printerController.update();
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            if (printerController.seperateByFront)
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "Front Copies",
+                                    style: robotoMedium.copyWith(
+                                        fontSize: Dimensions.fontSizeLarge + 4),
+                                  ),
+                                  QuantityButton(
+                                      isIncrement: true,
+                                      onTap: () {
+                                        printerController.frontprintCount =
+                                            printerController.frontprintCount +
+                                                1;
+                                        printerController.update();
+                                      }),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "${printerController.frontprintCount}",
+                                      style: robotoMedium.copyWith(
+                                          fontSize:
+                                              Dimensions.fontSizeLarge + 4),
+                                    ),
+                                  ),
+                                  QuantityButton(
+                                      isIncrement: false,
+                                      onTap: () {
+                                        if (printerController.frontprintCount >
+                                            1) {
+                                          printerController.frontprintCount =
+                                              printerController
+                                                      .frontprintCount -
+                                                  1;
+                                          printerController.update();
+                                        }
+                                      }),
+                                ],
+                              ),
+                          ],
                         ),
                         const SizedBox(
                           width: 10,
                         ),
-                        Text(
-                          "Print Back Items Separate",
-                          style: robotoMedium.copyWith(
-                              fontSize: Dimensions.fontSizeLarge + 4),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: CupertinoSwitch(
-                            // This bool value toggles the switch.
-                            value: printerController.seperateByBack,
-                            activeColor: Theme.of(context).primaryColor,
-                            onChanged: (bool value) {
-                              // This is called when the user toggles the switch.
+                        Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  "Print Back Items Separate",
+                                  style: robotoMedium.copyWith(
+                                      fontSize: Dimensions.fontSizeLarge + 4),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: CupertinoSwitch(
+                                    // This bool value toggles the switch.
+                                    value: printerController.seperateByBack,
+                                    activeColor: Theme.of(context).primaryColor,
+                                    onChanged: (bool value) {
+                                      // This is called when the user toggles the switch.
 
-                              printerController.seperateByBack = value;
-                              printerController.update();
-                            },
-                          ),
-                        )
+                                      printerController.seperateByBack = value;
+                                      printerController.update();
+                                    },
+                                  ),
+                                )
+                              ],
+                            ),
+                            if (printerController.seperateByBack)
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Text(
+                                    "Back Copies",
+                                    style: robotoMedium.copyWith(
+                                        fontSize: Dimensions.fontSizeLarge + 4),
+                                  ),
+                                  QuantityButton(
+                                      isIncrement: true,
+                                      onTap: () {
+                                        printerController.backprintCount =
+                                            printerController.backprintCount +
+                                                1;
+                                        printerController.update();
+                                      }),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      "${printerController.backprintCount}",
+                                      style: robotoMedium.copyWith(
+                                          fontSize:
+                                              Dimensions.fontSizeLarge + 4),
+                                    ),
+                                  ),
+                                  QuantityButton(
+                                      isIncrement: false,
+                                      onTap: () {
+                                        if (printerController.backprintCount >
+                                            1) {
+                                          printerController.backprintCount =
+                                              printerController.backprintCount -
+                                                  1;
+                                          printerController.update();
+                                        }
+                                      }),
+                                ],
+                              ),
+                          ],
+                        ),
                       ],
                     ),
+              const Gap(5),
               ElevatedButton(
                 style: ButtonStyle(
                     backgroundColor: MaterialStatePropertyAll(
