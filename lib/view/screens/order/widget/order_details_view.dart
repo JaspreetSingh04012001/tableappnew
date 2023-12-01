@@ -12,7 +12,6 @@ import 'package:efood_table_booking/view/screens/order/widget/invoice_print_scre
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:logger/logger.dart';
 
 import '../../../../controller/printer_controller.dart';
 import '../../../../helper/price_converter.dart';
@@ -46,6 +45,7 @@ class OrderDetailsView extends StatelessWidget {
               ? Center(
                   child: CustomLoader(color: Theme.of(context).primaryColor))
               : Builder(builder: (context) {
+                  //  itemCount = 0;
                   double itemsPrice = 0;
                   double discount = 0;
                   double tax = 0;
@@ -54,6 +54,7 @@ class OrderDetailsView extends StatelessWidget {
                       orderController.currentOrderDetails?.details ?? [];
                   if (orderController.currentOrderDetails?.details != null) {
                     for (Details orderDetails in orderDetails) {
+                      itemCount += orderDetails.quantity!.toInt();
                       itemsPrice = itemsPrice +
                           (orderDetails.price! *
                               orderDetails.quantity!.toInt());
@@ -207,10 +208,11 @@ class OrderDetailsView extends StatelessWidget {
                                 // itemCount += orderController
                                 //         .currentOrderDetails?.details?.length ??
                                 //     0;
-                                orderController.currentOrderDetails?.details
-                                    ?.forEach((element) {
-                                  itemCount += element.quantity ?? 0;
-                                });
+
+                                // orderController.currentOrderDetails?.details
+                                //     ?.forEach((element) {
+                                //   itemCount += element.quantity ?? 0;
+                                // });
                                 // orderController
                                 //     .currentOrderDetails?.details[0].variations;
                                 late Details details;
@@ -332,11 +334,9 @@ class OrderDetailsView extends StatelessWidget {
                                     orderDetails.variations!.isNotEmpty) {
                                   for (Variation variation
                                       in orderDetails.variations!) {
-                                   // Logger().d(variation.toJson());
+                                    // Logger().d(variation.toJson());
                                     variation.variationValues
                                         ?.forEach((element) {
-                                      element.level;
-                                      element.optionPrice;
                                       if (element.level != "Dine in" &&
                                           element.level != "Take away") {
                                         variationWidgetList.add(Row(

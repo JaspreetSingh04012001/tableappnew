@@ -296,24 +296,25 @@ class _TabAppBarState extends State<TabAppBar> {
           ),
           if (Get.currentRoute.contains("/home"))
             GetBuilder<ProductController>(builder: (productController) {
-              return SizedBox(
-                  height: productController.CatImage ? 95 : 25,
-                  child: CategoryView(onSelected: (id) {
-                    if (productController.selectedCategory == id) {
-                      productController.setSelectedCategory(null);
-                    } else {
-                      productController.setSelectedCategory(id);
-                    }
-                    productController.getProductList(
-                      true,
-                      true,
-                      categoryId: productController.selectedCategory,
-                      productType: selectedProductType,
-                      searchPattern: searchController.text.trim().isEmpty
-                          ? null
-                          : searchController.text,
-                    );
-                  }));
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: CategoryView(onSelected: (id) {
+                  if (productController.selectedCategory == id) {
+                    productController.setSelectedCategory(null);
+                  } else {
+                    productController.setSelectedCategory(id);
+                  }
+                  productController.getProductList(
+                    true,
+                    true,
+                    categoryId: productController.selectedCategory,
+                    productType: selectedProductType,
+                    searchPattern: searchController.text.trim().isEmpty
+                        ? null
+                        : searchController.text,
+                  );
+                }),
+              );
             }),
         ],
       ),

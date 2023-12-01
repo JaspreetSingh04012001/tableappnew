@@ -21,47 +21,46 @@ class CategoryView extends StatelessWidget {
         return category.categoryList == null
             ? const CategoryShimmer()
             : category.categoryList!.isNotEmpty
-                ? ListView.builder(
-                    itemCount: category.categoryList?.length,
-                    padding: EdgeInsets.only(left: Dimensions.paddingSizeSmall),
-                    physics: const BouncingScrollPhysics(),
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) {
-                      String name = '';
-                      category.categoryList![index].name.length > 15
-                          ? name =
-                              '${category.categoryList![index].name.substring(0, 15)} ...'
-                          : name = category.categoryList![index].name;
+                ? SizedBox(
+                    height: ResponsiveHelper.isSmallTab()
+                        ? 50 + Dimensions.fontSizeLarge
+                        : ResponsiveHelper.isTab(context)
+                            ? 70 + Dimensions.fontSizeLarge
+                            : 60 + Dimensions.fontSizeLarge,
+                    child: ListView.builder(
+                      itemCount: category.categoryList?.length,
+                      padding:
+                          EdgeInsets.only(left: Dimensions.paddingSizeSmall),
+                      physics: const BouncingScrollPhysics(),
+                      scrollDirection: Axis.horizontal,
+                      itemBuilder: (context, index) {
+                        String name = '';
+                        category.categoryList![index].name.length > 15
+                            ? name =
+                                '${category.categoryList![index].name.substring(0, 15)} ...'
+                            : name = category.categoryList![index].name;
 
-                      return Container(
-                        decoration: category.selectedCategory ==
-                                category.categoryList![index].id.toString()
-                            ? BoxDecoration(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(10)),
-                                color: Theme.of(context)
-                                    .primaryColor
-                                    .withOpacity(0.2),
-                              )
-                            : const BoxDecoration(),
+                        return Container(
+                          width: 120,
+                          decoration: category.selectedCategory ==
+                                  category.categoryList![index].id.toString()
+                              ? BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10)),
+                                  color: Theme.of(context)
+                                      .primaryColor
+                                      .withOpacity(0.2),
+                                )
+                              : const BoxDecoration(),
 
-                        // padding: EdgeInsets.all(
-                        //   category.selectedCategory == category.categoryList![index].id.toString() ? Dimensions.PADDING_SIZE_EXTRA_SMALL : 0,
-                        // ),
-                        child: Container(
-                          alignment: Alignment.center,
-                          width: 90,
-                          margin: EdgeInsets.only(
-                            right: Dimensions.paddingSizeSmall,
-                            top: Dimensions.paddingSizeSmall,
-                            //   bottom: Dimensions.paddingSizeSmall,
-                            //left: category.selectedCategory == category.categoryList![index].id.toString() ? Dimensions.PADDING_SIZE_SMALL : 0,
-                            left: Dimensions.paddingSizeSmall,
-                          ),
+                          // padding: EdgeInsets.all(
+                          //   category.selectedCategory == category.categoryList![index].id.toString() ? Dimensions.PADDING_SIZE_EXTRA_SMALL : 0,
+                          // ),
                           child: InkWell(
                             onTap: () => onSelected(
                                 category.categoryList![index].id.toString()),
                             child: Column(
+                                mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
@@ -95,9 +94,9 @@ class CategoryView extends StatelessWidget {
                                   ),
                                 ]),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                    ),
                   )
                 : const SizedBox();
       },

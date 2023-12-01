@@ -27,6 +27,7 @@ class _SearchFieldState extends State<SearchField> {
   @override
   Widget build(BuildContext context) {
     return TextField(
+      //  expands: true,
       onTapOutside: (event) {
         FocusManager.instance.primaryFocus?.unfocus();
       },
@@ -42,7 +43,7 @@ class _SearchFieldState extends State<SearchField> {
         ),
         filled: true,
         fillColor: Theme.of(context).primaryColor.withOpacity(0.02),
-        isDense: true,
+        isDense: false,
         suffixIcon: IconButton(
           onPressed: () => widget.iconPressed(),
           icon: Icon(
