@@ -257,6 +257,8 @@ class PrinterController extends GetxController {
     late String date;
     String? name;
     int itemCount = 0;
+    int frontitemCount = 0;
+    int backitemCount = 0;
 
     // sharedPreferences.setString("branchName", value.name.toString());
     name = sharedPreferences.getString("branchName");
@@ -470,6 +472,8 @@ class PrinterController extends GetxController {
                 width: PosTextSize.size2,
                 align: PosAlign.center));
 
+        frontprintCount += details.quantity ?? 0;
+
         Frontbytes += generator.text(
             myAdddonDataWithoutPrice.isNotEmpty
                 ? "${details.productDetails?.name ?? ''}\n"
@@ -511,7 +515,7 @@ class PrinterController extends GetxController {
                 height: PosTextSize.size1,
                 width: PosTextSize.size2,
                 align: PosAlign.center));
-
+        backitemCount += details.quantity ?? 0;
         Backbytes += generator.text(
             myAdddonDataWithoutPrice.isNotEmpty
                 ? "${details.productDetails?.name ?? ''}\n"
@@ -600,6 +604,12 @@ class PrinterController extends GetxController {
                 bold: true))
         : null;
     bytes += generator.text("${'Item Count'} : $itemCount",
+        styles: const PosStyles(
+            height: PosTextSize.size1, width: PosTextSize.size2));
+    Frontbytes += generator.text("${'Item Count'} : $frontitemCount",
+        styles: const PosStyles(
+            height: PosTextSize.size1, width: PosTextSize.size2));
+    Backbytes += generator.text("${'Item Count'} : $backitemCount",
         styles: const PosStyles(
             height: PosTextSize.size1, width: PosTextSize.size2));
 
