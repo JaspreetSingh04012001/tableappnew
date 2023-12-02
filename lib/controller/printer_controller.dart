@@ -472,7 +472,7 @@ class PrinterController extends GetxController {
 
         Frontbytes += generator.text(
             myAdddonDataWithoutPrice.isNotEmpty
-                ? "${details.productDetails?.name ?? ''} x ${details.quantity}"
+                ? "${details.productDetails?.name ?? ''}\n"
                 : "${details.quantity} x ${details.productDetails?.name ?? ''}",
             styles: const PosStyles(
               bold: true,
@@ -514,7 +514,7 @@ class PrinterController extends GetxController {
 
         Backbytes += generator.text(
             myAdddonDataWithoutPrice.isNotEmpty
-                ? "${details.productDetails?.name ?? ''} x ${details.quantity}"
+                ? "${details.productDetails?.name ?? ''}\n"
                 : "${details.quantity} x ${details.productDetails?.name ?? ''}",
             styles: const PosStyles(
               bold: true,
@@ -556,7 +556,7 @@ class PrinterController extends GetxController {
 
       bytes += generator.text(
           myAdddonData.isNotEmpty
-              ? "${details.productDetails?.name ?? ''} x ${details.quantity}"
+              ? "${details.productDetails?.name ?? ''}\n"
               : "${details.quantity} x ${details.productDetails?.name ?? ''}:${PriceConverter.convertPrice(details.price! * details.quantity!)}",
           styles: const PosStyles(
             bold: true,
