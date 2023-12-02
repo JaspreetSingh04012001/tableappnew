@@ -605,13 +605,22 @@ class PrinterController extends GetxController {
         : null;
     bytes += generator.text("${'Item Count'} : $itemCount",
         styles: const PosStyles(
-            height: PosTextSize.size1, width: PosTextSize.size2));
+          bold: true,
+          height: PosTextSize.size1,
+          width: PosTextSize.size2,
+        ));
     Frontbytes += generator.text("${'Item Count'} : $frontitemCount",
         styles: const PosStyles(
-            height: PosTextSize.size1, width: PosTextSize.size2));
+          bold: true,
+          height: PosTextSize.size1,
+          width: PosTextSize.size2,
+        ));
     Backbytes += generator.text("${'Item Count'} : $backitemCount",
         styles: const PosStyles(
-            height: PosTextSize.size1, width: PosTextSize.size2));
+          bold: true,
+          height: PosTextSize.size1,
+          width: PosTextSize.size2,
+        ));
 
     bytes += generator.text(
         "${'total'.tr} : ${PriceConverter.convertPrice(orderController.currentOrderDetails?.order?.orderAmount ?? 0)}",
