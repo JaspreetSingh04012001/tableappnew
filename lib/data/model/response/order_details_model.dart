@@ -419,6 +419,7 @@ class AddOns {
   double? price;
   String? createdAt;
   String? updatedAt;
+  bool? is_product;
 
   AddOns({
     this.id,
@@ -426,6 +427,7 @@ class AddOns {
     this.price,
     this.createdAt,
     this.updatedAt,
+    this.is_product,
   });
 
   AddOns.fromJson(Map<String, dynamic> json) {
@@ -435,6 +437,7 @@ class AddOns {
     price = double.parse('${json['price']}');
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    is_product = json['is_product'];
   }
 
   Map<String, dynamic> toJson() {
@@ -444,6 +447,7 @@ class AddOns {
     data['price'] = price;
     data['created_at'] = createdAt;
     data['updated_at'] = updatedAt;
+    data["is_product"] = is_product;
     return data;
   }
 }

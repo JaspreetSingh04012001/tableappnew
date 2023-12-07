@@ -12,6 +12,7 @@ import 'package:efood_table_booking/view/screens/order/widget/invoice_print_scre
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:logger/logger.dart';
 
 import '../../../../controller/printer_controller.dart';
 import '../../../../helper/price_converter.dart';
@@ -205,6 +206,7 @@ class OrderDetailsView extends StatelessWidget {
                               itemCount: orderController
                                   .currentOrderDetails?.details?.length,
                               itemBuilder: (context, index) {
+                                bool showproductPrice = true;
                                 // itemCount += orderController
                                 //         .currentOrderDetails?.details?.length ??
                                 //     0;
@@ -248,6 +250,9 @@ class OrderDetailsView extends StatelessWidget {
                                     int id = ids[j];
 
                                     for (var addOn in addons) {
+                                      if (addOn.is_product == true) {
+                                        showproductPrice = false;
+                                      }
                                       if (addOn.id == id) {
                                         addOnWidgetList.add(Row(
                                           crossAxisAlignment:
@@ -334,7 +339,7 @@ class OrderDetailsView extends StatelessWidget {
                                     orderDetails.variations!.isNotEmpty) {
                                   for (Variation variation
                                       in orderDetails.variations!) {
-                                    // Logger().d(variation.toJson());
+                                    Logger().d(variation.toJson());
                                     variation.variationValues
                                         ?.forEach((element) {
                                       if (element.level != "Dine in" &&
@@ -495,23 +500,56 @@ class OrderDetailsView extends StatelessWidget {
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                      Text(
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        details.productDetails
-                                                                ?.name ??
-                                                            '',
-                                                        style: robotoRegular
-                                                            .copyWith(
-                                                          fontSize: Dimensions
-                                                              .fontSizeLarge,
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .titleLarge!
-                                                                  .color!,
-                                                        ),
-                                                        maxLines: 2,
+                                                      Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              details.productDetails
+                                                                      ?.name ??
+                                                                  '',
+                                                              style:
+                                                                  robotoRegular
+                                                                      .copyWith(
+                                                                fontSize: Dimensions
+                                                                    .fontSizeLarge,
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .titleLarge!
+                                                                    .color!,
+                                                              ),
+                                                              maxLines: 2,
+                                                            ),
+                                                          ),
+                                                          if (showproductPrice)
+                                                            Text(
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              PriceConverter
+                                                                  .convertPrice(details
+                                                                          .productDetails!
+                                                                          .price ??
+                                                                      0),
+                                                              style:
+                                                                  robotoRegular
+                                                                      .copyWith(
+                                                                fontSize: Dimensions
+                                                                    .fontSizeLarge,
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .titleLarge!
+                                                                    .color!,
+                                                              ),
+
+                                                              // overflow: TextOverflow
+                                                              //     .ellipsis,
+                                                            ),
+                                                        ],
                                                       ),
                                                     ],
                                                   )),

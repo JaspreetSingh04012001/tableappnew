@@ -211,6 +211,7 @@ class _CartDetailsState extends State<CartDetails> {
                                               List<int> addOnQtyList = [];
                                               List<OrderVariation> variations =
                                                   [];
+                                           
                                               cart.addOnIds?.forEach((addOn) {
                                                 addOnIdList.add(addOn.id!);
                                                 addOnQtyList
@@ -486,8 +487,12 @@ class _CartDetailsState extends State<CartDetails> {
                               String? note = cartItem.note;
                               String variationText = '';
                               String addonsName = '';
+                              bool showproductPrice = true;
                               // var logger = Logger();
                               cartItem.addOnIds?.forEach((addOn) {
+                                if (addOn.is_product == true) {
+                                  showproductPrice = false;
+                                }
                                 addonsName =
                                     '$addonsName${addOn.name} (${addOn.quantity}), ';
                                 // logger.i(
@@ -719,11 +724,6 @@ class _CartDetailsState extends State<CartDetails> {
                                 child: Column(
                                   children: [
                                     Container(
-                                      //  alignment: Alignment.center,
-                                      // color: takeAway
-                                      //     ? const Color.fromARGB(
-                                      //         255, 255, 209, 70)
-                                      //     : Colors.white,
                                       child: Column(
                                         children: [
                                           takeAway
@@ -769,23 +769,52 @@ class _CartDetailsState extends State<CartDetails> {
                                                         CrossAxisAlignment
                                                             .start,
                                                     children: [
-                                                      Text(
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                        '${cartItem.product!.name ?? ''} ${variationText.isNotEmpty ? '($variationText)' : ''}',
-                                                        style: robotoRegular
-                                                            .copyWith(
-                                                          fontSize: Dimensions
-                                                              .fontSizeLarge,
-                                                          color:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .titleLarge!
-                                                                  .color!,
-                                                        ),
-                                                        maxLines: 17,
-                                                        // overflow: TextOverflow
-                                                        //     .ellipsis,
+                                                      Row(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Text(
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              '${cartItem.product!.name ?? ''}',
+                                                              style:
+                                                                  robotoRegular
+                                                                      .copyWith(
+                                                                fontSize: Dimensions
+                                                                    .fontSizeLarge,
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .titleLarge!
+                                                                    .color!,
+                                                              ),
+                                                              maxLines: 17,
+                                                              // overflow: TextOverflow
+                                                              //     .ellipsis,
+                                                            ),
+                                                          ),
+                                                          if (showproductPrice)
+                                                            Text(
+                                                              overflow:
+                                                                  TextOverflow
+                                                                      .ellipsis,
+                                                              "${PriceConverter.convertPrice(cartItem.product!.price ?? 0)}",
+                                                              style:
+                                                                  robotoRegular
+                                                                      .copyWith(
+                                                                fontSize: Dimensions
+                                                                    .fontSizeLarge,
+                                                                color: Theme.of(
+                                                                        context)
+                                                                    .textTheme
+                                                                    .titleLarge!
+                                                                    .color!,
+                                                              ),
+                                                            
+                                                              // overflow: TextOverflow
+                                                              //     .ellipsis,
+                                                            ),
+                                                        ],
                                                       ),
                                                     ],
                                                   )),

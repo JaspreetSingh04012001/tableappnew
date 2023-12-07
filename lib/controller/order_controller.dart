@@ -81,9 +81,10 @@ class OrderController extends GetxController implements GetxService {
 
   Future<void> placeOrder(PlaceOrderBody placeOrderBody, Function callback,
       String paidAmount, double changeAmount) async {
+    Logger().i(placeOrderBody.toJson());
     _isLoading = true;
     update();
-    
+
     Response response = await orderRepo.placeOrder(placeOrderBody);
     _isLoading = false;
 
@@ -187,7 +188,7 @@ class OrderController extends GetxController implements GetxService {
       _isLoading = true;
     }
     _currentOrderDetails = null;
-  
+
     update();
 
     if (orderId != null) {
@@ -199,7 +200,7 @@ class OrderController extends GetxController implements GetxService {
       if (response.statusCode == 200) {
         // print("byJass");
         // print(response.body);
-       // logger.i(response.body);
+        // logger.i(response.body);
         _currentOrderDetails = OrderDetails.fromJson(response.body);
         update();
       } else {

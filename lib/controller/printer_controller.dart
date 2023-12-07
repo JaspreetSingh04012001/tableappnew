@@ -377,7 +377,7 @@ class PrinterController extends GetxController {
       // int a = 0;
       //  String addonsName = '';
       bool takeAway = false;
-
+      bool showproductPrice = true;
       List<AddOns> addons = details.productDetails == null
           ? []
           : details.productDetails!.addOns == null
@@ -403,6 +403,9 @@ class PrinterController extends GetxController {
           int id = ids[j];
 
           for (var addOn in addons) {
+            if (addOn.is_product == true) {
+              showproductPrice = false;
+            }
             if (addOn.id == id) {
               myAdddonData.add(
                   "${addQty[j]} x ${addOn.name}:${PriceConverter.convertPrice(addOn.price! * addQty[j])}");
@@ -476,7 +479,7 @@ class PrinterController extends GetxController {
 
         Frontbytes += generator.text(
             myAdddonDataWithoutPrice.isNotEmpty
-                ? "${details.productDetails?.name ?? ''}\n"
+                ? "${details.productDetails?.name ?? ''}${showproductPrice ? ("   ${PriceConverter.convertPrice(details.productDetails!.price ?? 0)}") : ""}\n"
                 : "${details.quantity} x ${details.productDetails?.name ?? ''}",
             styles: const PosStyles(
               bold: true,
@@ -518,7 +521,7 @@ class PrinterController extends GetxController {
         backitemCount += details.quantity ?? 0;
         Backbytes += generator.text(
             myAdddonDataWithoutPrice.isNotEmpty
-                ? "${details.productDetails?.name ?? ''}\n"
+                ? "${details.productDetails?.name ?? ''}${showproductPrice ? ("   ${PriceConverter.convertPrice(details.productDetails!.price ?? 0)}") : ""}\n"
                 : "${details.quantity} x ${details.productDetails?.name ?? ''}",
             styles: const PosStyles(
               bold: true,
@@ -560,7 +563,7 @@ class PrinterController extends GetxController {
 
       bytes += generator.text(
           myAdddonData.isNotEmpty
-              ? "${details.productDetails?.name ?? ''}\n"
+              ? "${details.productDetails?.name ?? ''}${showproductPrice ? ("   ${PriceConverter.convertPrice(details.productDetails!.price ?? 0)}") : ""}\n"
               : "${details.quantity} x ${details.productDetails?.name ?? ''}:${PriceConverter.convertPrice(details.price! * details.quantity!)}",
           styles: const PosStyles(
             bold: true,
