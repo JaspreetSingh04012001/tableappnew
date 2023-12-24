@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:efood_table_booking/controller/cart_controller.dart';
 import 'package:efood_table_booking/controller/splash_controller.dart';
 import 'package:efood_table_booking/data/api/api_checker.dart';
 import 'package:efood_table_booking/data/model/response/order_details_model.dart';
@@ -112,6 +113,8 @@ class OrderController extends GetxController implements GetxService {
 
       orderRepo.addOrderModel(list);
       callback(true, message, orderID);
+      _placeOrderBody = null;
+      Get.find<CartController>().clearCartData();
     } else {
       callback(
         false,

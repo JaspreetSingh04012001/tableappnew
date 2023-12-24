@@ -5,16 +5,12 @@ import 'dart:io';
 
 import 'package:efood_table_booking/controller/localization_controller.dart';
 import 'package:efood_table_booking/controller/theme_controller.dart';
-import 'package:efood_table_booking/helper/notification_helper.dart';
 import 'package:efood_table_booking/helper/route_helper.dart';
 import 'package:efood_table_booking/theme/dark_theme.dart';
 import 'package:efood_table_booking/theme/light_theme.dart';
 import 'package:efood_table_booking/util/app_constants.dart';
 import 'package:efood_table_booking/util/messages.dart';
 import 'package:efood_table_booking/view/screens/root/not_found_screen.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -43,7 +39,7 @@ Future<void> main() async {
   //           messagingSenderId: 'messagingSenderId',
   //           projectId: 'projectId'));
   // }
-   Map<String, Map<String, String>> languages = await di.init();
+  Map<String, Map<String, String>> languages = await di.init();
 
   // int? orderID;
   // try {
@@ -63,11 +59,10 @@ Future<void> main() async {
   //   }
   // } catch (e) {}
 
-  runApp(MyApp(languages: languages,
-   orderID: null
-   //orderID
+  runApp(MyApp(languages: languages, orderID: null
+      //orderID
 
-  ));
+      ));
 }
 
 class MyApp extends StatelessWidget {

@@ -240,6 +240,13 @@ class PrinterController extends GetxController {
     }
   }
 
+  PosStyles bigStyle =
+      const PosStyles(height: PosTextSize.size2, width: PosTextSize.size2);
+  PosStyles normalStyle = const PosStyles(
+      height: PosTextSize.size1, width: PosTextSize.size1, bold: true);
+  PosStyles mediumLargeStyle = const PosStyles(
+      bold: true, height: PosTextSize.size1, width: PosTextSize.size2);
+
   Future<List<List<int>>> testTicket(
       {bool byWaitor = false,
       required Generator generator,
@@ -290,92 +297,48 @@ class PrinterController extends GetxController {
 
     // double total = orderController.currentOrderDetails?.order?.orderAmount ?? 0;
 
-    bytes += generator.text(name ?? " ",
-        styles: const PosStyles(
-            bold: true,
-            align: PosAlign.center,
-            height: PosTextSize.size2,
-            width: PosTextSize.size2));
-    bytes += generator.text('order_summary'.tr,
-        styles: const PosStyles(
-            bold: true,
-            align: PosAlign.center,
-            height: PosTextSize.size2,
-            width: PosTextSize.size2));
+    bytes += generator.text(name ?? " ", styles: normalStyle);
+    bytes += generator.text('order_summary'.tr, styles: normalStyle);
+    bytes += generator.text(date, styles: normalStyle);
     bytes += generator.text(
         '${'order'.tr}# ${orderController.currentOrderDetails?.order?.id}',
-        styles: const PosStyles(
-            bold: true, align: PosAlign.center, height: PosTextSize.size1));
-    bytes += generator.text(date,
-        styles: const PosStyles(
-            bold: true, align: PosAlign.center, height: PosTextSize.size1));
-
+        styles: bigStyle);
     bytes += generator.text(
         orderController.currentOrderDetails?.order?.customer_name ?? '',
-        styles: const PosStyles(
-            bold: true, align: PosAlign.center, height: PosTextSize.size1));
+        styles: bigStyle);
     bytes += generator.text(
         orderController.currentOrderDetails?.order?.customer_email ?? '',
-        styles: const PosStyles(
-            bold: true, align: PosAlign.center, height: PosTextSize.size1));
-    bytes += generator.text("Qty x Item info = Price");
+        styles: bigStyle);
+    bytes += generator.text("Qty x Item info = Price", styles: normalStyle);
     bytes += generator.hr(ch: "-");
 
     Frontbytes += generator.hr(ch: "-");
-
-    Frontbytes += generator.text('order_summary'.tr,
-        styles: const PosStyles(
-            bold: true,
-            align: PosAlign.center,
-            height: PosTextSize.size2,
-            width: PosTextSize.size2));
-    Frontbytes += generator.text("Front Items",
-        styles: const PosStyles(
-            bold: true,
-            align: PosAlign.center,
-            height: PosTextSize.size2,
-            width: PosTextSize.size2));
+    Frontbytes += generator.text('order_summary'.tr, styles: normalStyle);
+    Frontbytes += generator.text("Front Items", styles: normalStyle);
+    Frontbytes += generator.text(date, styles: normalStyle);
     Frontbytes += generator.text(
         '${'order'.tr}# ${orderController.currentOrderDetails?.order?.id}',
-        styles: const PosStyles(
-            bold: true, align: PosAlign.center, height: PosTextSize.size1));
-    Frontbytes += generator.text(date,
-        styles: const PosStyles(
-            bold: true, align: PosAlign.center, height: PosTextSize.size1));
-
+        styles: bigStyle);
     Frontbytes += generator.hr(ch: "-");
-    Frontbytes += generator.text("Qty x Item info = Price");
+    Frontbytes +=
+        generator.text("Qty x Item info = Price", styles: normalStyle);
     Frontbytes += generator.hr(ch: "-");
 
     Backbytes += generator.hr(ch: "-");
-    Backbytes += generator.text('order_summary'.tr,
-        styles: const PosStyles(
-            bold: true,
-            align: PosAlign.center,
-            height: PosTextSize.size2,
-            width: PosTextSize.size2));
-    Backbytes += generator.text("Back Items",
-        styles: const PosStyles(
-            bold: true,
-            align: PosAlign.center,
-            height: PosTextSize.size2,
-            width: PosTextSize.size2));
+    Backbytes += generator.text('order_summary'.tr, styles: normalStyle);
+    Backbytes += generator.text("Back Items", styles: normalStyle);
+    Backbytes += generator.text(date, styles: normalStyle);
     Backbytes += generator.text(
         '${'order'.tr}# ${orderController.currentOrderDetails?.order?.id}',
-        styles: const PosStyles(
-            bold: true, align: PosAlign.center, height: PosTextSize.size1));
-    Backbytes += generator.text(date,
-        styles: const PosStyles(
-            bold: true, align: PosAlign.center, height: PosTextSize.size1));
+        styles: bigStyle);
     Backbytes += generator.hr(ch: "-");
-    Backbytes += generator.text("Qty x Item info = Price");
+    Backbytes += generator.text("Qty x Item info = Price", styles: normalStyle);
     Backbytes += generator.hr(ch: "-");
 
     orderController.currentOrderDetails?.details?.forEach((details) {
       String variationText = '';
       String? note = details.note;
-      // int a = 0;
-      //  String addonsName = '';
+
       bool takeAway = false;
       bool showproductPrice = true;
       List<AddOns> addons = details.productDetails == null
@@ -389,13 +352,6 @@ class PrinterController extends GetxController {
       List<String> myAdddonDataWithoutPrice = [];
       List<String> myVaronData = [];
       List<String> myVaronDataWithoutPrice = [];
-      // if (ids.length == details.addOnPrices?.length &&
-      //     ids.length == details.addOnQtys?.length) {
-      //   for (int i = 0; i < ids.length; i++) {
-      //     addOnsPrice =
-      //         addOnsPrice + (details.addOnPrices![i] * details.addOnQtys![i]);
-      //   }
-      // }\\
 
       if (ids.length == details.addOnPrices?.length &&
           ids.length == details.addOnQtys?.length) {
@@ -457,143 +413,79 @@ class PrinterController extends GetxController {
         takeAway = true;
       }
 
-      variationText = variationText
-          .replaceAll("Order Type (Dine in)", "")
-          .replaceAll("Order Type (Take away)", "")
-          .replaceAll(",", "\n")
-          .replaceAll("))", ")")
-          .trimLeft();
-
-      variationText = removeEmptyLines(variationText);
-
       if (details.productDetails?.printType == "front") {
         Frontbytes += generator.text(
             takeAway ? "** Take away **" : "* Eat In *",
-            styles: const PosStyles(
-                bold: true,
-                height: PosTextSize.size1,
-                width: PosTextSize.size2,
-                align: PosAlign.center));
-
-        frontprintCount += details.quantity ?? 0;
+            styles: normalStyle);
 
         Frontbytes += generator.text(
             myAdddonDataWithoutPrice.isNotEmpty
                 ? "${details.productDetails?.name ?? ''}${showproductPrice ? ("   ${PriceConverter.convertPrice(details.productDetails!.price ?? 0)}") : ""}\n"
                 : "${details.quantity} x ${details.productDetails?.name ?? ''}",
-            styles: const PosStyles(
-              bold: true,
-              height: PosTextSize.size1,
-              width: PosTextSize.size2,
-            ));
+            styles: normalStyle);
 
         if (myAdddonDataWithoutPrice.isNotEmpty) {
           for (var element in myAdddonDataWithoutPrice) {
-            Frontbytes += generator.text(element,
-                styles: const PosStyles(
-                    bold: true,
-                    height: PosTextSize.size1,
-                    width: PosTextSize.size2));
+            Frontbytes += generator.text(element, styles: normalStyle);
           }
         }
         if (myVaronDataWithoutPrice.isNotEmpty) {
           for (var element in myVaronDataWithoutPrice) {
-            Frontbytes += generator.text(element,
-                styles: const PosStyles(
-                    bold: true,
-                    height: PosTextSize.size1,
-                    width: PosTextSize.size2));
+            Frontbytes += generator.text(element, styles: normalStyle);
           }
         }
 
         if (note != null && note != "null" && note != "") {
-          Frontbytes += generator.text(note,
-              styles: const PosStyles(bold: true, height: PosTextSize.size1));
+          Frontbytes += generator.text(note, styles: normalStyle);
         }
         Frontbytes += generator.hr(ch: "-");
       } else if (details.productDetails?.printType == "back") {
         Backbytes += generator.text(takeAway ? "** Take away **" : "* Eat In *",
-            styles: const PosStyles(
-                bold: true,
-                height: PosTextSize.size1,
-                width: PosTextSize.size2,
-                align: PosAlign.center));
+            styles: normalStyle);
         backitemCount += details.quantity ?? 0;
         Backbytes += generator.text(
             myAdddonDataWithoutPrice.isNotEmpty
                 ? "${details.productDetails?.name ?? ''}${showproductPrice ? ("   ${PriceConverter.convertPrice(details.productDetails!.price ?? 0)}") : ""}\n"
                 : "${details.quantity} x ${details.productDetails?.name ?? ''}",
-            styles: const PosStyles(
-              bold: true,
-              height: PosTextSize.size1,
-              width: PosTextSize.size2,
-            ));
+            styles: normalStyle);
 
         if (myAdddonDataWithoutPrice.isNotEmpty) {
           for (var element in myAdddonDataWithoutPrice) {
-            Backbytes += generator.text(element,
-                styles: const PosStyles(
-                  bold: true,
-                  height: PosTextSize.size1,
-                  width: PosTextSize.size2,
-                ));
+            Backbytes += generator.text(element, styles: normalStyle);
           }
         }
         if (myVaronDataWithoutPrice.isNotEmpty) {
           for (var element in myVaronDataWithoutPrice) {
-            Backbytes += generator.text(element,
-                styles: const PosStyles(
-                    bold: true,
-                    height: PosTextSize.size1,
-                    width: PosTextSize.size2));
+            Backbytes += generator.text(element, styles: normalStyle);
           }
         }
         if (note != null && note != "null" && note != "") {
-          Backbytes += generator.text(note,
-              styles: const PosStyles(bold: true, height: PosTextSize.size1));
+          Backbytes += generator.text(note, styles: normalStyle);
         }
         Backbytes += generator.hr(ch: "-");
       }
       bytes += generator.text(takeAway ? "** Take away **" : "* Eat In *",
-          styles: const PosStyles(
-              bold: true,
-              height: PosTextSize.size1,
-              width: PosTextSize.size2,
-              align: PosAlign.center));
+          styles: normalStyle);
 
       bytes += generator.text(
           myAdddonData.isNotEmpty
               ? "${details.productDetails?.name ?? ''}${showproductPrice ? ("   ${PriceConverter.convertPrice(details.productDetails!.price ?? 0)}") : ""}\n"
               : "${details.quantity} x ${details.productDetails?.name ?? ''}:${PriceConverter.convertPrice(details.price! * details.quantity!)}",
-          styles: const PosStyles(
-            bold: true,
-            height: PosTextSize.size1,
-            width: PosTextSize.size2,
-          ));
+          styles: normalStyle);
 
       if (myAdddonData.isNotEmpty) {
         for (var element in myAdddonData) {
-          bytes += generator.text(element,
-              styles: const PosStyles(
-                  bold: true,
-                  height: PosTextSize.size1,
-                  width: PosTextSize.size2));
+          bytes += generator.text(element, styles: normalStyle);
         }
       }
       if (myVaronData.isNotEmpty) {
         for (var element in myVaronData) {
-          bytes += generator.text(element,
-              styles: const PosStyles(
-                bold: true,
-                height: PosTextSize.size1,
-                width: PosTextSize.size2,
-              ));
+          bytes += generator.text(element, styles: normalStyle);
         }
       }
 
       if (note != null && note != "null" && note != "") {
-        bytes += generator.text(note,
-            styles: const PosStyles(bold: true, height: PosTextSize.size1));
+        bytes += generator.text(note, styles: normalStyle);
       }
       bytes += generator.hr(ch: "-");
     });
@@ -601,38 +493,21 @@ class PrinterController extends GetxController {
     orderController.currentOrderDetails?.order?.orderNote != null
         ? bytes += generator.text(
             'Note : ${orderController.currentOrderDetails?.order?.orderNote ?? ''}',
-            styles: const PosStyles(
-                height: PosTextSize.size1,
-                width: PosTextSize.size2,
-                bold: true))
+            styles: normalStyle)
         : null;
-    bytes += generator.text("${'Item Count'} : $itemCount",
-        styles: const PosStyles(
-          bold: true,
-          height: PosTextSize.size1,
-          width: PosTextSize.size2,
-        ));
+    bytes +=
+        generator.text("${'Item Count'} : $itemCount", styles: normalStyle);
     Frontbytes += generator.text("${'Item Count'} : $frontitemCount",
-        styles: const PosStyles(
-          bold: true,
-          height: PosTextSize.size1,
-          width: PosTextSize.size2,
-        ));
-    Backbytes += generator.text("${'Item Count'} : $backitemCount",
-        styles: const PosStyles(
-          bold: true,
-          height: PosTextSize.size1,
-          width: PosTextSize.size2,
-        ));
+        styles: normalStyle);
+    Backbytes +=
+        generator.text("${'Item Count'} : $backitemCount", styles: normalStyle);
 
     bytes += generator.text(
         "${'total'.tr} : ${PriceConverter.convertPrice(orderController.currentOrderDetails?.order?.orderAmount ?? 0)}",
-        styles: const PosStyles(
-            height: PosTextSize.size2, width: PosTextSize.size2));
+        styles: bigStyle);
 
     bytes += generator.text(
-        styles: const PosStyles(
-            height: PosTextSize.size1, width: PosTextSize.size1, bold: true),
+        styles: normalStyle,
         "${'${'paid_amount'.tr}${orderController.currentOrderDetails?.order?.paymentMethod != null ?
             //'(${orderController.currentOrderDetails?.order?.paymentMethod})' : ' (${'un_paid'.tr}) '}',
             '(${orderController.currentOrderDetails?.order?.paymentMethod})' : ''}'} : ${PriceConverter.convertPrice(orderController.currentOrderDetails?.order?.paymentStatus != 'unpaid' ? orderController.currentOrderDetails?.order?.orderAmount ?? 0 : 0)}");
@@ -640,13 +515,16 @@ class PrinterController extends GetxController {
     //     generator.text("${'vat_tax'.tr} : \$${widget.order!.totalTaxAmount!}");
     if (orderController.currentOrderDetails?.order?.paymentMethod != null) {
       bytes += generator.text(
-          "Payment Method : +${orderController.currentOrderDetails?.order?.paymentMethod ?? "hold"}");
+          "Payment Method : +${orderController.currentOrderDetails?.order?.paymentMethod ?? "hold"}",
+          styles: normalStyle);
     }
     bytes += generator.text(
-        "Payment Method : +${orderController.currentOrderDetails?.order?.paymentStatus}");
+        "Payment Method : +${orderController.currentOrderDetails?.order?.paymentStatus}",
+        styles: normalStyle);
     if (orderController.currentOrderDetails?.order?.paymentMethod == "cash") {
       bytes += generator.text(
-          "Cash : +${PriceConverter.convertPrice(double.parse(orderController.currentOrderDetails?.order?.cash ?? "0"))}");
+          "Cash : +${PriceConverter.convertPrice(double.parse(orderController.currentOrderDetails?.order?.cash ?? "0"))}",
+          styles: normalStyle);
     }
     // PriceWithType(
     //   type: 'Cash',
@@ -665,14 +543,17 @@ class PrinterController extends GetxController {
     // ),
     if (orderController.currentOrderDetails?.order?.paymentMethod == "split") {
       bytes += generator.text(
-          "Cash : +${PriceConverter.convertPrice(double.parse(orderController.currentOrderDetails?.order?.cash ?? "0"))}");
+          "Cash : +${PriceConverter.convertPrice(double.parse(orderController.currentOrderDetails?.order?.cash ?? "0"))}",
+          styles: normalStyle);
       bytes += generator.text(
-          "Card : +${PriceConverter.convertPrice(double.parse(orderController.currentOrderDetails?.order?.card ?? "0"))}");
+          "Card : +${PriceConverter.convertPrice(double.parse(orderController.currentOrderDetails?.order?.card ?? "0"))}",
+          styles: normalStyle);
     }
 
     if (orderController.currentOrderDetails?.order?.paymentMethod == "card") {
       bytes += generator.text(
-          "Card : +${PriceConverter.convertPrice(double.parse(orderController.currentOrderDetails?.order?.card ?? "0"))}");
+          "Card : +${PriceConverter.convertPrice(double.parse(orderController.currentOrderDetails?.order?.card ?? "0"))}",
+          styles: normalStyle);
     }
     // if (orderController.currentOrderDetails?.order?.paymentMethod == "split") {
     //   bytes += generator.text(
@@ -682,9 +563,8 @@ class PrinterController extends GetxController {
     // }
     if (orderController.currentOrderDetails?.order?.paymentMethod == "cash") {
       bytes += generator.text(
-          styles: const PosStyles(
-              height: PosTextSize.size1, width: PosTextSize.size1, bold: true),
-          "${'change'.tr} : ${PriceConverter.convertPrice((double.parse(orderController.currentOrderDetails?.order?.cash ?? "0") - (orderController.currentOrderDetails?.order?.orderAmount ?? 0)))}");
+          "${'change'.tr} : ${PriceConverter.convertPrice((double.parse(orderController.currentOrderDetails?.order?.cash ?? "0") - (orderController.currentOrderDetails?.order?.orderAmount ?? 0)))}",
+          styles: normalStyle);
     }
 
     bytes += generator.feed(2);
