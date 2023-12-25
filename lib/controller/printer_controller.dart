@@ -240,8 +240,8 @@ class PrinterController extends GetxController {
     }
   }
 
-  PosStyles bigStyle =
-      const PosStyles(height: PosTextSize.size2, width: PosTextSize.size2);
+  PosStyles bigStyle = const PosStyles(
+      height: PosTextSize.size2, width: PosTextSize.size2, bold: true);
   PosStyles normalStyle = const PosStyles(
       height: PosTextSize.size1, width: PosTextSize.size1, bold: true);
   PosStyles mediumLargeStyle = const PosStyles(
@@ -297,6 +297,9 @@ class PrinterController extends GetxController {
 
     // double total = orderController.currentOrderDetails?.order?.orderAmount ?? 0;
 
+    bytes += generator.text("normalStyle", styles: normalStyle);
+    bytes += generator.text("mediumLargeStyle", styles: mediumLargeStyle);
+    bytes += generator.text("bigStyle", styles: bigStyle);
     bytes += generator.text(name ?? " ", styles: normalStyle);
     bytes += generator.text('order_summary'.tr, styles: normalStyle);
     bytes += generator.text(date, styles: normalStyle);
@@ -320,8 +323,7 @@ class PrinterController extends GetxController {
         '${'order'.tr}# ${orderController.currentOrderDetails?.order?.id}',
         styles: bigStyle);
     Frontbytes += generator.hr(ch: "-");
-    Frontbytes +=
-        generator.text("Qty x Item info = Price", styles: bigStyle);
+    Frontbytes += generator.text("Qty x Item info = Price", styles: bigStyle);
     Frontbytes += generator.hr(ch: "-");
 
     Backbytes += generator.hr(ch: "-");
@@ -416,7 +418,7 @@ class PrinterController extends GetxController {
       if (details.productDetails?.printType == "front") {
         Frontbytes += generator.text(
             takeAway ? "** Take away **" : "* Eat In *",
-            styles: bigStyle);
+            styles: normalStyle);
 
         Frontbytes += generator.text(
             myAdddonDataWithoutPrice.isNotEmpty
@@ -441,7 +443,7 @@ class PrinterController extends GetxController {
         Frontbytes += generator.hr(ch: "-");
       } else if (details.productDetails?.printType == "back") {
         Backbytes += generator.text(takeAway ? "** Take away **" : "* Eat In *",
-            styles: bigStyle);
+            styles: normalStyle);
         backitemCount += details.quantity ?? 0;
         Backbytes += generator.text(
             myAdddonDataWithoutPrice.isNotEmpty
@@ -497,8 +499,8 @@ class PrinterController extends GetxController {
         : null;
     bytes +=
         generator.text("${'Item Count'} : $itemCount", styles: normalStyle);
-    Frontbytes += generator.text("${'Item Count'} : $frontitemCount",
-        styles: bigStyle);
+    Frontbytes +=
+        generator.text("${'Item Count'} : $frontitemCount", styles: bigStyle);
     Backbytes +=
         generator.text("${'Item Count'} : $backitemCount", styles: bigStyle);
 
