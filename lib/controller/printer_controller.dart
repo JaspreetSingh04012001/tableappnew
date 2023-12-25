@@ -313,26 +313,26 @@ class PrinterController extends GetxController {
     bytes += generator.hr(ch: "-");
 
     Frontbytes += generator.hr(ch: "-");
-    Frontbytes += generator.text('order_summary'.tr, styles: normalStyle);
-    Frontbytes += generator.text("Front Items", styles: normalStyle);
-    Frontbytes += generator.text(date, styles: normalStyle);
+    Frontbytes += generator.text('order_summary'.tr, styles: bigStyle);
+    Frontbytes += generator.text("Front Items", styles: bigStyle);
+    Frontbytes += generator.text(date, styles: bigStyle);
     Frontbytes += generator.text(
         '${'order'.tr}# ${orderController.currentOrderDetails?.order?.id}',
         styles: bigStyle);
     Frontbytes += generator.hr(ch: "-");
     Frontbytes +=
-        generator.text("Qty x Item info = Price", styles: normalStyle);
+        generator.text("Qty x Item info = Price", styles: bigStyle);
     Frontbytes += generator.hr(ch: "-");
 
     Backbytes += generator.hr(ch: "-");
-    Backbytes += generator.text('order_summary'.tr, styles: normalStyle);
-    Backbytes += generator.text("Back Items", styles: normalStyle);
-    Backbytes += generator.text(date, styles: normalStyle);
+    Backbytes += generator.text('order_summary'.tr, styles: bigStyle);
+    Backbytes += generator.text("Back Items", styles: bigStyle);
+    Backbytes += generator.text(date, styles: bigStyle);
     Backbytes += generator.text(
         '${'order'.tr}# ${orderController.currentOrderDetails?.order?.id}',
         styles: bigStyle);
     Backbytes += generator.hr(ch: "-");
-    Backbytes += generator.text("Qty x Item info = Price", styles: normalStyle);
+    Backbytes += generator.text("Qty x Item info = Price", styles: bigStyle);
     Backbytes += generator.hr(ch: "-");
 
     orderController.currentOrderDetails?.details?.forEach((details) {
@@ -416,51 +416,51 @@ class PrinterController extends GetxController {
       if (details.productDetails?.printType == "front") {
         Frontbytes += generator.text(
             takeAway ? "** Take away **" : "* Eat In *",
-            styles: normalStyle);
+            styles: bigStyle);
 
         Frontbytes += generator.text(
             myAdddonDataWithoutPrice.isNotEmpty
                 ? "${details.productDetails?.name ?? ''}${showproductPrice ? ("   ${PriceConverter.convertPrice(details.productDetails!.price ?? 0)}") : ""}\n"
                 : "${details.quantity} x ${details.productDetails?.name ?? ''}",
-            styles: normalStyle);
+            styles: bigStyle);
 
         if (myAdddonDataWithoutPrice.isNotEmpty) {
           for (var element in myAdddonDataWithoutPrice) {
-            Frontbytes += generator.text(element, styles: normalStyle);
+            Frontbytes += generator.text(element, styles: bigStyle);
           }
         }
         if (myVaronDataWithoutPrice.isNotEmpty) {
           for (var element in myVaronDataWithoutPrice) {
-            Frontbytes += generator.text(element, styles: normalStyle);
+            Frontbytes += generator.text(element, styles: bigStyle);
           }
         }
 
         if (note != null && note != "null" && note != "") {
-          Frontbytes += generator.text(note, styles: normalStyle);
+          Frontbytes += generator.text(note, styles: bigStyle);
         }
         Frontbytes += generator.hr(ch: "-");
       } else if (details.productDetails?.printType == "back") {
         Backbytes += generator.text(takeAway ? "** Take away **" : "* Eat In *",
-            styles: normalStyle);
+            styles: bigStyle);
         backitemCount += details.quantity ?? 0;
         Backbytes += generator.text(
             myAdddonDataWithoutPrice.isNotEmpty
                 ? "${details.productDetails?.name ?? ''}${showproductPrice ? ("   ${PriceConverter.convertPrice(details.productDetails!.price ?? 0)}") : ""}\n"
                 : "${details.quantity} x ${details.productDetails?.name ?? ''}",
-            styles: normalStyle);
+            styles: bigStyle);
 
         if (myAdddonDataWithoutPrice.isNotEmpty) {
           for (var element in myAdddonDataWithoutPrice) {
-            Backbytes += generator.text(element, styles: normalStyle);
+            Backbytes += generator.text(element, styles: bigStyle);
           }
         }
         if (myVaronDataWithoutPrice.isNotEmpty) {
           for (var element in myVaronDataWithoutPrice) {
-            Backbytes += generator.text(element, styles: normalStyle);
+            Backbytes += generator.text(element, styles: bigStyle);
           }
         }
         if (note != null && note != "null" && note != "") {
-          Backbytes += generator.text(note, styles: normalStyle);
+          Backbytes += generator.text(note, styles: bigStyle);
         }
         Backbytes += generator.hr(ch: "-");
       }
@@ -498,9 +498,9 @@ class PrinterController extends GetxController {
     bytes +=
         generator.text("${'Item Count'} : $itemCount", styles: normalStyle);
     Frontbytes += generator.text("${'Item Count'} : $frontitemCount",
-        styles: normalStyle);
+        styles: bigStyle);
     Backbytes +=
-        generator.text("${'Item Count'} : $backitemCount", styles: normalStyle);
+        generator.text("${'Item Count'} : $backitemCount", styles: bigStyle);
 
     bytes += generator.text(
         "${'total'.tr} : ${PriceConverter.convertPrice(orderController.currentOrderDetails?.order?.orderAmount ?? 0)}",

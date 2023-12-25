@@ -34,7 +34,7 @@ class OrderSuccessScreen extends StatefulWidget {
 
 class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
   int currentMinute = 0;
-  int selectedindex = 0;
+  int? selectedindex;
   bool focusshow = false;
   final double _changeAmount = 0;
   final TextEditingController _amountTextController = TextEditingController();
@@ -162,7 +162,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
         minutes = orderController.duration.inMinutes -
             (24 * days * 60) -
             (hours * 60);
-
+        List<int> x = [10, 20, 50, 70, 100];
         return orderController.isLoading
             ? Center(child: CustomLoader(color: Theme.of(context).primaryColor))
             : orderController.currentOrderDetails == null &&
@@ -268,7 +268,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                                           vertical: 10),
                                       child: Wrap(
                                           children: List.generate(
-                                              20,
+                                              x.length,
                                               (index) => InkWell(
                                                     onTap: () {
                                                       setState(() {
@@ -301,7 +301,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                                                         selectedindex = index;
                                                         _amountTextController
                                                                 .text =
-                                                            "${(index + 1) * 5}";
+                                                            "${x[index]}";
                                                         // if (double.parse(
                                                         //         _amountTextController
                                                         //             .text) >
@@ -313,7 +313,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                                                         //           double.parse(
                                                         //               _amountTextController
                                                         //                   .text)) *
-                                                        -1.0;
+
                                                         // } else {
                                                         // //  _changeAmount = 0;
                                                         // }
@@ -352,7 +352,7 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                                                                     vertical:
                                                                         8),
                                                             child: Text(
-                                                              "\$${(index + 1) * 5}",
+                                                              "\$${x[index]}",
                                                               style: robotoRegular
                                                                   .copyWith(
                                                                       color: (index ==
@@ -734,20 +734,20 @@ class _OrderSuccessScreenState extends State<OrderSuccessScreen> {
                                                                         orderController
                                                                             .getCurrentOrder(value.body["order"]["id"].toString())
                                                                             .then((value) async {
-                                                                          if (printerController
-                                                                              .connected) {
-                                                                            printerController.printTest(byWaitor: true);
-                                                                          } else {
-                                                                            // Get.dialog(
-                                                                            //     Dialog(
-                                                                            //   shape:
-                                                                            //       RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
-                                                                            //   insetPadding:
-                                                                            //       const EdgeInsets.all(20),
-                                                                            //   child:
-                                                                            //       const InvoicePrintScreen(),
-                                                                            // ));
-                                                                          }
+                                                                          // if (printerController
+                                                                          //     .connected) {
+                                                                          //   printerController.printTest(byWaitor: true);
+                                                                          // } else {
+                                                                          //   // Get.dialog(
+                                                                          //   //     Dialog(
+                                                                          //   //   shape:
+                                                                          //   //       RoundedRectangleBorder(borderRadius: BorderRadius.circular(Dimensions.radiusSmall)),
+                                                                          //   //   insetPadding:
+                                                                          //   //       const EdgeInsets.all(20),
+                                                                          //   //   child:
+                                                                          //   //       const InvoicePrintScreen(),
+                                                                          //   // ));
+                                                                          // }
                                                                         });
                                                                         // orderController
                                                                         //     .getOrderList();
